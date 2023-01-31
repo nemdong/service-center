@@ -1,0 +1,30 @@
+# 웹서버 포트 지정
+server:
+  port: 80
+  
+# mybatis의 SQL 실행 로그 출력을 위한 설정
+logging:
+  level:
+    '[com.example.mapper]': trace
+    
+spring:
+  # 데이터베이스와 연결된 Connection Pool 설정
+  datasource:
+    driver-class-name: oracle.jdbc.OracleDriver
+    url: jdbc:oracle:thin:@localhost:1521:xe
+    username: sample_user
+    password: zxcv1234
+  mvc:
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
+    
+# mybatis 환경설정
+mybatis:
+  mapper-locations:
+  - mybatis/mappers/*.xml
+  type-aliases-package: com.example.vo, com.example.dto
+  configuration:
+    jdbc-type-for-null: null
+    log-impl: org.apache.ibatis.logging.log4j2.Log4j2Impl
+
