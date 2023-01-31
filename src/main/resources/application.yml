@@ -19,7 +19,7 @@ spring:
       prefix: /WEB-INF/views/
       suffix: .jsp
     
-# mybatis 환경설정
+# mybatis 환경설정 
 mybatis:
   mapper-locations:
   - mybatis/mappers/*.xml
