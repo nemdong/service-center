@@ -19,6 +19,7 @@ spring:
       prefix: /WEB-INF/views/
       suffix: .jsp
     
+
 # mybatis 환경설정 
 mybatis:
   mapper-locations:
@@ -27,4 +28,3 @@ mybatis:
   configuration:
     jdbc-type-for-null: null
     log-impl: org.apache.ibatis.logging.log4j2.Log4j2Impl
-
