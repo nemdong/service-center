@@ -5,18 +5,32 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-<title></title>
+<title>애플리케이션</title>
 </head>
 <body>
-<c:set var="menu" value="home" />
-<%@ include file="../cus/common/navbar.jsp" %>
+<c:set var="menu" value="main" />
+<%@ include file="../common/navbar.jsp" %>
 <div class="container">
 	<div class="row mb-3">
-		<div class="col-12">
-			<div class="border p-3 bg-light">
-				<h1 class="mb-4">Service Center Home</h1>
-				<p>서비스센터 메인 홈 페이지</p>
+		<div class="col">
+			<h1 class="border bg-light p-2 fs-4">나의 기기</h1>
+		</div>
+	</div>
+	<div class="row mb-5" align="center">
+			<div class ="col-md-5">
+				<img src="/resources/images/image1.png" style="width: 80%" style="border:0px;" />
 			</div>
+			<div class="col-md-6" align="center">
+				<h3>홍길동 iPhone</h3>
+				<p>디바이스 설명</p>
+				<p><b>구일일</b> : 2023년05월01일</p>
+			</div>
+	</div>
+	<hr>
+	<div class="row mb-3" align="center">
+		<div class="col">
+			<h3>최근활동</h3>
+			<p>최근 90일 이내의 활동이 없습니다.</p>
 		</div>
 	</div>
 </div>

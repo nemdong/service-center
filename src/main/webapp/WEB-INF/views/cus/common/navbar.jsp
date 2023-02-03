@@ -2,10 +2,10 @@
 <nav class="navbar navbar-expand-sm bg-dark navbar-dark mb-3">
 	<div class="container">
 		<ul class="navbar-nav me-auto">
-			<li class="nav-item"><a href="/" class="nav-link" ><strong>서비스 센터</strong></a></li>
+			<li class="nav-item"><a href="/" class="nav-link ${menu eq 'home' ? 'active' : '' }" ><strong>서비스 센터</strong></a></li>
 		</ul>
 		<ul class="navbar-nav me-auto">
-			<li class="nav-item"><a href="" class="nav-link" >접수</a></li>
+			<li class="nav-item"><a href="/repair/main" class="nav-link ${menu eq 'main' ? 'active' : '' }" >접수</a></li>
 			<li class="nav-item"><a href="" class="nav-link" >문의</a></li>
 		</ul>
 		<span class="navbar-text"><strong class="text-white">ㅇㅇㅇ</strong>님 접속중</span>
