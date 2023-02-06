@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.emp.mapper.EmployeeMapper">
+
+	<select id="getAllEmployees" resultType="com.example.emp.dto.EmployeeDto">
+		SELECT
+		    E.EMPLOYEE_NO 					as no,
+		    E.EMPLOYEE_PASSWORD 			as password,
+		    E.EMPLOYEE_NAME 				as name,
+		    E.EMPLOYEE_CITIZEN_NO 			as citizenNo,
+		    E.EMPLOYEE_GENDER 				as gender,
+		    E.COMPANY_TEL 					as companyTel,
+		    E.HOME_TEL 						as homeTel,
+		    E.COMPANY_EMAIL 				as companyEmail,
+		    E.EXTERNAL_EMAIL 				as externalEmail,
+		    E.HOME_ZIPCODE 					as zipcode,
+		    E.HOME_BASIC_ADDRESS 			as basicAddress,
+		    E.HOME_DETAIL_ADDRESS 			as detailAddress,
+		    E.EMPLOYEE_HIRE_DATE 			as hireDate,
+		    E.EMPLOYEE_RETIREMENT_DATE		as retirementDate,
+		    P.POSITION_NAME 				as positionName,
+		    D.DEPT_NAME 					as deptName
+		FROM 
+			EMPLOYEES E, DEPARTMENTS D, POSITIONS P
+		WHERE
+		    E.DEPT_NO = D.DEPT_NO
+		AND
+		    E.POSITION_NO = P.POSITION_NO
+		ORDER BY
+		    EMPLOYEE_HIRE_DATE DESC
+	</select>
+	
+	<select id="getEmpById" resultType="Employee">
+		SELECT
+		    EMPLOYEE_NO 				as no,
+		    EMPLOYEE_PASSWORD 			as password,
+		    EMPLOYEE_NAME 				as name,
+		    EMPLOYEE_CITIZEN_NO 		as citizenNo,
+		    EMPLOYEE_GENDER 			as gender,
+		    COMPANY_TEL 				as companyTel,
+		    HOME_TEL 					as homeTel,
+		    COMPANY_EMAIL 				as companyEmail,
+		    EXTERNAL_EMAIL 				as externalEmail,
+		    HOME_ZIPCODE 				as zipcode,
+		    HOME_BASIC_ADDRESS 			as basicAddress,
+		    HOME_DETAIL_ADDRESS 		as detailAddress,
+		    EMPLOYEE_HIRE_DATE 			as hireDate,
+		    EMPLOYEE_RETIREMENT_DATE	as retirementDate,
+            DEPT_NO                     as deptNo,
+            POSITION_NO                 as positionNo
+		FROM 
+			EMPLOYEES
+		WHERE
+			EMPLOYEE_NO = #{value}
+	</select>
+</mapper>

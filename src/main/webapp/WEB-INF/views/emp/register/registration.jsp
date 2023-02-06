@@ -50,8 +50,8 @@
 				</div>
 				<div class="col-12">
 					<div class="bg-light p-2">
-						<div style="overflow-y:scroll; width:100%; height:250px">
-							<table class="table table-sm table-striped table-bordered">
+						<div style="overflow-y:scroll; width:100%; height:100%">
+							<table class="table table-sm table-bordered"  id="table-emp-list">
 								<thead class="table-secondary">
 									<tr>
 										<th>사원번호</th>
@@ -64,31 +64,23 @@
 									</tr>
 								</thead>
 								<tbody>
-									<tr>
-										<td>10000</td>
-										<td id="detail-name"><a href="#" class="text-decoration-none text-dark">홍길동</a></td>
-										<td>사원</td>
-										<td>인사팀</td>
-										<td>2023-02-01</td>
-										<td>2023-02-01</td>
-										<td>hong@email.com </td>
-									</tr>
-									<tr>
-										<td>10000</td>
-										<td><a href="#" class="text-decoration-none text-dark">홍길동</a></td>
-										<td>사원</td>
-										<td>인사팀</td>
-										<td>2023-02-01</td>
-										<td>2023-02-01</td>
-										<td>hong@email.com </td>
-									</tr>
+									<c:forEach var="emp" items="${empList }">
+										<tr data-emp-no="${emp.no }" style="cursor: pointer;">
+											<td>${emp.no }</td>
+											<td >${emp.name }</td>
+											<td>${emp.positionName }</td>
+											<td>${emp.deptName }</td>
+											<td><fmt:formatDate value="${emp.hireDate }" pattern="yyyy-MM-dd"/></td>
+											<td><fmt:formatDate value="${emp.retirementDate }" pattern="yyyy-MM-dd"/></td>
+											<td>${emp.companyEmail } </td>
+										</tr>
+									</c:forEach>
 								</tbody>
-							</div>
-						</table>
-					</div>
+							</table>
+						</div>
+					</div>	
 				</div>
 			</div>
-		</div>
 				
 			<div class="row mb-2 d-none" id="detail-info">
 				<div class="col-12">
@@ -98,7 +90,7 @@
 				<div class="col-12">
 					<div class="row mb-1">
 						<div class="col-12 border border-secondary-subtle">
-							<table class="table table-sm">
+							<table class="table table-sm" id="table-emp-detail">
 								<colgroup>
 									<col width="10%">
 									<col width="24%">
@@ -114,36 +106,36 @@
 									<tr class="align-middle">
 										<th class="table-secondary">사원번호</th>
 										<td colspan="2">
-											<input type="text" class="form-control" name="empNo" placeholder="번호 부여 버튼 클릭시 자동 생성" readonly="readonly"/>
+											<input type="text" class="form-control" name="empNo" id="emp-no" readonly="readonly"/>
 										</td>
 										<td>
 											<button type="button" class="mt-1 btn btn-secondary btn-sm btn-sm">번호 부여</button>
 										</td>
 									</tr>
 									<tr class="align-middle">
-										<th class="table-secondary">성명</th>
-										<td colspan="3"><input type="text" class="form-control" name="name"/></td>
+										<th class="table-secondary" id="name-label">성명</th>
+										<td colspan="3"><input type="text" class="form-control" name="name" id="name"/></td>
 									</tr>
 									<tr class="align-middle">
 										<th class="table-secondary">주민번호</th>
 										<td>
 											<div class="row">
 											 	<div class="col ms-2">
-											   	 <input type="text" class="form-control" name="citizenNo1">
+											   	 <input type="text" class="form-control" name="citizenNo1" id="citizen-no-front">
 											 	</div>
 											 	<div class="col me-2">
-											    	<input type="password" class="form-control" name="citizenNo2">
+											    	<input type="password" class="form-control" name="citizenNo2" id="citizen-no-second">
 											  	</div>
 											</div>
 										</td>
 										<th class="table-secondary">성별</th>
 										<td>
 											<span class="me-2 text-center">
-												<input class="form-check-input" type="radio" name="gender" value="M" checked>
+												<input class="form-check-input" type="radio" name="gender" value="M" id="male">
 												<label class="form-check-label">남</label>	
 											</span>
 											<span class="me-2">
-												<input class="form-check-input" type="radio" name="gender" value="F">
+												<input class="form-check-input" type="radio" name="gender" value="F" id="female">
 												<label class="form-check-label">여</label>
 											</span>
 										</td>
@@ -151,7 +143,7 @@
 									<tr class="align-middle">
 										<th class="table-secondary">부서</th>
 										<td>
-											<select class="form-select form-select-xs" name="department">
+											<select class="form-select form-select-xs" name="department" id="department">
 												<option select="select"> 부서를 선택하세요</option>
 												<option value="100"> 인사팀</option>
 												<option value="101"> 서비스팀</option>
@@ -159,12 +151,12 @@
 											</select>
 										</td>
 										<th class="table-secondary">입사일자</th>
-										<td style="text-align: center;"><input type="date" class="form-control" name="hireDate"/></td>
+										<td style="text-align: center;"><input type="date" class="form-control" name="hireDate" id="hire-date"/></td>
 									</tr>
 									<tr class="align-middle">
 										<th class="table-secondary">직책</th>
 										<td>
-											<select class="form-select form-select-xs" name="position">
+											<select class="form-select form-select-xs" name="position" id="position">
 												<option select="select"> 직책을 선택하세요</option>
 												<option value="10"> 사원</option>
 												<option value="11"> 대리</option>
@@ -172,38 +164,38 @@
 											</select>
 										</td>
 										<th class="table-secondary">퇴사일자</th>
-										<td style="text-align: center;"><input type="date" class="form-control" name="retirementDate"/></td>
+										<td style="text-align: center;"><input type="date" class="form-control" name="retirementDate" id="retirement-date"/></td>
 									</tr>
 									<tr  class="align-middle">
 										<th class="table-secondary">회사전화</th>
-										<td><input type="text" class="form-control" name="companyTel"/></td>
+										<td><input type="text" class="form-control" name="companyTel" id="company-tel"/></td>
 										<th class="table-secondary">자택전화</th>
-										<td><input type="text" class="form-control" name="homeTel"/></td>
+										<td><input type="text" class="form-control" name="homeTel" id="home-tel"/></td>
 										<th class="table-secondary">핸드폰</th>
-										<td><input type="text" class="form-control" name="mobileTel"/></td>
+										<td><input type="text" class="form-control" name="mobileTel" id="mobile-tel"/></td>
 									</tr>		
 									<tr class="align-middle">
 										<th class="table-secondary">회사이메일</th>
-										<td colspan="5"><input type="email" class="form-control" name="companyEmail"/></td>
+										<td colspan="5"><input type="email" class="form-control" name="companyEmail" id="company-email"/></td>
 										
 									</tr>
 									<tr class="align-middle">
 										<th class="table-secondary">외부이메일</th>
-										<td colspan="5"><input type="email" class="form-control" name="externalEmail"/></td>
+										<td colspan="5"><input type="email" class="form-control" name="externalEmail" id="external-email"/></td>
 										
 									</tr>
 									<tr class="align-middle">
 										<th rowspan="3" class="table-secondary">자택주소</th>
-										<td><input type="text" class="form-control" name="zipCode" readonly="readonly"/></td>
-										<td colspan="3"><button type="button" class="btn btn-secondary btn-sm" id="btn-search-postcode">우편번호검색</button></td>
+										<td><input type="text" class="form-control" name="zipCode" readonly="readonly" id="zipCode"/></td>
+										<td colspan="3"><button type="button" class="btn btn-secondary btn-sm">우편번호검색</button></td>
 									</tr>
 									<tr class="align-middle">
 										<td colspan="5">
-											<input type="text" class="form-control" name="basicAddress" />
+											<input type="text" class="form-control" name="basicAddress" id="basic-address"/>
 										</td>
 									<tr class="align-middle">
 										<td colspan="5">
-											<input type="text" class="form-control" name="detailAddress" />
+											<input type="text" class="form-control" name="detailAddress" id="detail-address"/>
 										</td>
 									</tr>
 								</tbody>
@@ -218,6 +210,7 @@
 				</div>					
 				</form>
 			</div>
+		</div>
 		</div>
 	</div>					
 </div>
@@ -254,10 +247,54 @@ $(function() {
 		
 	});
 	
-	// 이름 클릭시 상세보기
-	$("#detail-name").click(function() {
-		event.preventDefault();
+	// 직원 상세보기
+	$("#table-emp-list tbody tr").click(function() {
 		
+		let empNo = $(this).attr("data-emp-no");
+		let $detailTobody = $("#table-emp-detail tbody");
+		let $detail = $("#table-emp-detail");
+		
+		$.getJSON("/emp/register/detail.json", {no: empNo}, function(emp) {
+			
+			//alert(JSON.stringify(emp));
+			
+			$("#emp-no").val(emp.no);
+			$("#name").val(emp.name);
+			$("#hire-date").val(emp.hireDate);
+			$("#retirement-date").val(emp.retirementDate);
+			$("#company-tel").val(emp.companyTel);
+			$("#home-tel").val(emp.homeTel);
+			$("#mobile-tel").val(emp.mobileTel);
+			$("#company-email").val(emp.companyEmail);
+			$("#zipCode").val(emp.zipcode);
+			$("#external-email").val(emp.externalEmail);
+			$("#basic-address").val(emp.basicAddress);
+			$("#detail-address").val(emp.detailAddress);
+			
+			$(":input[name=position]").val(emp.positionNo);
+			$(":input[name=department]").val(emp.deptNo);
+			
+			$("#citizen-no-second").val(emp.citizenNo);
+			$("#citizen-no-front").val(emp.citizenNo);			
+			
+			if (emp.gender == 'M') {
+				
+				$("#male").prop("checked", "checked");
+			}
+			if (emp.gender == 'F') {
+				
+				$("#female").prop("checked", "checked");
+			}
+			
+			let str = emp.citizenNo;
+			citizenNoFirst = str.substr(0, 6);
+			citizenNoSecond = str.substr(7, 14);
+			$("#citizen-no-front").val(citizenNoFirst);
+			$("#citizen-no-second").val(citizenNoSecond);
+			
+		})
+		
+		$(this).addClass("table-info").siblings().removeClass("table-info")
 		$("#detail-info").removeClass("d-none");
 		
 	})
@@ -266,6 +303,7 @@ $(function() {
 	$(":input[name=gender]").change(function() {
 		
 	})
+
 })
 </script>
 </body>
