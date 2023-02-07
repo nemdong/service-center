@@ -14,28 +14,29 @@
 <div class="container">
 	<div class="row mb-3">
 		<div class="col">
-			<h1 class="border bg-light p-2 fs-4">예약 현황 상세페이지</h1>
+			<h1 class="border bg-light p-2 fs-4">예약 변경 완료페이지</h1>
 		</div>
 	</div>
+	<form class="p-3" method="get" action="cancel">
 	<div class="row mb-5">
 		<div class="row mb-3" align="center">
 			<div class="col">
-				<h3 class="text-center fs-4">고객님의 예약이 확인되었습니다.</h3>
+				<h3 class="text-center fs-4">고객님의 예약이 변경되었습니다.</h3>
 				<p>hong@naver.com</p>
 				<p>으(로) 확인메일 보내드립니다.</p>
 				<p><img src="/resources/images/calendar.png" width="100" height="100" class="img-thumbnail" style="border:0px;" alt="달력"/></p>
 				<p>2023년05월01일, 12:25PM</p>
 				<p>Apple 명동</p>
-				<p>중구 남대문로 2가 9-1 하이드파크 서울, 04534</p>
+				<p>중구 남대문로 2가 9-1 하이드파크 서울</p>
 			</div>
 		</div>
 	</div>
 	<hr	>
 	<div class="row mb-3">
 		<div class="col-4" align="center">
-			<h2>문제</h2>
+			<h2><strong>문제</strong></h2>
 		</div>
-		<div class="col-8">
+		<div class="col-8 fs-5">
 			<p>iPhone 14 Pro Max</p>
 			<p>배터리 서비스</p>
 		</div>
@@ -47,6 +48,7 @@
 			<a href="" class="btn btn-danger btn-lg fs-4" data-bs-toggle="modal" data-bs-target="#modal-form-cancel">예약 취소하기</a>
 		</div>
 	</div>
+	</form>
 </div>
 <div class="modal" tabindex="-1" id="modal-form-change">
 	<div class="modal-dialog modal-lg">

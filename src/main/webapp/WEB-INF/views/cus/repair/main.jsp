@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" trimDirectiveWhitespaces="true"%>
+<%@ include file="../common/tags.jsp" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -8,7 +9,7 @@
 <title>애플리케이션</title>
 </head>
 <body>
-<c:set var="menu" value="main" />
+<c:set var="menu" value="repair" />
 <%@ include file="../common/navbar.jsp" %>
 <div class="container">
 	<div class="row mb-3">
@@ -33,13 +34,13 @@
 					<tbody>
 						<tr>
 							<th>사용자 이름 :</th>
-							<td colspan="3">홍길동</td>
+							<td colspan="3">${loginCustomer.name }</td>
 						</tr>
 					</tbody>
 					<tbody>
 						<tr>
 							<th>사용자 아이디 :</th>
-							<td colspan="3">hong@naver.com</td>
+							<td colspan="3">${loginCustomer.id }</td>
 						</tr>
 					</tbody>
 				</table>	

@@ -2,6 +2,7 @@ package com.example.cus.web.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -33,4 +34,37 @@ public class RepairController {
 		return "cus/repair/reservationdetail";
 	}
 	
+	@GetMapping("/visitreservation")
+	public String visitreservation() {
+		return "cus/repair/visitreservation";
+	}
+	
+	@GetMapping("/reservationdate")
+	public String reservationdate() {
+		return "cus/repair/reservationdate";
+	}
+	
+	@GetMapping("/reservation-success")
+	public String reservationsuccess() {
+		return "cus/repair/reservation-success";
+	}
+	
+	/*
+	 * @PostMapping("/cancel") public String cancel() { return
+	 * "redirect:cus/repair/cancel-success"; }
+	 */
+	
+	/*
+	 * @GetMapping("/cancel-success") public String cancelsuccess() { return
+	 * "cus/repair/cancel-success"; }
+	 */
+	@GetMapping("/change")
+	public String change() {
+		return "cus/repair/change-reservation";
+	}
+	
+	@GetMapping("/cancel")
+	public String cancel() {
+		return "cus/repair/cancel";
+	}
 }

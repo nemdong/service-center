@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" trimDirectiveWhitespaces="true"%>
+<%@ include file="../common/tags.jsp" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -8,7 +9,7 @@
 <title>애플리케이션</title>
 </head>
 <body>
-<c:set var="menu" value="main" />
+<c:set var="menu" value="repair" />
 <%@ include file="../common/navbar.jsp" %>
 <div class="container">
 	<div class="row mb-3">
@@ -45,7 +46,6 @@
 				<p>홍길동의 아이폰</p>
 		</div>
 	</div>
-	
 	<div class="row mb-3 text-bg-light p-3">
 		<div class="col-12">
 			<table class="table table-sm">
@@ -70,6 +70,7 @@
 		</div>
 	</div>
 	
+	<hr />
 	<!-- 최근활동은 뺄지 말지 고민중 -->
 	<div class="row mb-5">
 		<div class="col-12">
@@ -106,6 +107,7 @@
 			</table>
 		</div>
 	</div>
+	<hr />
 	<div class="row mb-3 text-bg-light p-3">
 		<div class="col-12">
 			<table class="table table-sm">
@@ -130,15 +132,23 @@
 						<td></td>
 					</tr>
 					<tr>
-						<td><a href="">더보기></a></td>
+						<td><button type="button" class="btn btn-link" id="btn_toggle">Link ></button></td>
 						<td></td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
 	</div>
+	<hr />
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script type="text/javascript">
+$(function (){
+	$("#btn_toggle").click(function(){
+  	$("#Toggle").toggle();
+  });
+});
+</script>
 </body>
 </html>

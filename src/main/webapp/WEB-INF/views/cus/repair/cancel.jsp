@@ -1,22 +1,22 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" trimDirectiveWhitespaces="true"%>
-<%@ include file="common/tags.jsp" %>
+<%@ include file="../common/tags.jsp" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-<title></title>
+<title>애플리케이션</title>
 </head>
 <body>
-<c:set var="menu" value="home" />
-<%@ include file="../cus/common/navbar.jsp" %>
+<c:set var="menu" value="repair" />
+<%@ include file="../common/navbar.jsp" %>
 <div class="container">
 	<div class="row mb-3">
 		<div class="col-12">
 			<div class="border p-3 bg-light">
-				<h1 class="mb-4">Service Center Home</h1>
-				<p>서비스센터 메인 홈 페이지</p>
+				<h1 class="mb-4">취소하기 완료</h1>
+				<p>예약이 취소되었습니다.</p>
 			</div>
 		</div>
 	</div>
