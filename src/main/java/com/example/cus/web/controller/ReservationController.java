@@ -81,4 +81,14 @@ public class ReservationController {
 		
 		return "cus/reservation/way";
 	}
+	
+	
+// ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ 지정 장소 Reservation ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ	
+	
+	@GetMapping("/appointmentPlace")
+	public String appointmentPlace() {
+		
+		return "cus/reservation/place/appointmentPlace";
+	}
+	
 }

@@ -1,11 +1,8 @@
 package com.example.cus.dto;
 
 import java.util.Date;
-import java.util.List;
 
 import org.apache.ibatis.type.Alias;
-
-import com.example.cus.vo.DeviceCategory;
 
 import lombok.Getter;
 import lombok.Setter;
