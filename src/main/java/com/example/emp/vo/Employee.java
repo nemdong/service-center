@@ -30,7 +30,9 @@ public class Employee {
 	@JsonFormat(pattern="yyyy-MM-dd")
 	private Date hireDate;
 	@JsonFormat(pattern="yyyy-MM-dd")
-	private Date retirmentDate;
+	private Date retirementDate;
+	private Date updateDate;
 	private int deptNo;
 	private int positionNo;
+
 }
