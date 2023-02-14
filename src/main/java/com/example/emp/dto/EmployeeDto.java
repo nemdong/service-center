@@ -3,7 +3,10 @@ package com.example.emp.dto;
 import java.util.Date;
 
 import org.apache.ibatis.type.Alias;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.example.emp.vo.AttachedFile;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
@@ -26,8 +29,14 @@ public class EmployeeDto {
 	private String zipcode;
 	private String basicAddress;
 	private String detailAddress;
+	@JsonFormat(pattern="yyyy-MM-dd")
 	private Date hireDate;
+	@JsonFormat(pattern="yyyy-MM-dd")
 	private Date retirementDate;
+	private Date updateDate;
+	private String positionNo;
 	private String positionName;
+	private String deptNo;
 	private String deptName;
+	private AttachedFile fileName;
 }
