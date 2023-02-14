@@ -7,8 +7,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.cus.mapper.DeviceCategoryMapper;
+import com.example.cus.mapper.LocationMapper;
 import com.example.cus.mapper.ReservationMapper;
 import com.example.cus.vo.DeviceCategory;
+import com.example.cus.vo.Location;
 import com.example.cus.vo.Reservation;
 import com.example.cus.vo.ServiceCategories;
 
@@ -20,6 +22,8 @@ public class ReservationService {
 	private ReservationMapper reservationMapper;
 	@Autowired
 	private DeviceCategoryMapper deviceCategoryMapper;
+	@Autowired
+	private LocationMapper locationMapper;
 	
 	
 // 접수 추가
@@ -50,5 +54,13 @@ public class ReservationService {
 		ServiceCategories serviceInfo = reservationMapper.getServiceInfo(serviceCatNo);
 		
 		return serviceInfo;
+	}
+
+// 지정 장소 목록 불러오기
+	public List<Location> getAppoints(String way) {
+		
+		List<Location> locations = locationMapper.getAppointLocations(way);
+		
+		return locations;
 	}
 }
