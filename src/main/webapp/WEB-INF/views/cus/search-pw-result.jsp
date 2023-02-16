@@ -23,12 +23,12 @@
 			<p class="text-center">비밀번호 찾기 결과입니다.</p>
 			<form class="border bg-light p-3">                                                                         
             <c:choose>
-	            <c:when test="${empty customer}">                                                 
+	            <c:when test="${empty newPassword}">                                                 
 	                <p class="text-center">일치하는 고객정보가 없습니다.</p>
 	             </c:when>
 	             <c:otherwise>             
-			<p class="text-center" >비밀번호 재발급:  ${newPassword}</p>                                              
-	        </c:otherwise>                                                                    
+					<p class="text-center" >비밀번호 재발급:  ${newPassword}</p>                                              
+	       		 </c:otherwise>                                                                    
         </c:choose>                                     
 		</form>
 		</div>
