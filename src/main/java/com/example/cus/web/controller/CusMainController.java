@@ -15,15 +15,11 @@ import com.example.cus.exception.AlreadyRegisteredEmailException;
 import com.example.cus.service.CustomerService;
 import com.example.cus.vo.Customer;
 import com.example.cus.web.request.CustomerRegisterForm;
-import org.springframework.web.bind.annotation.PostMapping;
-import com.example.cus.sampleLogin.LoginUserInfo;
 import com.example.cus.sampleLogin.UserService;
-import com.example.cus.vo.User;
-import com.example.utils.SessionUtils;
 
 @Controller
 public class CusMainController {
-	
+
 	@Autowired
 	private UserService userService;
 
@@ -46,7 +42,7 @@ public class CusMainController {
 	public String accessDenied() {
 		return "cus/error/denied";
 	}
-  
+
 	//아이디 중복확인
 	@GetMapping("/cus/checkId")
 	@ResponseBody
@@ -59,7 +55,7 @@ public class CusMainController {
 			return "exist";
 		}	
 	}
-    
+
 	//아이디 찾기
 	@GetMapping("/cus/search-id")
 	public String searchIdForm() {
@@ -76,24 +72,24 @@ public class CusMainController {
 		return "cus/search-id-result";
 
 	}
-	
-	//비밀번호 찾기
-		@GetMapping("/cus/search-pw")
-		public String searchPwForm() {
-			return "cus/search-pw-form";
-		}
-		
-		@PostMapping("/cus/search-pw")
-		public String searchPw(@RequestParam("id") String customerId,
-				@RequestParam("email") String customerEmail, Model model) {
-			
-			String pw = customerService.genreatePassword(customerId, customerEmail);
-			model.addAttribute("newPassword", pw);
-        
-			return "cus/search-pw-result";
 
-		}
-	
+	//비밀번호 찾기
+	@GetMapping("/cus/search-pw")
+	public String searchPwForm() {
+		return "cus/search-pw-form";
+	}
+
+	@PostMapping("/cus/search-pw")
+	public String searchPw(@RequestParam("id") String customerId,
+			@RequestParam("email") String customerEmail, Model model) {
+
+		String pw = customerService.genreatePassword(customerId, customerEmail);
+		model.addAttribute("newPassword", pw);
+
+		return "cus/search-pw-result";
+
+	}
+
 
 
 	// 회원가입 화면 요청
@@ -110,7 +106,7 @@ public class CusMainController {
 		if (errors.hasErrors()) {
 			return "cus/register-form";
 		}
-		
+
 		try {
 			customerService.registerCustomer(customerRegisterForm);
 		} catch (AlreadyRegisteredCustomerIdException ex) {
@@ -119,7 +115,7 @@ public class CusMainController {
 		} catch (AlreadyRegisteredEmailException ex) {
 			errors.rejectValue("email", null, "이미 사용중인 이메일입니다.");
 			return "register-form";
-	}
+		}
 
 		return "redirect:registered";
 	}
@@ -130,32 +126,34 @@ public class CusMainController {
 		return "cus/success";
 	}
 
-	/*public CustomerService getCustomerService() {
-			return customerService;
-		}
-
-		public void setCustomerService(CustomerService customerService) {
-			this.customerService = customerService;
-		}
-	 */
-
-// 고객 로그인	
-/*
-	@GetMapping("/login-form")
-	public String loginForm() {
-		
-		return "cus/reservation/login-form";
+	public CustomerService getCustomerService() {
+		return customerService;
 	}
+
+	public void setCustomerService(CustomerService customerService) {
+		this.customerService = customerService;
+	}
+
+
+	// 고객 로그인	
+
 	
-	@PostMapping("/login")
-	public String login(String id, String password) {
-		User user = userService.login(id, password);
-		
-		LoginUserInfo loginUserInfo = new LoginUserInfo(user.getId(), user.getName());
-		SessionUtils.setAttribute("loginUser", loginUserInfo);
-		
-		return "redirect:cus";
-	}
-  */
+	/*
+	 * @GetMapping("/cus/login") 
+	 * public String loginForm() {
+	 * 
+	 * return "cus/reservation/login-form"; }
+	 */
+	
+
+	/*
+	 * @PostMapping("/login") public String login(String id, String password) { User
+	 * user = userService.login(id, password);
+	 * 
+	 * LoginUserInfo loginUserInfo = new LoginUserInfo(user.getId(),
+	 * user.getName()); SessionUtils.setAttribute("loginUser", loginUserInfo);
+	 * 
+	 * return "redirect:cus"; }
+	 */
 
 }

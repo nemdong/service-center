@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.example.cus.dto.UserDeviceDto;
-import com.example.cus.sampleLogin.LoginUserInfo;
 import com.example.cus.sampleLogin.UserService;
 import com.example.cus.service.ReservationService;
 import com.example.cus.vo.DeviceCategory;
@@ -26,6 +25,8 @@ import com.example.cus.vo.Location;
 import com.example.cus.vo.ServiceCategories;
 import com.example.cus.web.request.LocationForm;
 import com.example.cus.web.request.ReservationForm;
+import com.example.security.AuthenticatedUser;
+import com.example.security.vo.LoginUser;
 
 @Controller
 @RequestMapping("/reservation")
@@ -39,10 +40,9 @@ public class ReservationController {
 	
 // 고객 디바이스 정보
 	@GetMapping("/device")
-	public String device(HttpSession session, Model model) {
-		LoginUserInfo loginUserInfo = (LoginUserInfo) session.getAttribute("loginUser");
+	public String device(@AuthenticatedUser LoginUser loginUser, Model model) {
 		
-		List<UserDeviceDto> deviceInfos = userService.getDeviceInfo(loginUserInfo.getId());
+		List<UserDeviceDto> deviceInfos = userService.getDeviceInfo(loginUser.getId());
 		
 		// 고객의 제품 정보 나타내기
 		model.addAttribute("deviceInfos", deviceInfos);
