@@ -5,7 +5,7 @@ server:
 # mybatis의 SQL 실행 로그 출력을 위한 설정
 logging:
   level:
-    '[com.example.mapper]': trace
+    '[com.example.cus.mapper]': trace
     
 spring:
   # 데이터베이스와 연결된 Connection Pool 설정
