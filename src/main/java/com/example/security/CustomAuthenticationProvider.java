@@ -34,7 +34,12 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 			throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
 		}
 
-		return new CustomAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
+		
+		customAuthentication =  new CustomAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
+		customAuthentication.setUserType(userType);
+		
+		return customAuthentication;
+
 	}
 
 	@Override
