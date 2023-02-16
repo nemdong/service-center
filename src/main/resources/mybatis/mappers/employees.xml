@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.emp.mapper.EmployeeMapper">
+
+	<select id="getAllEmployees" parameterType="map" resultType="com.example.emp.dto.EmployeeDto">
+		SELECT
+		    E.EMPLOYEE_NO 					as no,
+		    E.EMPLOYEE_PASSWORD 			as password,
+		    E.EMPLOYEE_NAME 				as name,
+		    E.EMPLOYEE_CITIZEN_NO 			as citizenNo,
+		    E.EMPLOYEE_GENDER 				as gender,
+		    E.COMPANY_TEL 					as companyTel,
+		    E.HOME_TEL 						as homeTel,
+		    E.COMPANY_EMAIL 				as companyEmail,
+		    E.EXTERNAL_EMAIL 				as externalEmail,
+		    E.HOME_ZIPCODE 					as zipcode,
+		    E.HOME_BASIC_ADDRESS 			as basicAddress,
+		    E.HOME_DETAIL_ADDRESS 			as detailAddress,
+		    E.EMPLOYEE_HIRE_DATE 			as hireDate,
+		    E.EMPLOYEE_RETIREMENT_DATE		as retirementDate,
+		    P.POSITION_NAME 				as positionName,
+		    D.DEPT_NAME 					as deptName
+		FROM 
+			EMPLOYEES E, DEPARTMENTS D, POSITIONS P
+		WHERE
+		    E.DEPT_NO = D.DEPT_NO
+		AND
+		    E.POSITION_NO = P.POSITION_NO   
+	   	<if test="opts != null">
+		    <choose>
+				<when test="opts == 'empNo'">
+					and E.EMPLOYEE_NO like '%' || #{keyword} || '%'
+				</when>
+				<when test="opts == 'name'">
+					and E.EMPLOYEE_NAME like '%' || #{keyword} || '%'
+				</when>
+				<when test="opts == 'department'">
+					and D.DEPT_no in (SELECT
+											dept_no
+										FROM
+											departments
+										WHERE
+											dept_name = #{keyword})
+				</when>
+			</choose>
+		</if>
+		ORDER BY
+		    UPDATE_DATE DESC
+	</select>
+	
+	<select id="getEmpByNo" resultType="EmployeeDto">
+		SELECT
+		    EMPLOYEE_NO 				as no,
+		    EMPLOYEE_PASSWORD 			as password,
+		    EMPLOYEE_NAME 				as name,
+		    EMPLOYEE_CITIZEN_NO 		as citizenNo,
+		    EMPLOYEE_GENDER 			as gender,
+		    COMPANY_TEL 				as companyTel,
+		    HOME_TEL 					as homeTel,
+		    MOBILE_TEL					as mobileTel,
+		    COMPANY_EMAIL 				as companyEmail,
+		    EXTERNAL_EMAIL 				as externalEmail,
+		    HOME_ZIPCODE 				as zipcode,
+		    HOME_BASIC_ADDRESS 			as basicAddress,
+		    HOME_DETAIL_ADDRESS 		as detailAddress,
+		    EMPLOYEE_HIRE_DATE 			as hireDate,
+		    EMPLOYEE_RETIREMENT_DATE	as retirementDate,
+            DEPT_NO                     as deptNo,
+            POSITION_NO                 as positionNo,
+            UPDATE_DATE					as updateDate
+		FROM 
+			EMPLOYEES
+		WHERE
+			EMPLOYEE_NO = #{value}
+	</select>
+	
+	<insert id="insertEmployee" parameterType="Employee">
+		INSERT INTO EMPLOYEES
+    		(EMPLOYEE_NO, EMPLOYEE_PASSWORD, EMPLOYEE_NAME, EMPLOYEE_GENDER, COMPANY_TEL, MOBILE_TEL, 
+   			 COMPANY_EMAIL, EXTERNAL_EMAIL, EMPLOYEE_HIRE_DATE, DEPT_NO, POSITION_NO, UPDATE_DATE
+   			 <if test="citizenNo != null">, EMPLOYEE_CITIZEN_NO</if>
+   			 <if test="homeTel != null">, HOME_TEL</if>
+   			 <if test="zipcode != null">, HOME_ZIPCODE</if>
+   			 <if test="basicAddress != null">, HOME_BASIC_ADDRESS</if>
+   			 <if test="detailAddress">, HOME_DETAIL_ADDRESS</if>
+   			 )
+		VALUES
+ 			(#{no}, #{password}, #{name}, #{gender}, #{companyTel}, #{mobileTel}, #{companyEmail}, 
+ 			#{externalEmail}, #{hireDate}, #{deptNo}, #{positionNo}, sysdate
+    		<if test="citizenNo != null">, #{citizenNo}</if>
+    		<if test="homeTel != null">, #{homeTel}</if>
+    		<if test="zipcode != null">, #{zipcode}</if>
+    		<if test="basicAddress != null">, #{basicAddress}</if>
+    		<if test="detailAddress != null">, #{detailAddress}</if>
+    		)
+	</insert>
+
+	<select id="giveEmpNo" parameterType="int" resultType="int">
+		SELECT
+			 to_number(EMPLOYEE_SEQUENCE(#{value}, 'DD'))
+		from dual
+	</select>
+	
+	<update id="modifyEmployee" parameterType="Employee">
+		UPDATE
+			EMPLOYEES
+		SET
+		    EMPLOYEE_NAME = #{name},
+		    EMPLOYEE_GENDER = #{gender},
+		    COMPANY_TEL = #{companyTel},
+		    MOBILE_TEL = #{mobileTel},
+		    COMPANY_EMAIL = #{companyEmail},
+		    EXTERNAL_EMAIL = #{externalEmail},
+		    EMPLOYEE_HIRE_DATE = #{hireDate},
+          	<if test="citizenNo">EMPLOYEE_CITIZEN_NO = #{citizenNo},</if>
+          	<if test="homeTel">HOME_TEL = #{homeTel},</if>
+          	<if test="zipcode">HOME_ZIPCODE = #{zipcode},</if>
+          	<if test="basicAddress">HOME_BASIC_ADDRESS = #{basicAddress},</if>
+          	<if test="detailAddress">HOME_DETAIL_ADDRESS = #{detailAddress},</if>
+          	<if test="retirementDate">EMPLOYEE_RETIREMENT_DATE = #{retirementDate},</if>
+          	UPDATE_DATE = sysdate,
+            DEPT_NO = #{deptNo},
+            POSITION_NO = #{positionNo}
+       WHERE
+       		EMPLOYEE_NO = #{no}     
+	</update>
+	
+	<delete id="deleteEmployee" parameterType="int">
+		DELETE FROM EMPLOYEES
+		WHERE
+			EMPLOYEE_NO = #{value}
+	</delete>
+	
+	<select id="compareEmpNo" parameterType="int" resultType="int">
+		SELECT
+			EMPLOYEE_NO as no
+		FORM
+			EMPLOYEES
+		WHERE
+			EMPLOYEE_NO = #{value}
+	</select>
+	
+	<update id="modifyAttachedFile" parameterType="AttachedFile">
+		UPDATE
+			EMPLOYEE_PROFILE_ATTACHED_FILE
+		SET
+			FILE_NAME = #{fileName}
+		WHERE
+			EMP_NO = #{empNo}		
+	</update>
+	
+	<insert id="insertAttachedFile" parameterType="AttachedFile">
+		INSERT INTO EMPLOYEE_PROFILE_ATTACHED_FILE
+			(EMP_NO, FILE_NAME)
+		VALUES
+			(#{empNo}, #{fileName})
+	</insert>
+	
+	<select id="getAttachedFileByEmpNo" parameterType="int" resultType="AttachedFile">
+		SELECT
+			FILE_NAME as fileName
+		FROM
+			EMPLOYEE_PROFILE_ATTACHED_FILE
+		WHERE
+			EMP_NO = #{value}	 
+	</select>
+	
+	<delete id="deleteAttachedFileByEmpNo" parameterType="int">
+		DELETE FROM EMPLOYEE_PROFILE_ATTACHED_FILE
+		WHERE
+			EMP_NO = #{value}
+	</delete>
+</mapper>

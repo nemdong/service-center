@@ -6,6 +6,8 @@ server:
 logging:
   level:
     '[com.example.cus.mapper]': trace
+    '[com.example.mapper]': trace
+    '[com.example.emp.mapper]': trace
     
 spring:
   # 데이터베이스와 연결된 Connection Pool 설정
@@ -18,7 +20,10 @@ spring:
     view:
       prefix: /WEB-INF/views/
       suffix: .jsp
-    
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      location: src\main\webapp\resources\images
 
 # mybatis 환경설정 
 mybatis:

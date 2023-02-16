@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.cus.mapper.LocationMapper">
+	<select id="getAppointLocations" parameterType="string" resultType="Location">
+		select
+			location_no		as locationNo,
+			location_name		as name,
+			city		as city,
+			location_basic_address		as basicAddress,
+			location_latitude		as latitude,
+			location_longitude		as longitude,
+			location_ways		as locationWays,
+			pickup_description		as pickupDescription
+		from
+			locations
+		where
+			location_ways = #{value}
+	</select>
+</mapper>
