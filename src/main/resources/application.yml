@@ -6,6 +6,7 @@ server:
 logging:
   level:
     '[com.example.mapper]': trace
+    '[com.example.cus.mapper]': trace
     
 spring:
   # 데이터베이스와 연결된 Connection Pool 설정

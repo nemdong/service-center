@@ -2,7 +2,7 @@
 <nav class="navbar navbar-expand-sm bg-dark navbar-dark mb-3">
 	<div class="container">
 		<ul class="navbar-nav me-auto">
-			<li class="nav-item"><a href="/" class="nav-link" ><strong>서비스 센터</strong></a></li>
+			<li class="nav-item"><a href="/cus" class="nav-link" ><strong>서비스 센터</strong></a></li>
 		</ul>
 		<ul class="navbar-nav me-auto">
 			<li class="nav-item"><a href="" class="nav-link" >접수</a></li>

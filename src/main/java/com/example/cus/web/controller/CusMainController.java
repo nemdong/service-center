@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class CusMainController {
 
-	@GetMapping("/")
+	@GetMapping("/cus")
 	public String home() {
 		return "cus/home";
 	}
