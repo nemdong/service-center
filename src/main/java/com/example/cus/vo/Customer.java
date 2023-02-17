@@ -1,9 +1,7 @@
 package com.example.cus.vo;
 
 import java.util.Date;
-
 import org.apache.ibatis.type.Alias;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,4 +23,5 @@ public class Customer {
   private String deleted;
   private Date updatedDate;
   private Date createdDate;
+
 }
