@@ -20,52 +20,77 @@
 	<div class="row mb-5">
 		<div class="row mb-3">
 			<div class="col">
-				<p class="text-center"><strong>나의 기기 선택하기</strong></p>
+				<p class="text-center fs-4"><strong>나의 기기 선택하기</strong></p>
 			</div>
 		</div>
-		<div class="col-md-4" align="center">
-				<a href="">
-					<img src="/resources/images/image1.png" width="300" height="300" class="img-thumbnail rounded mx-auto d-block" style="border:0px;" alt="패드"/>
-				</a>
-				<h3>iPad Pro 12.9</h3>
-				<p>홍길동의 아이패드</p>
-			</p>
-		</div>
-		<div class="col-md-4" align="center">
-				<a href="">
-					<img src="/resources/images/image1.png" width="300" height="300" class="img-thumbnail rounded mx-auto d-block" style="border:0px;" alt="에어팟"/>
-				</a>
-				<h3>AirPods</h3>
-				<p>홍길동의 에어팟</p>
-		</div>
-		<div class="col-md-4" align="center">
-				<a href="mydevice">
-					<img src="/resources/images/image1.png" width="300" height="300" class="img-thumbnail rounded mx-auto d-block" style="border:0px;" alt="아이폰"/>
-				</a>
-				<h3>iPhone 14 Pro Max</h3>
-				<p>홍길동의 아이폰</p>
-		</div>
+		<c:choose>
+			<c:when test="${empty device }">
+				<tr>
+					<td class="text-center">현재 등록된 기기가 없습니다.</td>
+				</tr>
+			</c:when>
+			<c:otherwise>
+				<c:forEach var="device" items="${device }">
+					<div class="col-md-4" align="center">
+						<c:choose>
+							<c:when test="${device.deviceCategoryProduct == 'pad' }">
+								<a href="mydevice?deviceNo=${device.deviceNo }">
+									<img src="/resources/images/ipad.jpeg" width="300" height="350" class="img-thumbnail rounded mx-auto d-block" style="border:0px;" alt="패드"/>
+								</a>
+								<h3>${device.deviceCategoryName }</h3>
+								<p>${device.deviceName }</p>
+							</c:when>
+							<c:when test="${device.deviceCategoryProduct == 'earPhone' }">
+								<a href="mydevice?deviceNo=${device.deviceNo }">
+									<img src="/resources/images/airpod.jpg" width="300" height="500" class="img-thumbnail rounded mx-auto d-block" style="border:0px;" alt="패드"/>
+								</a>
+								<h3>${device.deviceCategoryName }</h3>
+								<p>${device.deviceName }</p>
+							</c:when>
+							<c:when test="${device.deviceCategoryProduct == 'phone' }">
+								<a href="mydevice?deviceNo=${device.deviceNo }">
+									<img src="/resources/images/image1.png" width="300" height="300" class="img-thumbnail rounded mx-auto d-block" style="border:0px;" alt="패드"/>
+								</a>
+								<h3>${device.deviceCategoryName }</h3>
+								<p>${device.deviceName }</p>
+							</c:when>
+						</c:choose>
+					</div>
+				</c:forEach>
+			</c:otherwise>
+		</c:choose>
 	</div>
 	<div class="row mb-3 text-bg-light p-3">
 		<div class="col-12">
 			<table class="table table-sm">
-				<h3 class="mb-5">예약현황</h3>
-				<thead>
-					<tr>
-						<th>예약날짜</th>
-						<th>예약장소</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>2023년 1월 29일 오후 12:25</td>
-						<td>Apple 명동</td>
-					</tr>
-					<tr>
-						<td><a href="reservationdetail">세부사항보기></a></td>
-						<td></td>
-					</tr>
-				</tbody>
+				<c:choose>
+					<c:when test="${empty reservation }">
+						<tr>
+							<td class="text-center">현재 등록된 예약이 없습니다.</td>
+						</tr>
+					</c:when>
+					<c:otherwise>
+						<h3 class="mb-5">예약현황</h3>
+						<c:forEach var="reservation" items="${reservation }">
+								<thead>
+									<tr>
+										<th>예약날짜</th>
+										<th>예약장소</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td><fmt:formatDate value="${reservation.reservationDate }" /></td>
+										<td>${reservation.locationName }</td>
+									</tr>
+									<tr>
+										<td><a href="reservationdetail?registrationNo=${reservation.registrationNo }">세부사항보기></a></td>
+										<td></td>
+									</tr>
+								</tbody>
+						</c:forEach>
+					</c:otherwise>
+				</c:choose>
 			</table>
 		</div>
 	</div>
@@ -108,35 +133,44 @@
 		</div>
 	</div>
 	<hr />
-	<div class="row mb-3 text-bg-light p-3">
+	<div class="row mb-3 text-bg-light p-3" id="device-history">
 		<div class="col-12">
-			<table class="table table-sm">
-				<h3 class="mb-5">나의 수리 내역</h3>
-				<colgroup>
-					<col width="20%">
-					<col width="*%">
-				</colgroup>
-				<thead>
+			<table class="table table-sm d-none" id="table-history">
+				<c:choose>
+				<c:when test="${empty history }">
 					<tr>
-						<th>iPhone 14 Pro Max</th>
-						<th></th>
+						<td class="text-center">수리내역이 없습니다.</td>
 					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td><strong>서비스명 :</strong> 배터리 서비스</td>
-						<td></td>
-					</tr>
-					<tr>
-						<td><strong>비용 :</strong> 90,000원</th>
-						<td></td>
-					</tr>
-					<tr>
-						<td><button type="button" class="btn btn-link" id="btn_toggle">Link ></button></td>
-						<td></td>
-					</tr>
-				</tbody>
+				</c:when>
+				<c:otherwise>
+					<h3 class="mb-5 text-center">나의 수리 내역</h3>
+						<colgroup>
+							<col width="20%">
+							<col width="*%">
+						</colgroup>
+					<c:forEach var="history" items="${history }">
+						<thead>
+							
+						</thead>
+						<tbody>
+							<tr>
+								<td class="bg-secondary text-white"><strong>기기 종류 :</strong>${history.deviceCategoryName}</td>
+								<td></td>
+							</tr>
+		  					<tr>
+								<td><strong>서비스명 :</strong>${history.serviceCatName}</td>
+								<td></td>
+							</tr>
+							<tr>
+								<td><strong>비용 :</strong> ${history.serviceCost} 원</th>
+								<td></td>
+							</tr>
+						</tbody>
+					</c:forEach>
+				</c:otherwise>
+				</c:choose>
 			</table>
+			<a href="" class="btn btn-primary" id="btn-toggle-display">나의 수리내역 보기</a>
 		</div>
 	</div>
 	<hr />
@@ -144,11 +178,52 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 <script type="text/javascript">
-$(function (){
-	$("#btn_toggle").click(function(){
-  	$("#Toggle").toggle();
-  });
-});
+/* $(function (){
+	$("#device-history a").click(function(){
+  		event.preventDefault();
+  		var id = $(this).attr("data-customer-id");
+  	
+  		$.getJSON("/repair/mysupport.json", {customerId: id}, function(histories){
+  			
+  			$.each(histories, function(index, item) {
+  				var row = `
+  					<tr>
+						<td><strong>기기 종류 :</strong> <span id="device-categoryName">\${item.deviceCategoryName}</span></td>
+						<td></td>
+					</tr>
+  					<tr>
+						<td><strong>서비스명 :</strong> <span id="device-serviceCatName">\${item.serviceCatName}</span></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><strong>비용 :</strong> <span id="service-cost">\${item.serviceCost} 원</span></th>
+						<td></td>
+					</tr>
+  				`;
+  				
+  				$("#table-history tbody").append(row);
+  			})
+  			
+  		})
+  			
+  		
+  	});
+	
+}); */
+$(function () {
+	var $tableHistory = $("#table-history");
+	
+	$("#btn-toggle-display").click(function(event) {
+		event.preventDefault();
+		$tableHistory.toggleClass("d-none");
+
+		if ($tableHistory.hasClass("d-none")) {
+			$(this).text("나의 수리내역 보기 ");
+		} else {
+			$(this).text("닫기")
+		}
+	});
+})
 </script>
 </body>
 </html>

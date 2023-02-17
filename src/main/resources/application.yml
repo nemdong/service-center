@@ -19,6 +19,8 @@ spring:
       prefix: /WEB-INF/views/
       suffix: .jsp
     
+#mybatis에서 db에 null을 허용설정한 값을 불러올때 null의 데이터 값을 지정할수가없어서 정의할수없는열 111오류가 뜨는데 
+#이걸 yml에서 jdbc-type-for-null: 'NULL' 라고 적어주면 null이어도 오류가 나지 않음
 
 # mybatis 환경설정 
 mybatis:
@@ -26,5 +28,5 @@ mybatis:
   - mybatis/mappers/*.xml
   type-aliases-package: com.example.cus.vo, com.example.cus.dto, com.example.emp.vo, com.example.emp.dto  #앨리어스 설정
   configuration:
-    jdbc-type-for-null: null
+    jdbc-type-for-null: 'NULL'
     log-impl: org.apache.ibatis.logging.log4j2.Log4j2Impl

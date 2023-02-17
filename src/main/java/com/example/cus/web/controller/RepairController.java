@@ -1,13 +1,36 @@
 package com.example.cus.web.controller;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.example.cus.dto.CustomerDevicesDto;
+import com.example.cus.dto.DeviceHistoryDto;
+import com.example.cus.dto.ReservationDto;
+import com.example.cus.login.LoginCustomerInfo;
+import com.example.cus.service.CustomerService;
+import com.example.cus.service.ReservationService;
+import com.example.cus.vo.Locations;
 
 @Controller
 @RequestMapping("/repair")
 public class RepairController {
+	
+	@Autowired
+	private CustomerService customerService;
+	
+	@Autowired
+	private ReservationService reservationService;
 
 	@GetMapping("/main")
 	public String main() {
@@ -20,29 +43,102 @@ public class RepairController {
 	}
 	
 	@GetMapping("/mysupport")
-	public String mysupport() {
+	public String mysupport(HttpSession session, Model model) {
+		LoginCustomerInfo loginCustomerInfo = (LoginCustomerInfo) session.getAttribute("loginCustomer");
+		List<CustomerDevicesDto> device = customerService.getDeviceInfo(loginCustomerInfo.getId());
+		model.addAttribute("device", device);
+		
+		List<ReservationDto> reservation = reservationService.getReservations(loginCustomerInfo.getId());
+		model.addAttribute("reservation", reservation);
+		
+		List<DeviceHistoryDto> history = customerService.getHistories(loginCustomerInfo.getId());
+		model.addAttribute("history", history);
+		
 		return "cus/repair/mysupport";
 	}
 	
+	@GetMapping("/mysupport.json")
+	@ResponseBody
+	public List<DeviceHistoryDto> getHistories(HttpSession session){
+		LoginCustomerInfo loginCustomerInfo = (LoginCustomerInfo) session.getAttribute("loginCustomer");
+		
+		List<DeviceHistoryDto> dto = customerService.getHistories(loginCustomerInfo.getId());
+		
+		return dto;
+	}
+	
 	@GetMapping("/mydevice")
-	public String mydevice() {
+	public String mydevice(@RequestParam("deviceNo") int deviceNo, HttpSession session, Model model) {
+		CustomerDevicesDto device = customerService.getDeviceDetail(deviceNo);
+		model.addAttribute("device", device);
+		
+		List<DeviceHistoryDto> categoryHistory = customerService.getDeviceCategoryHistories(deviceNo);
+		model.addAttribute("categoryHistory", categoryHistory);
+		
 		return "cus/repair/mydevice";
 	}
 	
 	@GetMapping("/reservationdetail")
-	public String reservationdetail() {
+	public String reservationdetail(@RequestParam("registrationNo") int registrationNo, HttpSession session, Model model) {
+		ReservationDto reservation = reservationService.getDetailReservation(registrationNo);
+		
+		model.addAttribute("reservation", reservation);
 		return "cus/repair/reservationdetail";
 	}
 	
 	@GetMapping("/visitreservation")
-	public String visitreservation() {
+	public String visitreservation(@RequestParam(name = "status", required = false) String status, 
+									@RequestParam(name = "keyword", required = false) String keyword, Model model) { //@RequestParam("ways") String way
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("way", "center");
+		if (status != null) {
+			param.put("status", status);
+		}
+		if (keyword != null) {
+			param.put("keyword", keyword);
+		}
+		
+		List<Locations> locations = reservationService.getLocations(param);
+		model.addAttribute("locations", locations);
+		
 		return "cus/repair/visitreservation";
 	}
 	
+	//데이터를 전해주는 방식은 form태그로 감싸서 전해주거나 Get,Post로 전해주거나
+	
+	 @ResponseBody
+	 @GetMapping("/locations") 		//등록이거나 수정일 때 POST방식 사용, 여기서는 그냥 값을 찾는 것이므로 GET 사용.  
+	 // 필수가 아닌 값, null허용 -> required = false, 값이 넘어오지 않을 때 기본 값 설정 -> defaultValue = ""
+	 public List<Locations> getLocation(@RequestParam(name = "keyword", required = false, defaultValue = "") String keyword) { //@RequestParam("ways") String way
+		 // visitreservation에서 ajax통신할때 keyword를 넘겨주니까 keyword를 받고 keyword에 해당하는 {locationNo: "10003", locationName: "Apple 서울역", city: "서울 특별시", zipcode: "04320",…}값이 얻어진다.
+		 // 반드시 값을 전해주면 받는 것을 생각해야한다. 
+		 Map<String, Object> param = new HashMap<String, Object>();
+		 param.put("way", "center");
+		 if (!keyword.isBlank()) {
+			 param.put("keyword", keyword);
+		 }
+		 List<Locations> locations = reservationService.getLocations(param);
+		 
+		 return locations;
+	 }
+	
 	@GetMapping("/reservationdate")
-	public String reservationdate() {
+	public String reservationdate(@RequestParam("locationNo") int locationNo, Model model) {
+		Locations locationDetail = reservationService.getLocationDetail(locationNo);
+		model.addAttribute("locationDetail", locationDetail);
+		
+		// locationNo에 해당하는 센터를 Detail로, JSON을 통해 값 전해준다. @ResponseBody
+		
 		return "cus/repair/reservationdate";
 	}
+	
+	@ResponseBody
+	@GetMapping("/detail")
+	public Locations getDetailLocation(@RequestParam("locationNo") int locationNo) {
+		Locations locationDetail = reservationService.getLocationDetail(locationNo);
+		return locationDetail;
+	}
+	
 	
 	@GetMapping("/reservation-success")
 	public String reservationsuccess() {

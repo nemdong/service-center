@@ -17,12 +17,15 @@
 	<div class="row mb-3">
 		<div class="col">
 			<h1 class="border bg-light p-2 fs-4">예약하기</h1>
+			<input type="hidden" name="locationLatitude" value="${locationDetail.locationLatitude }"> 
+			<input type="hidden" name="locationLongitude" value="${locationDetail.locationLongitude }"> 
+			<input type="hidden" name="location-name" value="${locationDetail.locationName }"> 
 		</div>
 	</div>
 	<div class="row mb-5">
 		<div class="row mb-3">
 			<div class="col">
-				<h3 class="fs-1 fw-bolder">Apple 명동</h3>
+				<h3 class="fs-1 fw-bolder">${locationDetail.locationName }</h3>
 				<p><img src="/resources/images/store1.jpg" width="980" height="550" class="img-thumbnail rounded mx-auto d-block" style="border:0px;" alt="명동 스토어"/></p>
 			</div>
 		</div>
@@ -41,10 +44,11 @@
 					<input class="datepicker">
 				</p>
 				<p class="fs-5"><strong>시간</strong></p>
-				<p>매장의 현지 시간</p>
+				<p>매장의 예약 가능한 시간</p>
 				<select class="form-select form-select-sm mb-4" name="time">
 					<option style="font-weight:bold; background-color: gray ">오전(AM)</option>
-					<option value="" selected>오전 10:00</option>
+					<option value="" selected>오전 09:00</option>
+					<option value="">오전 10:00</option>
 					<option value="">오전 11:00</option>
 					<option style="font-weight:bold; background-color: gray">오후(PM)</option>
 					<option value="">오후 12:00</option>
@@ -56,7 +60,6 @@
 					<option value="">오후 18:00</option>
 					<option value="">오후 19:00</option>
 					<option value="">오후 20:00</option>
-					<option value="">오후 21:00</option>
 				</select>
 				<a href="" class="btn btn-primary btn-sm fs-6" data-bs-toggle="modal" data-bs-target="#modal-form-reservation">계속하기</a>
 			</div>
@@ -76,16 +79,16 @@
 	<div class="row mb-3">
 		<div clss="col">
 			<h3>매장위치</h3>
-			<p>서울 중구 남대문로 2가 9-1 하이드파크</p>
+			<p id="location">${locationDetail.locationBasicAddress }&nbsp;${locationDetail.locationDetailAddress }</p>
 			<div id="map" style="width:80%;height:350px;"></div>
 			<p class="fs-6"><strong>매장 영업시간</strong></p>
-			<p>월 오전10:00-오후10:00</p>
-			<p>화 오전10:00-오후10:00</p>
-			<p>수 오전10:00-오후10:00</p>
-			<p>목 오전10:00-오후10:00</p>
-			<p>금 오전10:00-오후10:00</p>
-			<p>토 오전10:00-오후10:00</p>
-			<p>일 오전10:00-오후10:00</p>
+			<p>월 오전09:00-오후21:00</p>
+			<p>화 오전09:00-오후21:00</p>
+			<p>수 오전09:00-오후21:00</p>
+			<p>목 오전09:00-오후21:00</p>
+			<p>금 오전09:00-오후21:00</p>
+			<p>토 오전09:00-오후21:00</p>
+			<p>일 오전09:00-오후21:00</p>
 		</div>
 	</div>
 	<hr />
@@ -111,8 +114,8 @@
 				</div>
 				<div class="row mb-2">
 					<div class="col-sm">
-						<p>Apple 명동</p>
-						<p>중구 남대문로2가9-1 하이드파크</p>
+						<p>${locationDetail.locationName }</p>
+						<p id="location-address">${locationDetail.locationBasicAddress }&nbsp;${locationDetail.locationDetailAddress }</p>
 					</div>
 				</div>
 				<hr/>
@@ -139,42 +142,32 @@
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
-var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
-    mapOption = {
-        center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
-        level: 3 // 지도의 확대 레벨
-    };  
+	var locationLatitude = $(":input[name=locationLatitude]").val();
+	var locationLongitude = $(":input[name=locationLongitude]").val();
+	var locationName = $(":input[name=location-name]").val();
+		
+	var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+	mapOption = { 
+	    center: new kakao.maps.LatLng(locationLatitude, locationLongitude), // 지도의 중심좌표
+	    level: 3 // 지도의 확대 레벨
+	};
+	
+	var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+	
+	//마커가 표시될 위치입니다 
+	var markerPosition  = new kakao.maps.LatLng(locationLatitude, locationLongitude); 	// 마커가 표시될 위치에 해당 locationNo를 가진 서비스센터 좌표를 넣어줘야함
+	
+	//마커를 생성합니다
+	var marker = new kakao.maps.Marker({
+	position: markerPosition
+	});
+	var infowindow = new kakao.maps.InfoWindow({
+	    content: '<div style="width:150px;text-align:center;padding:6px 0;">'+ locationName +'</div>'
+	});
+	infowindow.open(map, marker);
+	//마커가 지도 위에 표시되도록 설정합니다
+	marker.setMap(map);
 
-// 지도를 생성합니다    
-var map = new kakao.maps.Map(mapContainer, mapOption); 
-
-// 주소-좌표 변환 객체를 생성합니다
-var geocoder = new kakao.maps.services.Geocoder();
-
-// 주소로 좌표를 검색합니다
-geocoder.addressSearch('중구 남대문로 2가 9-1 하이드파크 영등포구', function(result, status) {
-
-    // 정상적으로 검색이 완료됐으면 
-     if (status === kakao.maps.services.Status.OK) {
-
-        var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-
-        // 결과값으로 받은 위치를 마커로 표시합니다
-        var marker = new kakao.maps.Marker({
-            map: map,
-            position: coords
-        });
-
-        // 인포윈도우로 장소에 대한 설명을 표시합니다
-        var infowindow = new kakao.maps.InfoWindow({
-            content: '<div style="width:150px;text-align:center;padding:6px 0;">Apple 명동</div>'
-        });
-        infowindow.open(map, marker);
-
-        // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
-        map.setCenter(coords);
-    } 
-});
 $.datepicker.setDefaults({
 	  dateFormat: 'yy-mm-dd',
 	  prevText: '이전 달',

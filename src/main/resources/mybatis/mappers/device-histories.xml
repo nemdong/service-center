@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.cus.mapper.DeviceHistoryMapper">
+	<select id="getHistories" parameterType="string" resultType="DeviceHistoryDto">
+		select
+			H.service_no as serviceNo,
+			H.process_status as processStatus,
+			H.service_request_content as serviceRequestContent,
+			H.process_fail_description as processFailDescription,
+			H.process_description as processDescription,
+			H.process_expected_date as processExpectedDate,
+			H.process_completed_date as processCompletedDate,
+			H.service_cost as serviceCost,
+			S.registration_no as registrationNo,
+			C.service_cat_name as serviceCatName,
+			G.device_category_name as deviceCategoryName,
+			C.service_cat_no as serviceCatNo,
+            G.device_category_no as deviceCategoryNo,
+            D.customer_id			as customerId
+		from
+			device_as_histories H, service_registrations S, service_categories C, customer_devices D, device_categories G
+		where
+			S.customer_id = #{value}
+			and S.service_cat_no = C.service_cat_no
+			and S.device_no = D.device_no
+            and G.device_category_no = D.device_category_no
+			and H.service_cost = C.service_amount
+            
+	</select>
+</mapper>

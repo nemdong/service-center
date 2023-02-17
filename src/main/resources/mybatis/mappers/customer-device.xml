@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.cus.mapper.CustomerMapper">
+	<select id="getCustomerDevices" parameterType="string" resultType="CustomerDevicesDto">
+		select
+			D.device_no						as deviceNo,
+			D.customer_id					as id,
+			D.device_category_no			as deviceCategoryNo,
+			D.sell_date						as sellDate,
+			D.device_name					as deviceName,
+			D.device_rental					as rental,
+			C.device_category_product		as deviceCategoryProduct,
+			C.device_category_name			as deviceCategoryName
+		from
+			customer_devices D, device_categories C
+		where
+			D.customer_id = #{value}
+			and D.device_category_no = C.device_category_no
+		order by
+			C.device_category_product desc
+	</select>
+	
+	<select id="getDeviceByNo" parameterType="int" resultType="CustomerDevicesDto">
+		select
+			D.device_no						as deviceNo,
+			D.customer_id					as id,
+			D.device_category_no			as deviceCategoryNo,
+			D.sell_date						as sellDate,
+			D.device_name					as deviceName,
+			D.device_rental					as rental,
+			C.device_category_product		as deviceCategoryProduct,
+			C.device_category_name			as deviceCategoryName,
+			C.device_category_no			as deviceCategoryNo
+		from
+			customer_devices D, device_categories C
+		where
+			 D.device_no = #{value}
+			and D.device_category_no = C.device_category_no
+	</select>
+	
+	<select id="getDeviceCategoryHistories" parameterType="int" resultType="DeviceHistoryDto">
+		select
+			H.service_no as serviceNo,
+			H.process_status as processStatus,
+			H.service_request_content as serviceRequestContent,
+			H.process_fail_description as processFailDescription,
+			H.process_description as processDescription,
+			H.process_expected_date as processExpectedDate,
+			H.process_completed_date as processCompletedDate,
+			H.service_cost as serviceCost,
+			S.registration_no as registrationNo,
+			C.service_cat_name as serviceCatName,
+			G.device_category_name as deviceCategoryName,
+			C.service_cat_no as serviceCatNo,
+            G.device_category_no as deviceCategoryNo,
+            D.customer_id			as customerId,
+            L.location_name as locationName,
+            S.registration_date as registrationDate,
+            L.location_ways as locationWays
+		from
+			device_as_histories H, service_registrations S, service_categories C, customer_devices D, device_categories G, locations L
+		where
+			S.device_no = #{value}
+			and S.service_cat_no = C.service_cat_no
+			and S.device_no = D.device_no
+            and G.device_category_no = D.device_category_no
+			and H.service_cost = C.service_amount
+			and L.location_no = S.location_no
+            and C.service_cat_no = S.service_cat_no
+            and H.process_completed_date <![CDATA[>=]]> trunc(sysdate - 1) and H.process_completed_date <![CDATA[<]]> trunc(sysdate + 90)
+       </select>
+</mapper>

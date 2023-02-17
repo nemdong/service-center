@@ -21,12 +21,12 @@
 		<div class="row mb-3" align="center">
 			<div class="col">
 				<h3 class="text-center fs-4">고객님의 예약이 확인되었습니다.</h3>
-				<p>hong@naver.com</p>
+				<p>${reservation.customerEmail }</p>
 				<p>으(로) 확인메일 보내드립니다.</p>
 				<p><img src="/resources/images/calendar.png" width="100" height="100" class="img-thumbnail" style="border:0px;" alt="달력"/></p>
-				<p>2023년05월01일, 12:25PM</p>
-				<p>Apple 명동</p>
-				<p>중구 남대문로 2가 9-1 하이드파크 서울, 04534</p>
+				<p><fmt:formatDate value="${reservation.reservationDate }" /></p>
+				<p><strong>${reservation.locationName }</strong></p>
+				<p>${reservation.locationBasicAddress }&nbsp;${reservation.locationDetailAddress }, ${reservation.zipcode }</p>
 			</div>
 		</div>
 	</div>
@@ -36,8 +36,8 @@
 			<h2>문제</h2>
 		</div>
 		<div class="col-8">
-			<p>iPhone 14 Pro Max</p>
-			<p>배터리 서비스</p>
+			<p>기종 : ${reservation.deviceCategoryName }</p>
+			<p>수리 내용 : ${reservation.serviceCatName }</p>
 		</div>
 	</div>
 	<hr>

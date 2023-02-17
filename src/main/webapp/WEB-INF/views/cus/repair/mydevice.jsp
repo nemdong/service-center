@@ -18,85 +18,86 @@
 		</div>
 	</div>
 	<div class="row mb-5" align="center">
-			<div class ="col-md-5">
-				<img src="/resources/images/image1.png" style="width: 80%" style="border:0px;" />
-			</div>
+		<c:choose>
+			<c:when test="${empty device }">
+				<tr>
+					<td class="text-center">현재 등록된 기기가 없습니다.</td>
+				</tr>
+			</c:when>
+			<c:when test="${device.deviceCategoryProduct == 'pad' }">
+				<div class ="col-md-5">
+					<img src="/resources/images/ipad.jpeg" style="width: 80%" style="border:0px;" />
+				</div>
+			</c:when>
+			<c:when test="${device.deviceCategoryProduct == 'earPhone' }">
+				<div class ="col-md-5">
+					<img src="/resources/images/airpod.jpg" style="width: 80%" style="border:0px;" />
+				</div>
+			</c:when>
+			<c:when test="${device.deviceCategoryProduct == 'phone' }">
+				<div class ="col-md-5">
+					<img src="/resources/images/image1.png" style="width: 80%" style="border:0px;" />
+				</div>
+			</c:when>
+		</c:choose>
 			<div class="col-md-6" align="center">
-				<h3>홍길동 iPhone</h3>
-				<p>디바이스 설명</p>
-				<p><b>구일일</b> : 2023년05월01일</p>
+				<h3>${device.deviceName }</h3>
+				<p>${device.deviceCategoryName }</p>
+				<p><b>구입일</b> : <fmt:formatDate value="${device.sellDate }" /></p>
 			</div>
 	</div>
 	<hr>
 	<div class="row mb-3" align="center">
 		<div class="col">
-			<h3>최근활동</h3>
-			<p>최근 90일 이내의 활동이 없습니다.</p>
-			<table class="table table-sm">
-				<colgroup>
-					<col width="30%">
-					<col width="60%">
-					<col width="*">
-					<col width="*">
-				</colgroup>
-				<thead>
-					<tr>
-						<th>홍길동 iPhone : 배터리 서비스</th>
-						<th></th>
-						<th></th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td><strong>방문 매장 이름</strong> : Apple 명동</td>
-						<td></td>
-						<td></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td><strong>방문 날짜</strong> : 2023.05.10</td>
-						<td></td>
-						<td></td>
-						<td></td>
-					</tr>
-				</tbody>
-			</table>
+			<h3>90일 이내의 최근활동</h3>
+			<c:choose>
+				<c:when test="${empty categoryHistory }">
+						<p class="text-center">최근 90일 이내의 활동이 없습니다.</p>
+				</c:when>
+				<c:otherwise>
+					<c:forEach var="categoryHistory" items="${categoryHistory }">
+						<table class="table table-sm">
+							<colgroup>
+								<col width="30%">
+								<col width="60%">
+								<col width="*">
+								<col width="*">
+							</colgroup>
+							<thead>
+								<tr>
+									<th>${device.deviceName } : ${categoryHistory.serviceCatName }</th>
+									<th></th>
+									<th></th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td><strong>접수 방법 </strong> : ${categoryHistory.locationWays } 접수</td>
+									<td><strong>방문 매장 이름</strong> : ${categoryHistory.locationName }</td>
+									<td></td>
+									<td></td>
+								</tr>
+								<tr>
+									<td><strong>수리 예약 및 접수 날짜</strong> : <fmt:formatDate value="${categoryHistory.registrationDate }"/></td>
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
+								<tr>
+									<td><strong>수리 완료 날짜</strong> : <fmt:formatDate value="${categoryHistory.processCompletedDate }"/></td>
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
+							</tbody>
+						</table>
+					</c:forEach>
+				</c:otherwise>
+			</c:choose>
 		</div>
 	</div>
-	<div class="row mb-5" align="center">
-		<div class="col">
-			<table class="table table-sm">
-				<colgroup>
-					<col width="30%">
-					<col width="60%">
-					<col width="*">
-					<col width="*">
-				</colgroup>
-				<thead>
-					<tr>
-						<th>홍길동 iPhone : 배터리 서비스</th>
-						<th></th>
-						<th></th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td><strong>방문 매장 이름</strong> : Apple 명동</td>
-						<td></td>
-						<td></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td><strong>방문 날짜</strong> : 2023.05.10</td>
-						<td></td>
-						<td></td>
-						<td></td>
-					</tr>
-				</tbody>
-			</table>
-			여기에 테이블 형식으로 수리내용이면 수리내용, 채팅했으면 채팅했다는 기록, 예약했으면 예약내용
-		</div>
-	</div>
+	
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>

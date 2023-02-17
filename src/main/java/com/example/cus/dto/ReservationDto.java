@@ -1,4 +1,4 @@
-package com.example.cus.vo;
+package com.example.cus.dto;
 
 import java.util.Date;
 
@@ -7,10 +7,10 @@ import org.apache.ibatis.type.Alias;
 import lombok.Getter;
 import lombok.Setter;
 
-@Alias("Reservation")
+@Alias("ReservationDto")
 @Getter
 @Setter
-public class Reservation {
+public class ReservationDto {
 
 	private int registrationNo;
 	private int deviceNo;
@@ -21,5 +21,13 @@ public class Reservation {
 	private String reservationHour;
 	private String reservationStatus;
 	private int locationNo;
-	private Date registrationDate;
+	private String locationName;
+	private String customerEmail;
+	private String locationBasicAddress;
+	private String locationDetailAddress;
+	private String zipcode;
+	private String deviceCategoryName;
+	private String serviceCatName;
+	
 }
+ 
