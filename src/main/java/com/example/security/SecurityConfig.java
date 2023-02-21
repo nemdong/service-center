@@ -49,12 +49,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.csrf().disable()
 		.authorizeRequests()
 		.antMatchers("/").permitAll()
-		.antMatchers("/user/register", "/user/registered").permitAll()
+		.antMatchers("/cus", "/erp/main").permitAll()
+		.antMatchers("/cus/register", "/cus/checkId","/cus/search-id","/cus/search-pw","/cus/registered").permitAll()
+    .antMatchers("/emp/find-password", "/emp/checkSameEmpNo.json", "/emp/authentication-tel", "/emp/reset-login-form").permitAll() 
 		.antMatchers("/emp/register", "/emp/registered").permitAll()
-		.antMatchers("/user/login", "/emp/login", "/admin/login").permitAll()
-		.antMatchers("/emp/find-password", "/emp/checkSameEmpNo.json", "/emp/authentication-tel", "/emp/reset-login-form").permitAll() //
+		.antMatchers("/cus/login", "/emp/login", "/admin/login").permitAll()
 		.antMatchers("/logout").authenticated()
-		.antMatchers("/user/**").hasAnyRole("USER", "ADMIN")
+		.antMatchers("/cus/**").hasAnyRole("CUSTOMER", "ADMIN")
+		.antMatchers("/reservation/**").hasAnyRole("CUSTOMER", "ADMIN")
 		.antMatchers("/emp/**").hasAnyRole("사원", "대리", "관리자")
 		.antMatchers("/admin/**").hasRole("관리자")
 		.anyRequest().authenticated()
@@ -63,7 +65,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.loginProcessingUrl("/login")
 		.and()
 		.logout()
-		.logoutUrl("/logout")	
+		.logoutUrl("/logout")
 		.logoutSuccessUrl("/cus")
 		.and()
 		.addFilter(authenticationFilter())
@@ -85,7 +87,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			@Override
 			public void handle(HttpServletRequest request, HttpServletResponse response,
 					AccessDeniedException accessDeniedException) throws IOException, ServletException {
-				response.sendRedirect("/emp/access-denied");
+
+				response.sendRedirect("/access-denied");
 			}
 		};
 	}
@@ -125,6 +128,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 					response.sendRedirect("/emp/attendance/att");
 				} else if ("관리자".equals(userType)) {
 					response.sendRedirect("/emp/attendance/att");
+
 				}
 			}			
 		};
@@ -140,7 +144,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				
 				String userType = request.getParameter("userType");
 				if ("사용자".equals(userType)) {
-					response.sendRedirect("/user/login?error=fail");
+					response.sendRedirect("/cus/login?error=fail");
 				} else if ("직원".equals(userType)) {
 					response.sendRedirect("/emp/login?error=fail");
 				} else if ("관리자".equals(userType)) {
@@ -148,6 +152,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				}
 			}
 		};
+
 	}
 	
 }

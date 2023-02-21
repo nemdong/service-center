@@ -56,7 +56,7 @@
 						<br>
 						<strong>매장에 직접 방문</strong>
 					</a>
-					<a href="appointmentPlace" class="border me-5 text-center p-4" style="text-decoration:none; color:black; display:inline-block; height:300px; width:250px;">
+					<a href="appointmentPlace?way=appoint" class="border me-5 text-center p-4" style="text-decoration:none; color:black; display:inline-block; height:300px; width:250px;">
 						<image src="/resources/images/장소.png" width="200" height="200" class="img-thumnail rounded mx-auto d-block">
 						<br>
 						<strong>지정 장소 접수</strong>
@@ -68,6 +68,7 @@
 					</a>
 				</div>
 			</div>	
+		</div>
 		
 	</div>
 </div>

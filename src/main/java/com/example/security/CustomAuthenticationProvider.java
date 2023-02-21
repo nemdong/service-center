@@ -38,6 +38,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 		customAuthentication.setUserType(userType);
 		
 		return customAuthentication;
+
 	}
 
 	@Override
