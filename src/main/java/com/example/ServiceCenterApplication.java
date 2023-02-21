@@ -13,9 +13,9 @@ public class ServiceCenterApplication {
 		SpringApplication.run(ServiceCenterApplication.class, args);
 	}
 
-	@Bean
-	public PasswordEncoder passwordEncoder(){
-		PasswordEncoder encoder = new BCryptPasswordEncoder();
-		return encoder;
-	}
+//	@Bean
+//	public PasswordEncoder passwordEncoder(){
+//		PasswordEncoder encoder = new BCryptPasswordEncoder();
+//		return encoder;
+//	}
 }
