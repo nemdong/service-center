@@ -1,6 +1,7 @@
 package com.example.emp.web.controller;
 
 import java.io.File;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -15,20 +16,19 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.emp.dto.EmployeeDto;
+import com.example.emp.exception.AlreadyEmployeeEmailException;
+import com.example.emp.exception.AlreadyEmployeeMobileTellException;
+import com.example.emp.exception.EmpApplicationException;
 import com.example.emp.service.EmployeeService;
-import com.example.emp.vo.Employee;
 import com.example.emp.web.request.EmployeeRegisterForm;
 
 @Controller
@@ -41,6 +41,7 @@ public class EmployeeController {
 	@Autowired
 	EmployeeService employeeService;
 	
+	// 전 사원 리스트 조회
 	@GetMapping("/registeration")
 	public String registration(Model model, @RequestParam(name = "opts", required =  false) String opts,
 								@RequestParam(name = "keyword", required = false) String keyword) {
@@ -59,6 +60,7 @@ public class EmployeeController {
 		return "emp/register/registration";
 	}
 	
+	// 사원 정보 삭제
 	@PostMapping("/delete")
 	public String deleteEmployee(EmployeeRegisterForm form) {
 		
@@ -67,6 +69,7 @@ public class EmployeeController {
 		return "redirect:registeration";
 	}
 	
+	// 사원 상세 정보 수정
 	@PostMapping("/modify")
 	public String modifyEmployee(@ModelAttribute("employeeRegisterForm") EmployeeRegisterForm form) throws IOException{
 		
@@ -84,6 +87,7 @@ public class EmployeeController {
 		return "redirect:registeration";
 	}
 	
+	// 사원번호 부여
 	@GetMapping("/getEmpNo.json")
 	@ResponseBody
 	public int getEmpNo(@RequestParam("deptNo") int deptNo) {
@@ -92,6 +96,7 @@ public class EmployeeController {
 		return empNo;
 	}
 	
+	// 개인 상세 정보 조회
 	@GetMapping("/detail.json")
 	@ResponseBody
 	public EmployeeDto userDetail(@RequestParam("no") int empNo) {
@@ -101,6 +106,7 @@ public class EmployeeController {
 		return empDto;
 	}
 	
+	// 인사 등록 페이지 이동
 	@GetMapping("/empInsert")
 	public String empInsert(Model model) {
 		EmployeeRegisterForm form = new EmployeeRegisterForm();
@@ -109,6 +115,7 @@ public class EmployeeController {
 		return "emp/register/empInsert";
 	}
 	
+	// 인사 등록
 	@PostMapping("/inquiry")
 	public String inquiryEmployee (@ModelAttribute("employeeRegisterForm") @Valid EmployeeRegisterForm form, 
 								BindingResult errors, Model model, String opts) throws IOException {
@@ -126,10 +133,20 @@ public class EmployeeController {
 			FileCopyUtils.copy(upfile.getInputStream(), new FileOutputStream(new File(directory, fileName)));
 		
 		}
-		
-		employeeService.insertEmployee(form);
-		
-		return "redirect:/emp/register/registeration";
+		try {
+			employeeService.insertEmployee(form);
+			employeeService.createdMonthAttendances(form);
+			return "redirect:/emp/register/registeration";
+			
+		} catch(AlreadyEmployeeEmailException ex) {
+			errors.rejectValue("externalEmail", null, ex.getMessage());
+			return "emp/register/empInsert";
+															
+		} catch(AlreadyEmployeeMobileTellException ex) {
+			errors.rejectValue("mobileTel", null, ex.getMessage());
+			return "emp/register/empInsert";
+			
+		}			
 	}
 	
 }
