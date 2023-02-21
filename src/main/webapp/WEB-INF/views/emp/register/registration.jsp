@@ -58,9 +58,11 @@
 				<div class="col-6">
 					<h4 class="fw-bold fs-6 mt-2">전체 사원 기본 정보</h4>
 				</div>
-				<div class="col-6 text-end">
-					<a href="/emp/register/empInsert" class="mt-1 mb-1 text-end btn btn-primary btn-sm" id="emp-registration">인사 등록</a>
-				</div>
+				<sec:authorize access="hasRole('ROLE_관리자')">
+					<div class="col-6 text-end">
+						<a href="/emp/register/empInsert" class="mt-1 mb-1 text-end btn btn-primary btn-sm" id="emp-registration">인사 등록</a>
+					</div>
+				</sec:authorize>
 				<div class="col-12">
 					<div class="bg-light p-2">
 						<div style="overflow-y:auto !important; width:100%; max-height:400px !important; display:block !important;">
@@ -342,8 +344,6 @@ $(function() {
 		
 	})
 	
-	
-
 })
 
 </script>

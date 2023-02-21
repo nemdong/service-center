@@ -7,7 +7,6 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-
 public class LoginUser {
 
 	private String id;

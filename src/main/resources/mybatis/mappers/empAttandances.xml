@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.emp.mapper.EmpAttendanceMapper">
+
+	<insert id="insertStartTime" parameterType="int">
+		INSERT INTO ATTENDANCES
+		    (EMPLOYEE_NO, WORK_DATE, WORK_START_TIME, WORK_END_TIME, WEEKDAY_WORK_TIMES, WEEKEND_WORK_TIMES,
+		    OVERTIME_WORK_TIMES, TARDINESS_TIMES, EARLY_TIMES)
+		VALUES
+		    (#{value}, TO_CHAR(sysdate, 'YYYY-MM-DD'), TO_CHAR(sysdate,'HH24:MI'), '00:00', '00:00', '00:00',
+		    '00:00', '00:00', '00:00')
+	</insert>
+	
+	<update id="updateEndTime" parameterType="int">
+		UPDATE
+		     ATTENDANCES
+		SET
+		    WORK_END_TIME = TO_CHAR(SYSDATE, 'HH24:MI')
+		WHERE
+		    EMPLOYEE_NO = #{value}
+		AND	
+			WORK_DATE = TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+	</update>
+	
+ 	<select id="getWorkStartTime" parameterType="int" resultType="String">
+		SELECT
+		    WORK_START_TIME as workStartTime
+		FROM
+		    ATTENDANCES
+		WHERE
+		    EMPLOYEE_NO = #{value}
+		AND    
+		    WORK_DATE = TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+	</select>
+	
+	<select id="getWorkEndTime" parameterType="int" resultType="String">
+		SELECT
+		    WORK_END_TIME as workEndTime
+		FROM
+		    ATTENDANCES
+		WHERE
+		    EMPLOYEE_NO = #{value}
+		AND    
+		    WORK_DATE = TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+	</select>
+	
+	<select id="getAllAttendances" parameterType="int" resultType="Attendances">
+		SELECT
+		    WORK_DATE as workDate,
+		    WORK_START_TIME as workStartTime,
+		    WORK_END_TIME as workEndTime,
+		    WEEKDAY_WORK_TIMES as weekDayWorkTimes,
+		    WEEKEND_WORK_TIMES as weekendWorkTimes,
+		    OVERTIME_WORK_TIMES as overTimeWorkTimes,
+		    TARDINESS_TIMES as tardinessTimes,
+		    EARLY_TIMES as earlyTimes
+		FROM
+		    ATTENDANCES
+		WHERE
+		    EMPLOYEE_NO = #{value}
+		ORDER BY
+			WORK_DATE DESC	    
+	</select>
+	
+	<select id="getTodayAttendances" parameterType="int" resultType="Attendances">
+		SELECT	
+			WORK_DATE as workDate,
+		    WORK_START_TIME as workStartTime,
+		    WORK_END_TIME as workEndTime,
+		    WEEKDAY_WORK_TIMES as weekDayWorkTimes,
+		    WEEKEND_WORK_TIMES as weekendWorkTimes,
+		    OVERTIME_WORK_TIMES as overTimeWorkTimes,
+		    TARDINESS_TIMES as tardinessTimes,
+		    EARLY_TIMES as earlyTimes
+		FROM
+		    ATTENDANCES
+		WHERE
+		    EMPLOYEE_NO = #{value}
+		AND
+			WORK_DATE = TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+	</select>
+	
+	<update id="updateTardyTime" parameterType="map">
+		UPDATE
+			ATTENDANCES
+		SET
+			TARDINESS_TIMES = #{insertHour}
+		WHERE
+			EMPLOYEE_NO = #{empNo}
+		AND    
+		    WORK_DATE = TO_CHAR(SYSDATE, 'YYYY-MM-DD')	
+	</update>
+	
+	<update id="updateZeroTardyTime" parameterType="map">
+		UPDATE
+			ATTENDANCES
+		SET
+			<if test="insertZeroHour != null">
+				TARDINESS_TIMES = #{insertZeroHour}
+			</if>
+			<if test="insertZeroMinute != null">
+				TARDINESS_TIMES = #{insertZeroMinute}
+			</if>
+			<if test="insertZeroTotal != null">
+				TARDINESS_TIMES = #{insertZeroTotal}
+			</if>
+		WHERE
+			EMPLOYEE_NO = #{empNo}
+		AND    
+		    WORK_DATE = TO_CHAR(SYSDATE, 'YYYY-MM-DD')	
+	</update>
+	
+	<update id="updateWorkingHours" parameterType="map">
+		UPDATE
+			ATTENDANCES
+		SET
+			WEEKDAY_WORK_TIMES = #{insertHour}
+			<if test="insertOvertHour != null">
+			, OVERTIME_WORK_TIMES = #{insertOvertHour}
+			</if>
+		WHERE
+			EMPLOYEE_NO = #{empNo}
+		AND    
+		    WORK_DATE = TO_CHAR(SYSDATE, 'YYYY-MM-DD')	
+	</update>
+	
+	<update id="updatePlusZeroWorkingHours" parameterType="map">
+		UPDATE
+			ATTENDANCES
+		SET
+			WEEKDAY_WORK_TIMES = #{inserZerotHour}
+		WHERE
+			EMPLOYEE_NO = #{empNo}
+		AND    
+		    WORK_DATE = TO_CHAR(SYSDATE, 'YYYY-MM-DD')	
+	</update>
+	
+	<update id="updateMoreWorkingHours" parameterType="map">
+		UPDATE
+			ATTENDANCES
+		SET
+			OVERTIME_WORK_TIMES = #{insertOvertHour}
+		WHERE
+			EMPLOYEE_NO = #{empNo}
+		AND    
+		    WORK_DATE = TO_CHAR(SYSDATE, 'YYYY-MM-DD')		
+	</update>
+	
+	<update id="updateEarlyTimes" parameterType="map">
+		UPDATE
+			ATTENDANCES
+		SET
+			EARLY_TIMES = #{insertEarlyTime}
+		WHERE
+			EMPLOYEE_NO = #{empNo}
+		AND    
+		    WORK_DATE = TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+	</update>
+	
+	<select id="doubleCheckTime" parameterType="int" resultType="Attendances">
+		SELECT
+		    WORK_START_TIME as workStartTime
+		FROM
+		    ATTENDANCES
+		WHERE
+		    EMPLOYEE_NO = #{value}
+		AND    
+		    WORK_DATE = TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+	</select>
+	
+	<select id="checkHolydays" resultType="String">
+		SELECT
+		    TO_CHAR(HOLYDAY_DATE)
+		FROM
+		    HOLYDAYS
+		WHERE
+		    HOLYDAY_DATE = trunc(SYSDATE)
+	</select>
+	
+	<update id="updateHolydayWorkingHours" parameterType="map">
+		UPDATE
+			ATTENDANCES
+		SET
+			WEEKEND_WORK_TIMES = #{insertHolydayHour}
+			<if test="insertHour != null">
+				, WEEKDAY_WORK_TIMES = #{insertHour}
+			</if>
+			<if test="insertZeroHour != null">
+				, TARDINESS_TIMES = #{insertZeroHour}
+			</if>
+			<if test="insertZeroMinute != null">
+				, TARDINESS_TIMES = #{insertZeroMinute}
+			</if>
+			<if test="insertZeroTotal != null">
+				, TARDINESS_TIMES = #{insertZeroTotal}
+			</if>
+		WHERE
+			EMPLOYEE_NO = #{empNo}
+		AND    
+		    WORK_DATE = TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+	</update>
+	
+	<update id="updateZeroHolydayWorkingHours" parameterType="map">
+		UPDATE
+			ATTENDANCES
+		SET
+			WEEKEND_WORK_TIMES = #{holydayZeroparam}
+		WHERE
+			EMPLOYEE_NO = #{empNo}
+		AND    
+		    WORK_DATE = TO_CHAR(SYSDATE, 'YYYY-MM-DD')	
+	</update>
+	
+	<select id="deleteAttendances" parameterType="map">
+		DELETE FROM ATTENDANCES
+		WHERE
+			EMPLOYEE_NO = #{empNo}
+		AND
+			WORK_DATE = TO_DATE(#{deleteDate})
+	</select>
+
+	<select id="monthlyAttendancesByEmpNo" parameterType="int" resultType="MonthlyAttendances">
+		SELECT
+			WORK_YEAR_MONTH as workYearMonth,
+			TOTAL_WORKED_DAYS as totalWorkedDays,
+			WEEKDAY_WORKED_DAYS as weekDayWorkedDays,
+			WEEKEND_WORKED_DAYS as weekendWorkedDays,
+			VACATION_USED_DAYS as vacationUsedDays,
+			ABSENT_DAYS as absentDays
+		FROM
+			MONTHLY_ATTENDANCES
+		WHERE
+			EMPLOYEE_NO = #{value}	
+	</select>
+
+	<update id="monthlyAttendances" parameterType="MonthlyAttendances">
+		UPDATE
+			MONTHLY_ATTENDANCES
+		SET
+			TOTAL_WORKED_DAYS = #{totalWorkedDays}
+			<if test="weekDayWorkedDays != null">
+			, WEEKDAY_WORKED_DAYS = #{weekDayWorkedDays}
+			</if>
+			<if test="weekendWorkedDays != null">
+			, WEEKEND_WORKED_DAYS = #{weekendWorkedDays}
+			</if>
+			<if test="vacationUsedDays != null">
+			, VACATION_USED_DAYS = #{vacationUsedDays}
+			</if>
+			<if test="absentDays != null">
+			, ABSENT_DAYS = #{absentDays}
+			</if>
+		WHERE
+			EMPLOYEE_NO = #{empNo}	
+	</update>
+</mapper>
