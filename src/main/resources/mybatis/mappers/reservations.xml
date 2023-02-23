@@ -38,7 +38,8 @@
 			L.location_basic_address	as locationBasicAddress,
 			L.location_detail_address	as locationDetailAddress,
 			L.zipcode				as zipcode,
-			G.device_category_name	as deviceCategoryName
+			G.device_category_name	as deviceCategoryName,
+			S.service_amount		as serviceAmount
 		from
 			service_registrations R, locations L, customers C, customer_devices D, device_categories G, service_categories S
 		where
@@ -105,5 +106,72 @@
 			location_no = #{value}
 	</select>
 	
+	<delete id="deleteReservByNo" parameterType="int"> <!-- 예약취소는 delete하면 무결성 제약조건 때문에 안되는데 그럼 deleted = 'N' 으로 해서 해야할까요 -->
+		delete from
+			service_registrations
+		where
+			registration_no = #{value}
+	</delete>
 	
+	<!-- 예약가능한 시간대를 출력 -->
+	<select id="getReservationTimes" parameterType="map" resultType="string">
+		select 
+			start_hour as startHour
+		from  
+			service_times
+		minus 
+		select 
+			reservation_hour
+		from 
+			service_registrations
+		where 
+			location_no = #{locationNo}
+			and reservation_date = #{date} <!-- contoller의 param에 담은 이름으로 사용해야함. -->
+	</select>
+	<!-- 셀렉트키를 사용하면 no를 바로 이용할 수 있다. -->
+	<insert id="insertRegistration" parameterType="Reservation">
+		<selectKey keyProperty="registrationNo" resultType="int" order="BEFORE"> <!-- order에 BEFORE하면 키를 먼저 조회하고 그 값을 keyProperty에 담고 insert실행  -->
+			select service_registrations_seq.nextval from dual
+		</selectKey>
+		insert into service_registrations
+		(registration_no, device_no, customer_id, service_cat_no, reservation_date, reservation_hour, location_no)
+		values
+		(#{registrationNo}, #{deviceNo}, #{id}, #{serviceCatNo}, #{reservationDate}, #{reservationHour}, #{locationNo})
+	</insert>
+	
+	<update id="updateReservation" parameterType="Reservation">
+		update
+			service_registrations
+		set
+			reservation_date = #{reservationDate},
+			reservation_hour = #{reservationHour},
+			registration_date = sysdate
+		where
+			registration_no = #{registrationNo}
+	</update>
+	
+	<select id="getReservationByNo" parameterType="int" resultType="Reservation">
+		select 
+			registration_no as registrationNo,
+			device_no as deviceNo,
+			customer_id as customerId,
+			service_cat_no as serviceCatNo,
+			registration_type as registrationType,
+			reservation_date as reservationDate,
+			reservation_hour as reservationHour,
+			reservation_status as reservationStatus,
+			location_no as locationNo,
+			registration_date as registrationDate
+		from
+			service_registrations
+		where
+			registration_no = #{value}
+	</select>
+	
+	<delete id="deleteRegistraionByNo" parameterType="int">
+		delete from
+			service_registrations
+		where
+			registration_no = #{value}
+	</delete>
 </mapper>

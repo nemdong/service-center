@@ -7,7 +7,13 @@ import lombok.Setter;
 @Setter
 public class ReservationForm {
 
-	private int deviceCategoryNo;		// 제품 번호
-	private int serviceCatNo;			// 서비스 번호
-	private String reservationWay;		// 서비스 받을 방법
+	private String customerId;
+	private int deviceNo;		
+	private int serviceCatNo;		
+	private String way;		
+	private int locationNo;
+	private String serviceCatName;
+	private String serviceAmount;
+	private String reservationHour;
+	private String reservationDate;
 }

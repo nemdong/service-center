@@ -22,9 +22,10 @@
 		where
 			S.customer_id = #{value}
 			and S.service_cat_no = C.service_cat_no
+			and H.registration_no = S.registration_no
 			and S.device_no = D.device_no
             and G.device_category_no = D.device_category_no
 			and H.service_cost = C.service_amount
-            
+            <!-- 실제 수리완료 내역은 2갠데 여러개가 출력된다.   -->
 	</select>
 </mapper>

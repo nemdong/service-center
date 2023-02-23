@@ -66,7 +66,6 @@
             and G.device_category_no = D.device_category_no
 			and H.service_cost = C.service_amount
 			and L.location_no = S.location_no
-            and C.service_cat_no = S.service_cat_no
             and H.process_completed_date <![CDATA[>=]]> trunc(sysdate - 1) and H.process_completed_date <![CDATA[<]]> trunc(sysdate + 90)
        </select>
 </mapper>

@@ -19,7 +19,7 @@
 			<h1 class="border bg-light p-2 fs-4">예약하기</h1>
 			<input type="hidden" name="locationLatitude" value="${locationDetail.locationLatitude }"> 
 			<input type="hidden" name="locationLongitude" value="${locationDetail.locationLongitude }"> 
-			<input type="hidden" name="location-name" value="${locationDetail.locationName }"> 
+			<input type="hidden" name="locationName" value="${locationDetail.locationName }"> 
 		</div>
 	</div>
 	<div class="row mb-5">
@@ -38,31 +38,23 @@
 	</div>
 	<div class="row mb-3">
 		<div class="col-7">
-			<div class="border m-3 p-3 text-bg-light" style="color:black; text-decoration:none; display:inline-block; height:300px; width:600px;">
+			<form id="form-reservation" class="p-3" method="post" action="reservation-success"> <!-- action이 reservation-success인지 reservationdate인지 -->
+				<input type="hidden" name="deviceNo" value="1"> 
+				<!--<input type="hidden" name="way" value="center">   -->
+				<input type="hidden" name="serviceCatNo" value="100"> 
+				<input type="hidden" name="locationNo" value="${param.locationNo }">  
+				<!-- 여기 선언된 param은 url에 해당 하는 값을(즉, 전달하는 값을)요청객체에 담고 jsp에게 전달되어서 jsp에서 param으로 사용할 수 있다.-->
+				<div class="border m-3 p-3 text-bg-light" style="color:black; text-decoration:none; display:inline-block; height:300px; width:600px;">
 				<span class="fs-5"><strong>일(예약하실 날짜를 선택하세요.)</strong></span>
 				<p>
-					<input class="datepicker">
+					<input class="datepicker form-control form-control-sm" name="reservationDate">
 				</p>
 				<p class="fs-5"><strong>시간</strong></p>
 				<p>매장의 예약 가능한 시간</p>
-				<select class="form-select form-select-sm mb-4" name="time">
-					<option style="font-weight:bold; background-color: gray ">오전(AM)</option>
-					<option value="" selected>오전 09:00</option>
-					<option value="">오전 10:00</option>
-					<option value="">오전 11:00</option>
-					<option style="font-weight:bold; background-color: gray">오후(PM)</option>
-					<option value="">오후 12:00</option>
-					<option value="">오후 13:00</option>
-					<option value="">오후 14:00</option>
-					<option value="">오후 15:00</option>
-					<option value="">오후 16:00</option>
-					<option value="">오후 17:00</option>
-					<option value="">오후 18:00</option>
-					<option value="">오후 19:00</option>
-					<option value="">오후 20:00</option>
-				</select>
-				<a href="" class="btn btn-primary btn-sm fs-6" data-bs-toggle="modal" data-bs-target="#modal-form-reservation">계속하기</a>
-			</div>
+				<select class="form-select form-select-sm mb-4" name="reservationHour" id="select-hour"></select>
+				<button type="button" class="btn btn-primary btn-sm fs-6" id="btn-open-modal" disabled>계속하기</button>
+				</div>
+			</form>
 		</div>
 		<div class="col-5">
 			<div class="border m-3 p-3 text-bg-light" align="center" style="color:black; text-decoration:none; display:inline-block; height:300px; width:500px;">
@@ -92,14 +84,9 @@
 		</div>
 	</div>
 	<hr />
-	<p>푸터</p>
-	<p>푸터</p>
-	<p>푸터</p>
-	<p>푸터</p>
 </div>
 <div class="modal" tabindex="-1" id="modal-form-reservation">
 	<div class="modal-dialog modal-lg">
-		<form class="p-3" method="get" action="reservation-success">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h3 class="modal-title text-center">고객님의 예약 세부 사항을 검토해 주세요. </h3>
@@ -109,7 +96,10 @@
 				<div class="row mb-2">
 					<div class="col-sm-12">
 						<p><img src="/resources/images/calendar.png" width="100" height="100" class="img-thumbnail" style="border:0px;" alt="달력"/></p>
-						<p><strong class="fs-4">5월 1일 일요일, 12:25 PM</strong></p>
+						<p>
+							<strong class="fs-4" id="reser-date-text"></strong>
+							<strong class="fs-4" id="reser-hour-text"></strong>
+						</p>
 					</div>
 				</div>
 				<div class="row mb-2">
@@ -130,10 +120,9 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="submit" class="btn btn-primary btn-xs">지금 예약하기</button>
+				<button type="button" class="btn btn-primary btn-xs" id="btn-add-reserv">지금 예약하기</button>
 			</div>
 		</div>
-		</form>
 	</div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
@@ -141,10 +130,14 @@
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=b1e58dd5f8d7b285c02485610e447db4&libraries=services"></script>
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://momentjs.com/downloads/moment-with-locales.js" type="text/javascript"></script> <!-- moment.js 사용 -->
 <script>
+$(function () {
+	moment().locale("ko")
+	
 	var locationLatitude = $(":input[name=locationLatitude]").val();
 	var locationLongitude = $(":input[name=locationLongitude]").val();
-	var locationName = $(":input[name=location-name]").val();
+	var locationName = $(":input[name=locationName]").val();
 		
 	var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
 	mapOption = { 
@@ -179,11 +172,64 @@ $.datepicker.setDefaults({
 	  dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
 	  showMonthAfterYear: true,
 	  yearSuffix: '년'
+	  
 	});
+//datepicker와 hour이 null 이면 btn-open-modal이 disabled 상태, null이 아니면 
+$("#select-hour").change(function() {
+	if($(this).val() == '') {
+		$("#btn-open-modal").prop("disabled", true)
+	} else {
+		$("#btn-open-modal").prop("disabled", false)
+	}
+})
+	
+$(":input[name=reservationDate]").change(function() {
+	let $selectHour = $("#select-hour").empty();
+	var dateValue = $(":input[name=reservationDate]").val();
+	// param.locationNo 하면 url에있는 locationNo도 가져올 수 있다. ==> 질문. controller에 param.put으로 locationNo이름으로 locationNo값을 저장시켰는데 이 param값을 이용하기 위해서 ${param.locationNo}를 쓴건지
+	$.ajax({
+		type:"get",
+		url: "hours",
+		data: {date: dateValue, locationNo:${param.locationNo}},
+		dataType: 'json',
+		success:function(items) {
+			$selectHour.append("<option value=''> 예약시간을 선택하세요</option>");
+			// 여기에 매장의 예약가능한 시간 부분이 들어가야한다
+			$.each(items, function(index, item) {
+				let row = `
+					<option value="\${item}">\${item}</option>
+				`
+				$selectHour.append(row);
+				
+			})
+		}
+	})
+})
 
-	$(function () {
+		
 	  $('.datepicker').datepicker({ minDate: 0});
-	});
+	  
+	  var modal = new bootstrap.Modal("#modal-form-reservation");
+	  
+	  $("#btn-open-modal").click(function() {
+		  // 선택한날짜와시간을 모달창에표시하는코드
+		  var dateValue = $(":input[name=reservationDate]").val();
+		  var timeValue = $(":input[name=reservationHour]").val();
+		  var dateText = moment(dateValue).format("YYYY년 M월 D일")
+		  $("#reser-date-text").text(dateText); 
+		  $("#reser-hour-text").text(timeValue);
+			  modal.show();
+	  });
+	  
+	  $("#btn-add-reserv").click(function() {
+		  // 폼을 서버로제출하는코드
+		  $("#form-reservation").trigger("submit");
+	  });
+	  
+});
+	
+	
+	
 </script>
 </body>
 </html>

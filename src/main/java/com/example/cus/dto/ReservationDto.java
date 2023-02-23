@@ -28,6 +28,7 @@ public class ReservationDto {
 	private String zipcode;
 	private String deviceCategoryName;
 	private String serviceCatName;
+	private int serviceAmount;
 	
 }
  

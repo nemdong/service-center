@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -21,6 +22,7 @@ import com.example.cus.login.LoginCustomerInfo;
 import com.example.cus.service.CustomerService;
 import com.example.cus.service.ReservationService;
 import com.example.cus.vo.Locations;
+import com.example.cus.web.request.ReservationForm;
 
 @Controller
 @RequestMapping("/repair")
@@ -56,7 +58,7 @@ public class RepairController {
 		
 		return "cus/repair/mysupport";
 	}
-	
+	/*
 	@GetMapping("/mysupport.json")
 	@ResponseBody
 	public List<DeviceHistoryDto> getHistories(HttpSession session){
@@ -66,7 +68,8 @@ public class RepairController {
 		
 		return dto;
 	}
-	
+	여기는 테이블을 json으로 테이블 추가할 때 사용
+	*/
 	@GetMapping("/mydevice")
 	public String mydevice(@RequestParam("deviceNo") int deviceNo, HttpSession session, Model model) {
 		CustomerDevicesDto device = customerService.getDeviceDetail(deviceNo);
@@ -80,9 +83,9 @@ public class RepairController {
 	
 	@GetMapping("/reservationdetail")
 	public String reservationdetail(@RequestParam("registrationNo") int registrationNo, HttpSession session, Model model) {
-		ReservationDto reservation = reservationService.getDetailReservation(registrationNo);
+		ReservationDto reservationDto = reservationService.getDetailReservation(registrationNo);
 		
-		model.addAttribute("reservation", reservation);
+		model.addAttribute("reservationDto", reservationDto);
 		return "cus/repair/reservationdetail";
 	}
 	
@@ -128,39 +131,74 @@ public class RepairController {
 		model.addAttribute("locationDetail", locationDetail);
 		
 		// locationNo에 해당하는 센터를 Detail로, JSON을 통해 값 전해준다. @ResponseBody
-		
+		// deviceNo, serviceCatNo, ways 
 		return "cus/repair/reservationdate";
 	}
 	
 	@ResponseBody
-	@GetMapping("/detail")
-	public Locations getDetailLocation(@RequestParam("locationNo") int locationNo) {
-		Locations locationDetail = reservationService.getLocationDetail(locationNo);
-		return locationDetail;
+	@GetMapping("/hours") // 날짜에 해당하는 시간을 가져오려고 ajax통신
+	public List<String> getSelectHour(@RequestParam("locationNo") int locationNo, 
+								@RequestParam("date") String date, Model model) {
+		//Locations locationDetail = reservationService.getLocationDetail(locationNo);
+		//model.addAttribute("locationDetail", locationDetail);
+		
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("locationNo", locationNo);
+		param.put("date", date);
+		List<String> times = reservationService.getReservationTimes(param);
+		
+		// date에 해당하는 시간 값을 반환
+		return times;
 	}
 	
 	
+	//post로 전달받은 값을 입력폼에 저장시킨다.
+	@PostMapping("/reservation-success")
+	public String insertReserv(HttpSession session, ReservationForm reservationForm) {
+		LoginCustomerInfo loginCustomerInfo = (LoginCustomerInfo) session.getAttribute("loginCustomer");
+		int registrationNo = reservationService.insertRegistration(loginCustomerInfo.getId(), reservationForm);
+		
+		return "redirect:reservation-success?registrationNo=" + registrationNo + "&locationNo=" + reservationForm.getLocationNo();
+	}
+	
 	@GetMapping("/reservation-success")
-	public String reservationsuccess() {
+	public String reservationSuccess(@RequestParam("registrationNo") int registrationNo, Model model) {
+		ReservationDto reservationDto = reservationService.getDetailReservation(registrationNo);
+		model.addAttribute("reservationDto", reservationDto);
+		
 		return "cus/repair/reservation-success";
 	}
 	
-	/*
-	 * @PostMapping("/cancel") public String cancel() { return
-	 * "redirect:cus/repair/cancel-success"; }
-	 */
 	
 	/*
-	 * @GetMapping("/cancel-success") public String cancelsuccess() { return
-	 * "cus/repair/cancel-success"; }
+	 * 	registrationNo: 10042
+		locationNo: 10000
+		reservationDate: 2023-02-22
+		reservationHour: 13:00
+		update하는 것은 값을 한번 조회 후 조회한 값을 set으로 변경해서 update문을 실행해야함
 	 */
-	@GetMapping("/change")
-	public String change() {
+	@PostMapping("/change-reservation")
+	public String change(@RequestParam("registrationNo") int registrationNo, 
+			@RequestParam("locationNo") int locationNo, 
+			@RequestParam("reservationDate") String reservationDate, 
+			@RequestParam("reservationHour") String reservationHour ) {
+		
+		reservationService.updateReservation(registrationNo, reservationDate, reservationHour);
+
+		return "redirect:change-reservation?registrationNo=" + registrationNo + "&locationNo=" + locationNo;
+	}
+	
+	@GetMapping("/change-reservation")
+	public String changeReservation(@RequestParam("registrationNo") int registrationNo, Model model) {
+		ReservationDto reservationDto = reservationService.getDetailReservation(registrationNo);
+		model.addAttribute("reservationDto", reservationDto);
+		
 		return "cus/repair/change-reservation";
 	}
 	
 	@GetMapping("/cancel")
-	public String cancel() {
+	public String cancel(@RequestParam("registrationNo") int registrationNo) {
+		reservationService.deleteRegistraionByNo(registrationNo);
 		return "cus/repair/cancel";
 	}
 }

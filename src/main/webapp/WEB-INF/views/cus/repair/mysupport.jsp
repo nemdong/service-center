@@ -70,7 +70,7 @@
 						</tr>
 					</c:when>
 					<c:otherwise>
-						<h3 class="mb-5">예약현황</h3>
+						<h3 class="mb-5">예약현황</h3> <!-- 예약현황을 오늘날짜 이후 예약만 볼 수 있도록, 그리고 예약 수리가 완료되면 예약에서 사라지고 수리내역에 값이 저장되는건 어떻게?  -->
 						<c:forEach var="reservation" items="${reservation }">
 								<thead>
 									<tr>
@@ -84,51 +84,13 @@
 										<td>${reservation.locationName }</td>
 									</tr>
 									<tr>
-										<td><a href="reservationdetail?registrationNo=${reservation.registrationNo }">세부사항보기></a></td>
+										<td><a href="reservationdetail?registrationNo=${reservation.registrationNo }&locationNo=${reservation.locationNo }">세부사항보기></a></td>
 										<td></td>
 									</tr>
 								</tbody>
 						</c:forEach>
 					</c:otherwise>
 				</c:choose>
-			</table>
-		</div>
-	</div>
-	
-	<hr />
-	<!-- 최근활동은 뺄지 말지 고민중 -->
-	<div class="row mb-5">
-		<div class="col-12">
-			<table class="table table-sm">
-				<h3 class="mb-5 text-center">최근활동</h3>
-				<colgroup>
-					<col width="30%">
-					<col width="60%">
-					<col width="*">
-					<col width="*">
-				</colgroup>
-				<thead>
-					<tr>
-						<th>홍길동 iPhone : 배터리 서비스</th>
-						<th></th>
-						<th></th>
-					</tr>
-					
-				</thead>
-				<tbody>
-					<tr>
-						<td><strong>방문 매장 이름</strong> : Apple 명동</td>
-						<td></td>
-						<td class="text-end"><a href="">세부사항보기></a></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td><strong>방문 날짜</strong> : 2023.05.10</td>
-						<td></td>
-						<td></td>
-						<td></td>
-					</tr>
-				</tbody>
 			</table>
 		</div>
 	</div>
@@ -162,7 +124,7 @@
 								<td></td>
 							</tr>
 							<tr>
-								<td><strong>비용 :</strong> ${history.serviceCost} 원</th>
+								<td><strong>비용 : </strong>￦<fmt:formatNumber value="${history.serviceCost}" pattern="#,###" /> 원</td>
 								<td></td>
 							</tr>
 						</tbody>

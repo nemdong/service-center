@@ -59,9 +59,6 @@
 		<div class="col-6" id="map" style="width:500px;height:600px;"></div>
 	</div>
 	<hr />
-	<p>푸터부</p>
-	<p>푸터부</p>
-	<p>푸터부</p>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
@@ -73,9 +70,9 @@ $(function() {
 	var statusValue = $(":input[name=status]:not(:disabled)").val(); //버튼이 눌러져있으면 예약가능, 안눌러져있으면 undefined
 	var keywordValue = $(":input[name=keyword]").val();
 	let param = {keyword: keywordValue};
-	if (statusValue) { //true일 때, 즉 예약가능 매장보기 버튼을 눌렀을 때만 값이 들어가
-		param['status'] = statusValue;
-	}
+	if (statusValue) { //true일 때, 즉 예약가능 매장보기 버튼을 눌렀을 때만 값이 들어가도록.
+		param['status'] = statusValue;			// let param = {keyword: keywordValue} keyword라는 key에 value를 넣는것. param['status'] = statusValue;	status 키워드에 value를 담는 표현식임. 
+	}		// 꼭꼭꼭꼭꼭 강사님께 여쭤보고 이해하고 넘어가기
 	// data를 param으로 설정했고 키워드 입력값을 서버로 전달해줘야한다. ajax -> RepairController
 	$.ajax({
 		url : "locations",
@@ -150,7 +147,7 @@ $('#reservation-status').click(function() {
 		$(":input[name=status]").prop("disabled", true);
 	}
 		
-	$("#form-search").trigger("submit");
+	$("#form-search").trigger("submit");	//visitreservation으로 submit
 		
 });
 
