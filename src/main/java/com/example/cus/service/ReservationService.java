@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.cus.dto.ReservationDto;
+import com.example.cus.mapper.DeviceCategoryMapper;
 import com.example.cus.mapper.ReservationMapper;
+import com.example.cus.vo.DeviceCategories;
 import com.example.cus.vo.Locations;
 import com.example.cus.vo.Reservation;
 import com.example.cus.web.request.ReservationForm;
@@ -20,6 +22,9 @@ public class ReservationService {
 
 	@Autowired
 	private ReservationMapper reservationMapper;
+	
+	@Autowired
+	private DeviceCategoryMapper deviceCategoryMapper;
 	
 	public List<ReservationDto> getReservations(String customerId) {
 		return reservationMapper.getReservations(customerId);

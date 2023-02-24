@@ -56,16 +56,17 @@
             D.customer_id			as customerId,
             L.location_name as locationName,
             S.registration_date as registrationDate,
-            L.location_ways as locationWays
+            L.location_ways as locationWays,
+            S.reservation_date as reservationDate
 		from
 			device_as_histories H, service_registrations S, service_categories C, customer_devices D, device_categories G, locations L
 		where
 			S.device_no = #{value}
 			and S.service_cat_no = C.service_cat_no
-			and S.device_no = D.device_no
+            and H.registration_no = S.registration_no
+            and S.device_no = D.device_no
             and G.device_category_no = D.device_category_no
-			and H.service_cost = C.service_amount
 			and L.location_no = S.location_no
-            and H.process_completed_date <![CDATA[>=]]> trunc(sysdate - 1) and H.process_completed_date <![CDATA[<]]> trunc(sysdate + 90)
+            and H.process_completed_date <![CDATA[>=]]> trunc(sysdate - 90) and H.process_completed_date <![CDATA[<]]> trunc(sysdate)
        </select>
 </mapper>

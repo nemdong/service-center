@@ -22,5 +22,5 @@ public interface ReservationMapper {
 	// 값을 변경하는 작업은 값을 먼저 조회하고 변경한 후 update해야함. 등록된 예약번호로 정보를 조회하고 update문에서 업뎃
 	void updateReservation(Reservation reservation);
 	Reservation getReservationByNo(int registrationNo);
-	void deleteRegistraionByNo(int registrationNo); 
+	void deleteRegistraionByNo(int registrationNo);
 }

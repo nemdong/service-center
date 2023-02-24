@@ -30,5 +30,6 @@ public class DeviceHistoryDto {
 	private String locationName;
 	private Date registrationDate;
 	private String locationWays;
+	private Date reservationDate;
 }
  

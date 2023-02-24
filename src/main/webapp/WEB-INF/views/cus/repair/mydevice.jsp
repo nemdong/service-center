@@ -79,8 +79,8 @@
 									<td></td>
 								</tr>
 								<tr>
-									<td><strong>수리 예약 및 접수 날짜</strong> : <fmt:formatDate value="${categoryHistory.registrationDate }"/></td>
-									<td></td>
+									<td><strong>수리접수 날짜</strong> : <fmt:formatDate value="${categoryHistory.registrationDate }"/></td>
+									<td><strong>수리 예약 날짜</strong> : <fmt:formatDate value="${categoryHistory.reservationDate }"/></td>
 									<td></td>
 									<td></td>
 								</tr>

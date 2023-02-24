@@ -72,8 +72,6 @@ $(function() {
 	let param = {keyword: keywordValue};
 	if (statusValue) { //true일 때, 즉 예약가능 매장보기 버튼을 눌렀을 때만 값이 들어가도록.
 		param['status'] = statusValue;			// let param = {keyword: keywordValue} keyword라는 key에 value를 넣는것. param['status'] = statusValue;	status 키워드에 value를 담는 표현식임. 
-	}		// 꼭꼭꼭꼭꼭 강사님께 여쭤보고 이해하고 넘어가기
-	// data를 param으로 설정했고 키워드 입력값을 서버로 전달해줘야한다. ajax -> RepairController
 	$.ajax({
 		url : "locations",
 		type : "get",

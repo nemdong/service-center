@@ -201,4 +201,5 @@ public class RepairController {
 		reservationService.deleteRegistraionByNo(registrationNo);
 		return "cus/repair/cancel";
 	}
+	
 }
