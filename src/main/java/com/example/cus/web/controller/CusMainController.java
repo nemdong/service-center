@@ -10,26 +10,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import com.example.cus.login.LoginCustomerInfo;
 import com.example.cus.service.CustomerService;
-import com.example.cus.vo.Customers;
 import com.example.utils.SessionUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.example.cus.exception.AlreadyRegisteredCustomerIdException;
 import com.example.cus.exception.AlreadyRegisteredEmailException;
 import com.example.cus.vo.Customer;
 import com.example.cus.web.request.CustomerRegisterForm;
-import com.example.cus.sampleLogin.UserService;
 
 @Controller
 public class CusMainController {
 
 	@Autowired
-	private CustomerService customerSerivce;
-	
-  @Autowired
-	private UserService userService;
+	private CustomerService customerService;
 
 	@GetMapping("/cus")
 	public String home() {
@@ -43,7 +37,7 @@ public class CusMainController {
 	
 	@PostMapping("/login")
 	public String login(String id, String password) {
-		Customers customer = customerSerivce.login(id, password);
+		Customer customer = customerService.login(id, password);
 		
 		LoginCustomerInfo loginCustomerInfo = new LoginCustomerInfo(customer.getId(), customer.getName());
 		SessionUtils.setAttribute("loginCustomer", loginCustomerInfo);

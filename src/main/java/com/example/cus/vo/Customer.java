@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Customer {
-	
+
   private String id;
   private String EncryptPassword;
   private String type;

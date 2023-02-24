@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Location {
-
+/*
 	private int locationNo;
 	private String name;
 	private String city;
@@ -23,5 +23,20 @@ public class Location {
 	private Date locationCreatedDate;
 	private Date locationUpdatedDate;
 	private String locationWays;
+	private String pickupDescription;
+*/
+	
+	private int locationNo;
+	private String locationName;
+	private String city;
+	private String zipcode;
+	private String locationBasicAddress;
+	private String locationDetailAddress;
+	private double locationLatitude;
+	private double locationLongitude;
+	private Date createdDate;
+	private Date updatedDate;
+	private String ways;
+	private String status;
 	private String pickupDescription;
 }

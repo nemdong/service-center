@@ -1,5 +1,6 @@
 package com.example.cus.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -11,18 +12,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.cus.dto.ReservationDto;
 import com.example.cus.mapper.DeviceCategoryMapper;
 import com.example.cus.mapper.ReservationMapper;
-import com.example.cus.vo.CustomerDevice;
 import com.example.cus.vo.DeviceCategory;
 import com.example.cus.vo.Location;
 import com.example.cus.vo.Region;
 import com.example.cus.vo.Reservation;
-import com.example.cus.vo.DeviceCategories;
-import com.example.cus.vo.Locations;
-import com.example.cus.vo.Reservation;
 import com.example.cus.web.request.ReservationForm;
 import com.example.cus.mapper.LocationMapper;
-import com.example.cus.vo.DeviceCategory;
-import com.example.cus.vo.Location;
 import com.example.cus.vo.ServiceCategories;
 
 @Service
@@ -43,11 +38,11 @@ public class ReservationService {
 		return reservationMapper.getDetailReservation(registrationNo);
 	}
 
-	public List<Locations> getLocations(Map<String, Object> param) {
+	public List<Location> getLocations(Map<String, Object> param) {
 		return reservationMapper.getLocations(param);
 	}
 
-	public Locations getLocationDetail(int locationNo) {
+	public Location getLocationDetail(int locationNo) {
 		return reservationMapper.getLocationDetail(locationNo);
 	}
 
@@ -65,7 +60,7 @@ public class ReservationService {
 		return reservation.getRegistrationNo();
 	}
 
-	public void updateReservation(int registrationNo, String reservationDate, String reservationHour) {
+	public void updateReservation(int registrationNo, Date reservationDate, String reservationHour) {
 		Reservation reservation = reservationMapper.getReservationByNo(registrationNo);
 		reservation.setReservationDate(reservationDate);
 		reservation.setReservationHour(reservationHour);
