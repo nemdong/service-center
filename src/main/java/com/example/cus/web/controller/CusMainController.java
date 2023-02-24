@@ -6,13 +6,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import com.example.cus.login.LoginCustomerInfo;
+import com.example.cus.service.CustomerService;
+import com.example.cus.vo.Customers;
+import com.example.utils.SessionUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.example.cus.exception.AlreadyRegisteredCustomerIdException;
 import com.example.cus.exception.AlreadyRegisteredEmailException;
-import com.example.cus.service.CustomerService;
 import com.example.cus.vo.Customer;
 import com.example.cus.web.request.CustomerRegisterForm;
 import com.example.cus.sampleLogin.UserService;
@@ -21,15 +26,31 @@ import com.example.cus.sampleLogin.UserService;
 public class CusMainController {
 
 	@Autowired
+	private CustomerService customerSerivce;
+	
+  @Autowired
 	private UserService userService;
-
-	@Autowired
-	private CustomerService customerService;
 
 	@GetMapping("/cus")
 	public String home() {
 		return "cus/home";
 	}
+	
+	@GetMapping("/login-form")
+	public String loginForm() {
+		return "cus/repair/login-form";
+	}
+	
+	@PostMapping("/login")
+	public String login(String id, String password) {
+		Customers customer = customerSerivce.login(id, password);
+		
+		LoginCustomerInfo loginCustomerInfo = new LoginCustomerInfo(customer.getId(), customer.getName());
+		SessionUtils.setAttribute("loginCustomer", loginCustomerInfo);
+		
+		return "redirect:cus";
+	}
+	
 
 
 	// 로그인
