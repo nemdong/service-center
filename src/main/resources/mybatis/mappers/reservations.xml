@@ -52,7 +52,7 @@
             and G.device_category_product = S.device_product
 	</select>
 	
-	<select id="getLocations" parameterType="map" resultType="Locations">
+	<select id="getLocations" parameterType="map" resultType="Location">
 		 select
 			A.location_no		as locationNo,
 			A.location_name		as locationName,
@@ -87,7 +87,7 @@
 	
 	<!-- nvl2(대상, null아닌 값, null인 값) 예약이 하나라도 되어있지 않으면 1, 예약이 되어있으면 null이 아니므로 0 -->
 	
-	<select id="getLocationDetail" parameterType="int" resultType="Locations">
+	<select id="getLocationDetail" parameterType="int" resultType="Location">
 		select
 			A.location_no		as locationNo,
 			A.location_name		as locationName,

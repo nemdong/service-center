@@ -2,8 +2,6 @@ package com.example.cus.web.controller;
 
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,10 +13,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import com.example.cus.dto.UserDeviceDto;
-import com.example.cus.sampleLogin.UserService;
+import com.example.cus.dto.CustomerDevicesDto;
+import com.example.cus.service.CustomerService;
 import com.example.cus.service.ReservationService;
-import com.example.cus.vo.CustomerDevice;
 import com.example.cus.vo.DeviceCategory;
 import com.example.cus.vo.Location;
 import com.example.cus.vo.Region;
@@ -34,20 +31,15 @@ import com.example.security.vo.LoginUser;
 public class ReservationController {
 
 	@Autowired
-	private UserService userService;
+	private CustomerService customerService;
 	@Autowired
 	private ReservationService reservationService;
 
 // 고객 디바이스 정보
 	@GetMapping("/device")
-	public String device(HttpSession session, Model model) {
-		LoginUserInfo loginUserInfo = (LoginUserInfo) session.getAttribute("loginUser");
-
-		List<UserDeviceDto> deviceInfos = userService.getDeviceInfo(loginUserInfo.getId());
-    
 	public String device(@AuthenticatedUser LoginUser loginUser, Model model) {
-		
-		List<UserDeviceDto> deviceInfos = userService.getDeviceInfo(loginUser.getId());
+
+		List<CustomerDevicesDto> deviceInfos = customerService.getDeviceInfo(loginUser.getId());
 		
 		// 고객의 제품 정보 나타내기
 		model.addAttribute("deviceInfos", deviceInfos);
@@ -59,7 +51,7 @@ public class ReservationController {
 
 // 고객 접수 이유
 	@GetMapping("/reason")
-	public String reason(HttpSession session, Model model,
+	public String reason(@AuthenticatedUser LoginUser loginUser, Model model,
 			@ModelAttribute("reservationForm") ReservationForm reservationForm,
 			@RequestParam("deviceCategoryNo") int deviceCategoryNo) {
 
@@ -76,7 +68,7 @@ public class ReservationController {
 
 // 접수 방법
 	@GetMapping("/way")
-	public String way(HttpSession session, Model model,
+	public String way(@AuthenticatedUser LoginUser loginUser, Model model,
 			@ModelAttribute("reservationForm") ReservationForm reservationForm,
 			@RequestParam("serviceCatNo") int serviceCatNo) {
 
@@ -94,7 +86,7 @@ public class ReservationController {
 // ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ 지정 장소 Reservation ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ	
 
 	@GetMapping("/appointmentPlace")
-	public String appointmentPlace(HttpSession session, Model model,
+	public String appointmentPlace(@AuthenticatedUser LoginUser loginUser, Model model,
 			@ModelAttribute("reservationForm") ReservationForm reservationForm, @RequestParam("way") String way) {
 
 		// 제품 정보 출력
@@ -127,7 +119,7 @@ public class ReservationController {
 
 // ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ 예약 날짜 선택 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 	@GetMapping("/choiceDay")
-	public String selectDay(HttpSession session, Model model,
+	public String selectDay(@AuthenticatedUser LoginUser loginUser, Model model,
 			@ModelAttribute("reservationForm") ReservationForm reservationForm,
 			@RequestParam("locationNo") int locationNo) {
 
@@ -148,16 +140,15 @@ public class ReservationController {
 
 // ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ 예약 완료 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 	@PostMapping("/successReservation")
-	public String successReserv(HttpSession session,
+	public String successReserv(@AuthenticatedUser LoginUser loginUser,
 			@ModelAttribute("reservationForm") ReservationForm reservationForm) {
 
 		return "redirect:successed";
 	}
 
 	@GetMapping("/successed")
-	public String endReserv(HttpSession session, @ModelAttribute("reservationForm") ReservationForm reservationForm) {
+	public String endReserv(@AuthenticatedUser LoginUser loginUser, @ModelAttribute("reservationForm") ReservationForm reservationForm) {
 
-		LoginUserInfo loginUser = (LoginUserInfo) session.getAttribute("loginUser");
 		
 		Reservation reservation = new Reservation();
 		reservation.setDeviceNo(reservationForm.getDeviceNo());

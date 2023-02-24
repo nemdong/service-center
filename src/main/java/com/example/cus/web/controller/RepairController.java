@@ -1,5 +1,6 @@
 package com.example.cus.web.controller;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,8 +22,10 @@ import com.example.cus.dto.ReservationDto;
 import com.example.cus.login.LoginCustomerInfo;
 import com.example.cus.service.CustomerService;
 import com.example.cus.service.ReservationService;
-import com.example.cus.vo.Locations;
+import com.example.cus.vo.Location;
 import com.example.cus.web.request.ReservationForm;
+import com.example.security.AuthenticatedUser;
+import com.example.security.vo.LoginUser;
 
 @Controller
 @RequestMapping("/repair")
@@ -45,15 +48,14 @@ public class RepairController {
 	}
 	
 	@GetMapping("/mysupport")
-	public String mysupport(HttpSession session, Model model) {
-		LoginCustomerInfo loginCustomerInfo = (LoginCustomerInfo) session.getAttribute("loginCustomer");
-		List<CustomerDevicesDto> device = customerService.getDeviceInfo(loginCustomerInfo.getId());
+	public String mysupport(@AuthenticatedUser LoginUser loginUser, Model model) {
+		List<CustomerDevicesDto> device = customerService.getDeviceInfo(loginUser.getId());
 		model.addAttribute("device", device);
 		
-		List<ReservationDto> reservation = reservationService.getReservations(loginCustomerInfo.getId());
+		List<ReservationDto> reservation = reservationService.getReservations(loginUser.getId());
 		model.addAttribute("reservation", reservation);
 		
-		List<DeviceHistoryDto> history = customerService.getHistories(loginCustomerInfo.getId());
+		List<DeviceHistoryDto> history = customerService.getHistories(loginUser.getId());
 		model.addAttribute("history", history);
 		
 		return "cus/repair/mysupport";
@@ -71,7 +73,7 @@ public class RepairController {
 	여기는 테이블을 json으로 테이블 추가할 때 사용
 	*/
 	@GetMapping("/mydevice")
-	public String mydevice(@RequestParam("deviceNo") int deviceNo, HttpSession session, Model model) {
+	public String mydevice(@RequestParam("deviceNo") int deviceNo, @AuthenticatedUser LoginUser loginUser, Model model) {
 		CustomerDevicesDto device = customerService.getDeviceDetail(deviceNo);
 		model.addAttribute("device", device);
 		
@@ -82,7 +84,7 @@ public class RepairController {
 	}
 	
 	@GetMapping("/reservationdetail")
-	public String reservationdetail(@RequestParam("registrationNo") int registrationNo, HttpSession session, Model model) {
+	public String reservationdetail(@RequestParam("registrationNo") int registrationNo, @AuthenticatedUser LoginUser loginUser, Model model) {
 		ReservationDto reservationDto = reservationService.getDetailReservation(registrationNo);
 		
 		model.addAttribute("reservationDto", reservationDto);
@@ -101,7 +103,7 @@ public class RepairController {
 			param.put("keyword", keyword);
 		}
 		
-		List<Locations> locations = reservationService.getLocations(param);
+		List<Location> locations = reservationService.getLocations(param);
 		model.addAttribute("locations", locations);
 		
 		return "cus/repair/visitreservation";
@@ -112,7 +114,7 @@ public class RepairController {
 	 @ResponseBody
 	 @GetMapping("/locations") 		//등록이거나 수정일 때 POST방식 사용, 여기서는 그냥 값을 찾는 것이므로 GET 사용.  
 	 // 필수가 아닌 값, null허용 -> required = false, 값이 넘어오지 않을 때 기본 값 설정 -> defaultValue = ""
-	 public List<Locations> getLocation(@RequestParam(name = "keyword", required = false, defaultValue = "") String keyword) { //@RequestParam("ways") String way
+	 public List<Location> getLocation(@RequestParam(name = "keyword", required = false, defaultValue = "") String keyword) { //@RequestParam("ways") String way
 		 // visitreservation에서 ajax통신할때 keyword를 넘겨주니까 keyword를 받고 keyword에 해당하는 {locationNo: "10003", locationName: "Apple 서울역", city: "서울 특별시", zipcode: "04320",…}값이 얻어진다.
 		 // 반드시 값을 전해주면 받는 것을 생각해야한다. 
 		 Map<String, Object> param = new HashMap<String, Object>();
@@ -120,14 +122,14 @@ public class RepairController {
 		 if (!keyword.isBlank()) {
 			 param.put("keyword", keyword);
 		 }
-		 List<Locations> locations = reservationService.getLocations(param);
+		 List<Location> locations = reservationService.getLocations(param);
 		 
 		 return locations;
 	 }
 	
 	@GetMapping("/reservationdate")
 	public String reservationdate(@RequestParam("locationNo") int locationNo, Model model) {
-		Locations locationDetail = reservationService.getLocationDetail(locationNo);
+		Location locationDetail = reservationService.getLocationDetail(locationNo);
 		model.addAttribute("locationDetail", locationDetail);
 		
 		// locationNo에 해당하는 센터를 Detail로, JSON을 통해 값 전해준다. @ResponseBody
@@ -180,7 +182,7 @@ public class RepairController {
 	@PostMapping("/change-reservation")
 	public String change(@RequestParam("registrationNo") int registrationNo, 
 			@RequestParam("locationNo") int locationNo, 
-			@RequestParam("reservationDate") String reservationDate, 
+			@RequestParam("reservationDate") Date reservationDate, 
 			@RequestParam("reservationHour") String reservationHour ) {
 		
 		reservationService.updateReservation(registrationNo, reservationDate, reservationHour);

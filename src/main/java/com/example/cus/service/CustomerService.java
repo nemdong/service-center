@@ -34,7 +34,7 @@ public class CustomerService {
 	@Autowired
 	private DeviceHistoryMapper deviceHistoryMapper;
 	
-	public Customers login(String id, String password) {
+	public Customer login(String id, String password) {
 		return customerMapper.getCustomerById(id);
 	}
 	
@@ -54,14 +54,12 @@ public class CustomerService {
 		return customerMapper.getDeviceCategoryHistories(deviceNo);
 	}
 	
-	
-}
 	@Autowired
 	private CustomerRoleMapper customerRoleMapper;
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
-     public void registerCustomer(CustomerRegisterForm customerRegisterForm ) {
+    public void registerCustomer(CustomerRegisterForm customerRegisterForm ) {
         Customer savedCustomer = customerMapper.getCustomerById(customerRegisterForm.getId());
         if (savedCustomer != null) {
 			throw new ApplicationException("["+customerRegisterForm.getId()+"] 사용할 수 없는 아이디입니다.");
@@ -98,7 +96,7 @@ public class CustomerService {
     		customerMapper.updateCustomer(customer);
 
     		return pw;
-    	}
+    }
 
  	public CustomerDetailDto getCustomerDetail(String customerId) {
  		Customer customer = customerMapper.getCustomerById(customerId);

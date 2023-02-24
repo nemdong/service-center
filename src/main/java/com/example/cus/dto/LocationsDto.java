@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 public class LocationsDto {
 
-	private String locationNo;
+	private int locationNo;
 	private String locationName;
 	private String city;
 	private String zipcode;

@@ -17,7 +17,7 @@ public class Reservation {
 	private String id;
 	private int serviceCatNo;
 	private String registrationType;
-	private String reservationDate;
+	private Date reservationDate;
 	private String reservationHour;
 	private String reservationStatus;
 	private int locationNo;
