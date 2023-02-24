@@ -28,7 +28,7 @@
 					<h2><strong>지원 선택</strong></h2>
 				</div>
 				
-				<p>고객님은 현재 <strong class="text-danger">${loginUser.id }</strong> 계정으로 접속 중입니다</p>
+				<p>고객님은 현재 <strong class="text-danger"><sec:authentication property="principal.id"/></strong> 계정으로 접속 중입니다</p>
 			</div>
 			<div class="col-10 mb-5 border-top"></div>
 			
@@ -49,7 +49,7 @@
 											<image src="/resources/images/earphone-pro.png" width="110" height="110" class="img-thumnail rounded mx-auto d-block">
 										</c:otherwise>
 									</c:choose>
-									<br><strong>"${loginUser.name }"의</strong>
+									<br><strong>"<sec:authentication property="principal.name" />"의</strong>
 									<br>${device.deviceName }
 								</a>
 						</c:forEach>

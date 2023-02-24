@@ -55,7 +55,7 @@ public class CusMainController {
 
 	@GetMapping("/access-denied")
 	public String accessDenied() {
-		return "cus/error/denied";
+		return "cus/error/access-denied";
 	}
 
 	//아이디 중복확인
