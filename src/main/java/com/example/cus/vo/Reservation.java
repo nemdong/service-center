@@ -21,5 +21,6 @@ public class Reservation {
 	private String reservationHour;
 	private String reservationStatus;
 	private int locationNo;
+	private String receiveAddress;
 	private Date registrationDate;
 }

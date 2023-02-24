@@ -37,7 +37,7 @@
 					<p><strong>나의 기기</strong></p>
 					
 						<c:forEach var="device" items="${deviceInfos}">
-								<a href="reason?deviceCategoryNo=${device.deviceCategoryNo }" class="border text-center m-3 p-3" style="color:black; text-decoration:none; display:inline-block; height:210px; width:250px;">
+								<a href="reason?deviceCategoryNo=${device.deviceCategoryNo }&deviceNo=${device.deviceNo}" class="border text-center m-3 p-3" style="color:black; text-decoration:none; display:inline-block; height:210px; width:250px;">
 									<c:choose>
 										<c:when test="${device.deviceCategoryProduct == 'phone' }">
 											<image src="/resources/images/samplePhone-1.png" width="110" height="110" class="img-thumnail rounded mx-auto d-block">

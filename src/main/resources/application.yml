@@ -39,3 +39,4 @@ mybatis:
 service-center:
   employee:
     init-password: 1234
+
