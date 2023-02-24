@@ -74,10 +74,10 @@
 					
 						<c:forEach var="location" items="${locations }">
 							<form id="send-location" method="get" action="choiceDay">
-								<div class="border mt-2 pt-1 ps-2" style="cursor:Pointer" data-lat="${location.latitude }" data-lon="${location.longitude }">
+								<div class="border mt-2 pt-1 ps-2" style="cursor:Pointer" data-lat="${location.locationLatitude }" data-lon="${location.locationLongitude }">
 									<input type="hidden" value="${location.locationNo }" name="locationNo" id="location-info" />
-									<div><span><strong style="font-size:20px;">${location.name }</strong></span></div>
-									<div class="pt-2"><span>주소: ${location.basicAddress }</span></div>
+									<div><span><strong style="font-size:20px;">${location.locationName }</strong></span></div>
+									<div class="pt-2"><span>주소: ${location.locationBasicAddress }</span></div>
 									<div class="d-flex justify-content-between pt-1">
 										<span>회수 시간 - ${location.pickupDescription }</span>
 										<button type="submit" class="btn btn-outline-secondary btn-xs">선택</button>
@@ -130,10 +130,11 @@
 			data : data,
 			dataType : "json",
 			success : function(data){
+				console.log(data);
 				
 				var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
 				var options = { //지도를 생성할 때 필요한 기본 옵션
-					center: new kakao.maps.LatLng(data[0].latitude, data[0].longitude), //지도의 중심좌표.
+					center: new kakao.maps.LatLng(data[0].locationLatitude, data[0].locationLongitude), //지도의 중심좌표.
 					level: 3 //지도의 레벨(확대, 축소 정도)
 				};
 				
@@ -144,8 +145,8 @@
 					// title과 위치를 json으로 전달받아 지도에 마커 표시
 					var marker = new kakao.maps.Marker({
 						map : map,	// 마커를 표시할 지도
-						title : data[i].name,	// 마커 이름
-						position : new kakao.maps.LatLng(data[i].latitude, data[i].longitude)	// 마커 위치
+						title : data[i].locationName,	// 마커 이름
+						position : new kakao.maps.LatLng(data[i].locationLatitude, data[i].locationLongitude)	// 마커 위치
 					});
 				}
 				

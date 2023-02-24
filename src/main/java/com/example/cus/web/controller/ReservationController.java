@@ -27,7 +27,7 @@ import com.example.security.vo.LoginUser;
 
 @Controller
 @RequestMapping("/reservation")
-@SessionAttributes({ "reservationForm" })
+@SessionAttributes({"reservationForm"})
 public class ReservationController {
 
 	@Autowired

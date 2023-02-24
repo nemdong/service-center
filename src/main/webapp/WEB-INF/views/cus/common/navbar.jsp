@@ -31,7 +31,7 @@
 		</ul>
 		<sec:authorize access="isAuthenticated()">
 			<ul class="navbar-nav me-auto">
-				<li class="nav-item"><a href="/reservation/device" class="nav-link" >접수</a></li>
+				<li class="nav-item"><a href="/repair/request" class="nav-link" >접수</a></li>
 				<li class="nav-item"><a href="" class="nav-link" >문의</a></li>
 			</ul>
 		
