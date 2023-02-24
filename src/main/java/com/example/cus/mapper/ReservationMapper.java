@@ -13,5 +13,6 @@ public interface ReservationMapper {
 	void insertReservation(Reservation reservation);
 	List<ServiceCategories> getServiceByNo(int deviceCategoryNo);
 	ServiceCategories getServiceInfo(int serviceCatNo);
-
+	void addReservation(Reservation reservation);
+	
 }

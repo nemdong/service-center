@@ -28,7 +28,7 @@
 					<p><strong>${device.deviceCategoryName }</strong> <strong class="text-danger" style="font-size:30px;">${serviceInfo.serviceCatName }</strong></p>
 					<p>
 						지정 장소 선택 후 접수
-						</br>- 일 2회 회수
+						</br>- 일 2회 회수 <a class="ms-3" href="device" style="text-decoration:none;"><strong>(기기 변경)</strong></a>
 					</p>
 				</div>
 				<div class="col-10 border-bottom"></div>
@@ -36,62 +36,61 @@
 			
 			<p>지정 장소 찾기</p>
 			
-			<form>
-				<div class="row">
-					<div class="col-12 mb-3">
-						<table>
-							<col width="20%">
-							<col width="30%">
-							<col width="10%">
-							<col width="40%">
-							<tbody>
-								<tr>
-									<th class="pe-1">
-										<select class="form-select form-select-sm" aria-label=".form-select-sm example">
-											<option selected>도/시 선택</option>
-											<option value="1">One</option>
-											<option value="2">Two</option>
-											<option value="3">Three</option>
-										</select>
-									</th>
-									<th class="pe-3">
-										<select class="form-select form-select-sm" aria-label=".form-select-sm example">
-											<option selected>구 선택</option>
-											<option value="1">One</option>
-											<option value="2">Two</option>
-											<option value="3">Three</option>
-										</select>
-									</th>
-									<th>
-										<button type="button" class="btn btn-outline-secondary btn-xs" id="find-location">찾기</button>
-									</th>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-					
-					<div class="row ">
-						<div class="col-5 border" style="height:500px; overflow-y:scroll;">
-						
-							<c:forEach var="location" items="${locations }">
-								<a>
-									<div class="border mt-2 pt-1 ps-2">
-										<div><span><strong style="font-size:20px;">${location.name }</strong></span></div>
-										<div class="pt-2"><span>주소: ${location.basicAddress }</span></div>
-										<div class="d-flex justify-content-between pt-1">
-											<span>회수 시간 - ${location.pickupDescription }</span>
-											<button type="button" class="btn btn-outline-secondary btn-xs">선택</button>
-										</div>
-									</div>
-								</a>
-							</c:forEach>
-							
-						</div>
-						<div class="col-7 ms-3" id="map" style="width:500px;height:500px;" id="appoint-map"></div>
-					</div>
-					
+			<div class="row">
+				<div class="col-12 mb-3">
+					<table>
+						<col width="20%">
+						<col width="30%">
+						<col width="10%">
+						<col width="40%">
+						<tbody>
+							<tr>
+								<th class="pe-1">
+									<select class="form-select form-select-sm" aria-label=".form-select-sm example">
+										<option selected>도/시 선택</option>
+										<c:forEach var="region" items="${regions }">
+											<option value="${region.no }">${region.regionName }</option>
+										</c:forEach>
+									</select>
+								</th>
+								<th class="pe-3">
+									<select class="form-select form-select-sm" aria-label=".form-select-sm example">
+										<option selected>구 선택</option>
+										<option value="1">One</option>
+										<option value="2">Two</option>
+										<option value="3">Three</option>
+									</select>
+								</th>
+								<th>
+									<button type="button" class="btn btn-outline-secondary btn-xs" id="find-location">찾기</button>
+								</th>
+							</tr>
+						</tbody>
+					</table>
 				</div>
-			</form>
+				
+				<div class="row ">
+					<div class="col-5" style="height:500px; overflow-y:scroll;" id="change-map">
+					
+						<c:forEach var="location" items="${locations }">
+							<form id="send-location" method="get" action="choiceDay">
+								<div class="border mt-2 pt-1 ps-2" style="cursor:Pointer" data-lat="${location.latitude }" data-lon="${location.longitude }">
+									<input type="hidden" value="${location.locationNo }" name="locationNo" id="location-info" />
+									<div><span><strong style="font-size:20px;">${location.name }</strong></span></div>
+									<div class="pt-2"><span>주소: ${location.basicAddress }</span></div>
+									<div class="d-flex justify-content-between pt-1">
+										<span>회수 시간 - ${location.pickupDescription }</span>
+										<button type="submit" class="btn btn-outline-secondary btn-xs">선택</button>
+									</div>
+								</div>
+							</form>
+						</c:forEach>
+						
+					</div>
+					<div class="col-7 ms-3" id="map" style="width:500px;height:500px;" id="appoint-map"></div>
+				</div>
+				
+			</div>
 			
 		</div>
 
@@ -100,6 +99,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6688b3635c7bb0e03ca4f33c55d156ba"></script>
 <script>
+	// 찾기 버튼
 	$("#find-location").click(function() {
 		
 		//...
@@ -110,6 +110,12 @@
 		
 	});
 	
+	// 박스 클릭시
+	$("#send-location").click(function() {
+		
+	});
+	
+	var map;
 	function receiveData(a, b){
 		
 		var data = {way : "appoint"};
@@ -131,7 +137,7 @@
 					level: 3 //지도의 레벨(확대, 축소 정도)
 				};
 				
-				var map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
+				map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
 				
 				for(var i=0; i<data.length; i++){
 				
@@ -147,10 +153,21 @@
 			error : function(error){
 			   alert("지도 오류");
 			}
+			
 	   	});
 	}
 	
 	receiveData();
+	
+	// 지도 중심 마커 변경
+	$("#change-map").on('click', 'div[data-lat]', function() {
+		let latitude = $(this).attr("data-lat");
+		let longitude = $(this).attr("data-lon")
+		
+		var moveLatLon = new kakao.maps.LatLng(latitude, longitude);
+		map.setCenter(moveLatLon);
+		
+	})
 	
 </script>
 </body>
