@@ -5,8 +5,10 @@ server:
 # mybatis의 SQL 실행 로그 출력을 위한 설정
 logging:
   level:
+    '[com.example.cus.mapper]': trace
     '[com.example.mapper]': trace
     '[com.example.emp.mapper]': trace
+    '[org.springframework.security]': debug
     
 spring:
   # 데이터베이스와 연결된 Connection Pool 설정
@@ -19,14 +21,22 @@ spring:
     view:
       prefix: /WEB-INF/views/
       suffix: .jsp
-  servlet:    multipart:      max-file-size: 10MB
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
       location: src\main\webapp\resources\images
 
 # mybatis 환경설정 
 mybatis:
   mapper-locations:
   - mybatis/mappers/*.xml
-  type-aliases-package: com.example.cus.vo, com.example.cus.dto, com.example.emp.vo, com.example.emp.dto
+  type-aliases-package: com.example.cus.vo, com.example.cus.dto, com.example.emp.vo, com.example.emp.dto  #앨리어스 설정
   configuration:
     jdbc-type-for-null: 'NULL'
     log-impl: org.apache.ibatis.logging.log4j2.Log4j2Impl
+ 
+service-center:
+  employee:
+    init-password: 1234
+

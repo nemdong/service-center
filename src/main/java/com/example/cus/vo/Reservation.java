@@ -17,9 +17,10 @@ public class Reservation {
 	private String id;
 	private int serviceCatNo;
 	private String registrationType;
-	private Date reservationDate;
+	private String reservationDate;
 	private String reservationHour;
 	private String reservationStatus;
 	private int locationNo;
 	private String receiveAddress;
+	private Date registrationDate;
 }

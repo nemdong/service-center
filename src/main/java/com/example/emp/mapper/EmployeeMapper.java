@@ -24,4 +24,10 @@ public interface EmployeeMapper {
 	void insertAttachedFile(AttachedFile attachedFile);
 	AttachedFile getAttachedFileByEmpNo(int empNo);
 	void deleteAttachedFileByEmpNo(int empNo);
+	EmployeeDto getEmployeeByEmpNo(int no);
+	List<String> dupExternalEmails(String externalEmail);
+	List<String> dupMobileTels(String mobileTel);
+	
+	void createdMonthAttendances(int empNo);
+	void deleteMonthAttendances(int empNo);
 }
