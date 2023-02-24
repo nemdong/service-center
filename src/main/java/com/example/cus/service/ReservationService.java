@@ -15,6 +15,10 @@ import com.example.cus.vo.DeviceCategories;
 import com.example.cus.vo.Locations;
 import com.example.cus.vo.Reservation;
 import com.example.cus.web.request.ReservationForm;
+import com.example.cus.mapper.LocationMapper;
+import com.example.cus.vo.DeviceCategory;
+import com.example.cus.vo.Location;
+import com.example.cus.vo.ServiceCategories;
 
 @Service
 @Transactional
@@ -71,4 +75,46 @@ public class ReservationService {
 
 	
 
+	
+	@Autowired
+	private LocationMapper locationMapper;
+	
+	
+// 접수 추가
+	public void addReservation(Reservation reservation) {
+		
+		reservationMapper.insertReservation(reservation);
+	}
+	
+// 제품 정보 불러오기	
+	public DeviceCategory getDeviceCategoryInfo(int deviceCategoryNo) {
+		
+		DeviceCategory deviceCategory = deviceCategoryMapper.getDeviceInfoByCategoryNo(deviceCategoryNo);
+		
+		return deviceCategory;
+	}
+	
+// 제품별 서비스 목록 불러오기
+	public List<ServiceCategories> getServiceCategories(int deviceCategoryNo) {
+		
+		List<ServiceCategories> serviceCats = reservationMapper.getServiceByNo(deviceCategoryNo);
+		
+		return serviceCats;
+	}
+	
+// 서비스 번호를 통한 서비스 상세 정보 불러오기
+	public ServiceCategories getServiceInfo(int serviceCatNo) {
+		
+		ServiceCategories serviceInfo = reservationMapper.getServiceInfo(serviceCatNo);
+		
+		return serviceInfo;
+	}
+
+// 지정 장소 목록 불러오기
+	public List<Location> getAppoints(String way) {
+		
+		List<Location> locations = locationMapper.getAppointLocations(way);
+		
+		return locations;
+	}
 }

@@ -19,3 +19,4 @@ public class CustomerDevice {
 	private String deviceName;
 	private String rental;
 }
+

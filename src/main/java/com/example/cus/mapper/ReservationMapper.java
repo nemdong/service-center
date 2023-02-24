@@ -9,6 +9,8 @@ import com.example.cus.dto.ReservationDto;
 import com.example.cus.vo.Locations;
 import com.example.cus.vo.Reservation;
 
+import com.example.cus.vo.ServiceCategories;
+
 @Mapper
 public interface ReservationMapper {
 
@@ -23,4 +25,9 @@ public interface ReservationMapper {
 	void updateReservation(Reservation reservation);
 	Reservation getReservationByNo(int registrationNo);
 	void deleteRegistraionByNo(int registrationNo);
+  
+  // 동원씨가 한 부분
+  void insertReservation(Reservation reservation);
+	List<ServiceCategories> getServiceByNo(int deviceCategoryNo);
+	ServiceCategories getServiceInfo(int serviceCatNo);
 }

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.cus.mapper.CustomerMapper">
+
+	<insert id="insertCustomer" parameterType="Customer">
+		insert into customers
+			(Customer_id, Customer_type, Customer_password, Customer_name, Customer_birthday, Customer_zipcode,Customer_basic_address,Customer_detail_address, Customer_email, Customer_phone)
+		values
+			(#{id},#{type}, #{encryptPassword}, #{name}, #{birthday}, #{zipcode}, #{basicAddress}, #{detailAddress}, #{email}, #{phone})
+	</insert>
+	
+	<update id="updateCustomer" parameterType="Customer">
+		update 
+			customers
+		set
+		    customer_id= #{id},
+			customer_password = #{encryptPassword},
+			customer_phone = #{phone},
+			customer_zipcode = #{zipcode},
+			customer_basic_address= #{basicAddress},
+			customer_detail_address= #{detailAddress},
+			customer_deleted = #{deleted},
+			customer_updated_date = sysdate
+		where
+			customer_id = #{id}
+	</update>
+	
+	<select id="getCustomerById" parameterType="string" resultType="Customer">
+		select
+			customer_id as id,
+			customer_password as encryptPassword,
+			customer_name as name,
+			customer_birthday as birthday,
+			customer_zipcode as zipcode,
+			customer_basic_address as basicAddress,
+			customer_detail_address as detailAddress,
+			customer_email as email,
+			customer_phone as phone,
+			customer_deleted as deleted,
+			customer_updated_date as updatedDate,
+			customer_created_date as createdDate
+		from
+			customers
+		where
+			customer_id = #{value}
+	</select>
+	
+	<select id="getCustomerByEmail" parameterType="string" resultType="Customer">
+		select
+			customer_id as id,
+			customer_password as encryptPassword,
+			customer_name as name,
+			customer_birthday as birthday,
+			customer_zipcode as zipcode,
+			customer_basic_address as basicAddress,
+			customer_detail_address as detailAddress,
+			customer_email as email,
+			customer_phone as phone,
+			customer_deleted as deleted,
+			customer_updated_date as updatedDate,
+			customer_created_date as createdDate
+		from
+			customers
+		where
+			customer_id = #{value}
+	</select>
+	
+	<select id="getAllCustomers" resultType="Customer">
+		select
+			customer_id as id,
+			customer_password as encryptPassword,
+			customer_name as name,
+			customer_birthday as birthday,
+			customer_zipcode as zipcode,
+			customer_basic_address as basicAddress,
+			customer_detail_address as detailAddress,
+			customer_email as email,
+			customer_phone as phone,
+			customer_deleted as deleted,
+			customer_updated_date as updatedDate,
+			customer_created_date as createdDate
+		from
+			customers
+		order by
+			user_name asc
+	</select>
+	
+	<select id="checkId" parameterType="String" resultType="Customer">
+      select 
+           customer_id as id
+      from 
+            customers 
+      where
+             customer_id = #{id}
+  </select>
+	<select id="searchId"  resultType="Customer">
+      select 
+           customer_id as id
+      from 
+            customers 
+      where
+            customer_name = #{name} 
+      and   
+            customer_email = #{email}
+  </select>
+	
+	<select id="searchPw"  resultType="Customer">
+      select 
+            customer_id as id,
+			customer_password as encryptPassword,
+			customer_name as name,
+			customer_birthday as birthday,
+			customer_zipcode as zipcode,
+			customer_basic_address as basicAddress,
+			customer_detail_address as detailAddress,
+			customer_email as email,
+			customer_phone as phone,
+			customer_deleted as deleted,
+			customer_updated_date as updatedDate,
+			customer_created_date as createdDate
+      from 
+            customers 
+      where
+            customer_id = #{id} 
+      and   
+            customer_email = #{email}
+  </select>
+
+
+	
+
+</mapper>
