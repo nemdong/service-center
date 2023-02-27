@@ -25,10 +25,12 @@ import com.example.emp.mapper.RepairMapper;
 import com.example.emp.service.RepairService;
 import com.example.emp.vo.AssignService;
 import com.example.emp.web.request.AssignRegisterForm;
+import com.example.security.AuthenticatedUser;
+import com.example.security.vo.LoginUser;
 
 @Controller
 @RequestMapping("/emp/repair")
-public class RepairController {
+public class EmpRepairController {
 	
 	@Autowired
 	private RepairService repairService;
@@ -69,10 +71,11 @@ public class RepairController {
 	
 	// as 접수확인 리스트
 	@GetMapping("/check-list")
-	public String checklist(@RequestParam(name = "page", required = false, defaultValue = "1") int page, 
+	public String checklist(@AuthenticatedUser LoginUser loginUser, 
+							@RequestParam(name = "page", required = false, defaultValue = "1") int page, 
 							Model model) {
 		
-		int empNo = 1000;
+		int empNo = Integer.parseInt(loginUser.getId());
 		Map<String, Object> result1 = repairService.getCheckList(empNo, page);
 		model.addAttribute("asCheckList", result1.get("asCheckList"));
 		model.addAttribute("pagination", result1.get("pagination"));		
