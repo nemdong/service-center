@@ -12,7 +12,10 @@
 <%@ include file="../common/navbar.jsp" %>
 <div class="container">
 	<div class="row">
-		<div class="col-2">			
+		<div class="col-2">	
+			<c:set var="menu1" value="A/S관리" />
+			<c:set var="menu2" value="a/s배정" />
+			<%@include file="../common/leftbar.jsp" %>		
 		</div>
 		<div class="col-10">
 			<div class="row">
