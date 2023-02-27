@@ -8,27 +8,34 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.example.cus.dto.CustomerDetailDto;
 import com.example.cus.dto.CustomerDevicesDto;
 import com.example.cus.dto.DeviceHistoryDto;
 import com.example.cus.dto.ReservationDto;
 import com.example.cus.login.LoginCustomerInfo;
 import com.example.cus.service.CustomerService;
 import com.example.cus.service.ReservationService;
+import com.example.cus.vo.DeviceCategory;
 import com.example.cus.vo.Location;
+import com.example.cus.vo.ServiceCategories;
 import com.example.cus.web.request.ReservationForm;
 import com.example.security.AuthenticatedUser;
 import com.example.security.vo.LoginUser;
 
 @Controller
 @RequestMapping("/repair")
+@SessionAttributes({ "reservationForm" }) 
 public class RepairController {
 	
 	@Autowired
@@ -44,6 +51,7 @@ public class RepairController {
 	
 	@GetMapping("/request")
 	public String request() {
+		
 		return "cus/repair/request";
 	}
 	
@@ -93,9 +101,11 @@ public class RepairController {
 	
 	@GetMapping("/visitreservation")
 	public String visitreservation(@RequestParam(name = "status", required = false) String status, 
-									@RequestParam(name = "keyword", required = false) String keyword, Model model) { //@RequestParam("ways") String way
+									@RequestParam(name = "keyword", required = false) String keyword,
+									@ModelAttribute("reservationForm") ReservationForm reservationForm, 
+									@RequestParam("way") String way, Model model) {
 		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("way", "center");
+		param.put("way", way);
 		if (status != null) {
 			param.put("status", status);
 		}
@@ -116,7 +126,6 @@ public class RepairController {
 	 // 필수가 아닌 값, null허용 -> required = false, 값이 넘어오지 않을 때 기본 값 설정 -> defaultValue = ""
 	 public List<Location> getLocation(@RequestParam(name = "keyword", required = false, defaultValue = "") String keyword) { //@RequestParam("ways") String way
 		 // visitreservation에서 ajax통신할때 keyword를 넘겨주니까 keyword를 받고 keyword에 해당하는 {locationNo: "10003", locationName: "Apple 서울역", city: "서울 특별시", zipcode: "04320",…}값이 얻어진다.
-		 // 반드시 값을 전해주면 받는 것을 생각해야한다. 
 		 Map<String, Object> param = new HashMap<String, Object>();
 		 param.put("way", "center");
 		 if (!keyword.isBlank()) {
@@ -128,12 +137,20 @@ public class RepairController {
 	 }
 	
 	@GetMapping("/reservationdate")
-	public String reservationdate(@RequestParam("locationNo") int locationNo, Model model) {
+	public String reservationdate(@RequestParam("locationNo") int locationNo,
+									@ModelAttribute("reservationForm") ReservationForm reservationForm, Model model) {
 		Location locationDetail = reservationService.getLocationDetail(locationNo);
 		model.addAttribute("locationDetail", locationDetail);
+		// 제품 정보 출력
+		DeviceCategory device = reservationService.deviceCategoryInfo(reservationForm.getDeviceCategoryNo());
+		model.addAttribute("deviceNo", reservationForm.getDeviceNo());
+		model.addAttribute("serviceCatNo", reservationForm.getServiceCatNo());
+		model.addAttribute("device", device);
+
+		// 제품 서비스 출력
+		ServiceCategories serviceInfo = reservationService.serviceInfo(reservationForm.getServiceCatNo());
+		model.addAttribute("serviceInfo", serviceInfo);
 		
-		// locationNo에 해당하는 센터를 Detail로, JSON을 통해 값 전해준다. @ResponseBody
-		// deviceNo, serviceCatNo, ways 
 		return "cus/repair/reservationdate";
 	}
 	
@@ -141,8 +158,6 @@ public class RepairController {
 	@GetMapping("/hours") // 날짜에 해당하는 시간을 가져오려고 ajax통신
 	public List<String> getSelectHour(@RequestParam("locationNo") int locationNo, 
 								@RequestParam("date") String date, Model model) {
-		//Locations locationDetail = reservationService.getLocationDetail(locationNo);
-		//model.addAttribute("locationDetail", locationDetail);
 		
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("locationNo", locationNo);
@@ -155,10 +170,10 @@ public class RepairController {
 	
 	
 	//post로 전달받은 값을 입력폼에 저장시킨다.
+	//String으로 date값이 들어오기 때문에 @DateTimeFormat(pattern = "yyyy-MM-dd") 선언해야한다.
 	@PostMapping("/reservation-success")
-	public String insertReserv(HttpSession session, ReservationForm reservationForm) {
-		LoginCustomerInfo loginCustomerInfo = (LoginCustomerInfo) session.getAttribute("loginCustomer");
-		int registrationNo = reservationService.insertRegistration(loginCustomerInfo.getId(), reservationForm);
+	public String insertReserv(@AuthenticatedUser LoginUser loginUser, ReservationForm reservationForm) {
+		int registrationNo = reservationService.insertRegistration(loginUser.getId(), reservationForm);
 		
 		return "redirect:reservation-success?registrationNo=" + registrationNo + "&locationNo=" + reservationForm.getLocationNo();
 	}
@@ -178,11 +193,12 @@ public class RepairController {
 		reservationDate: 2023-02-22
 		reservationHour: 13:00
 		update하는 것은 값을 한번 조회 후 조회한 값을 set으로 변경해서 update문을 실행해야함
+		String으로 date값이 들어오기 때문에 @DateTimeFormat(pattern = "yyyy-MM-dd") 선언해야한다.
 	 */
 	@PostMapping("/change-reservation")
 	public String change(@RequestParam("registrationNo") int registrationNo, 
 			@RequestParam("locationNo") int locationNo, 
-			@RequestParam("reservationDate") Date reservationDate, 
+			@RequestParam("reservationDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date reservationDate, 
 			@RequestParam("reservationHour") String reservationHour ) {
 		
 		reservationService.updateReservation(registrationNo, reservationDate, reservationHour);

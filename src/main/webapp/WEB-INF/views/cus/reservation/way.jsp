@@ -9,7 +9,7 @@
 <title></title>
 </head>
 <body>
-<c:set var="menu" value="reservation" />
+<c:set var="menu" value="repair" />
 <%@ include file="../common/navbar.jsp" %>
 <div class="container">
 	<div class="row">
@@ -40,9 +40,9 @@
 					</span>
 				</div>
 				<div class="col-10">
-					<h2><strong><strong>${serviceInfo.serviceCatName }</strong></h2>
+					<h2><strong><strong>(문제) ${serviceInfo.serviceCatName }</strong></h2>
 					<p class="text-danger">${device.deviceCategoryName }</p>
-					<a href="device" style="text-decoration:none;"><strong>(기기 변경)</strong></a>
+					<a href="device" style="text-decoration:none;"><strong>기기 변경</strong></a>
 				</div>
 				<div class="col-10 border-bottom mb-5"></div>
 			</div>

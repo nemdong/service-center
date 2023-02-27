@@ -40,7 +40,7 @@
 					</span>
 				</div>
 				<div class="col-10">
-					<h2><strong><sec:authentication property="principal.name"/> </strong>의 ${device.deviceCategoryProduct }</h2>
+					<h2><strong><sec:authentication property="principal.name" /></strong>의 ${device.deviceCategoryProduct }</h2>
 					<p class="text-danger">${device.deviceCategoryName }</p>
 					<a href="device" style="text-decoration:none;"><strong>(기기 변경)</strong></a>
 				</div>

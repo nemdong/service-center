@@ -49,11 +49,11 @@
 											<image src="/resources/images/earphone-pro.png" width="110" height="110" class="img-thumnail rounded mx-auto d-block">
 										</c:otherwise>
 									</c:choose>
+
 									<br><strong>"<sec:authentication property="principal.name" />"의</strong>
 									<br>${device.deviceName }
 								</a>
 						</c:forEach>
-						
 				</div>
 			</div>
 		</div>

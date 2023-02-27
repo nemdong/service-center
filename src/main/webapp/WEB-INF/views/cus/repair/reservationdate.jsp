@@ -39,9 +39,8 @@
 	<div class="row mb-3">
 		<div class="col-7">
 			<form id="form-reservation" class="p-3" method="post" action="reservation-success"> <!-- action이 reservation-success인지 reservationdate인지 -->
-				<input type="hidden" name="deviceNo" value="1"> 
-				<!--<input type="hidden" name="way" value="center">   -->
-				<input type="hidden" name="serviceCatNo" value="100"> 
+				<input type="hidden" name="deviceNo" value="${deviceNo }"> 
+				<input type="hidden" name="serviceCatNo" value="${serviceCatNo }"> 
 				<input type="hidden" name="locationNo" value="${param.locationNo }">  
 				<!-- 여기 선언된 param은 url에 해당 하는 값을(즉, 전달하는 값을)요청객체에 담고 jsp에게 전달되어서 jsp에서 param으로 사용할 수 있다.-->
 				<div class="border m-3 p-3 text-bg-light" style="color:black; text-decoration:none; display:inline-block; height:300px; width:600px;">
@@ -60,10 +59,10 @@
 			<div class="border m-3 p-3 text-bg-light" align="center" style="color:black; text-decoration:none; display:inline-block; height:300px; width:500px;">
 				<span class="fs-5"><strong>수리세부사항</strong></span>
 				<p><img src="/resources/images/image1.png" class="img-thumbnail rounded mx-auto d-block" width="20%" height="20%" style="border:0px;" alt="명동 스토어"/></p>
-				<span class="fs-5"><strong>iPhone 14 Pro Max</strong></span>
+				<span class="fs-5"><strong>${device.deviceCategoryName }</strong></span>
 				<hr style="width: 50%">
-				<p>배터리 서비스</p>
-				<p>예상 비용: ￦79,200</p>
+				<p>${serviceInfo.serviceCatName }</p>
+				<p>예상 비용: ￦<fmt:formatNumber value="${serviceInfo.serviceAmount }" pattern="#,###" /> 원</p>
 			</div>
 		</div>
 	</div>
@@ -114,8 +113,8 @@
 						<h3><strong>문제</strong></h3>
 					</div>
 					<div class="col-sm-9">
-						<p>iPhone 14 Pro Max</p>
-						<p>배터리 서비스</p>
+						<p>${device.deviceCategoryName }</p>
+						<p>${serviceInfo.serviceCatName }</p>
 					</div>
 				</div>
 			</div>

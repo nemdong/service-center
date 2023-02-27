@@ -12,14 +12,15 @@ import lombok.Setter;
 public class ReservationForm {
 
 	private String customerId;
-	private int deviceNo;		
+	private int deviceNo;
 	private int serviceCatNo;		
 	private String way;		
 	private int locationNo;
 	private String serviceCatName;
 	private String serviceAmount;
 	private String reservationHour;
-	private String reservationDate;
+	@DateTimeFormat(pattern = "yyyy-MM-dd") //String으로 date값이 들어오기 때문에 @DateTimeFormat(pattern = "yyyy-MM-dd") 선언해야한다.
+	private Date reservationDate;
 	
 //동원씨가 한 부분, 나는 ServiceForm에 해둔 것
 	private int deviceCategoryNo;		// 제품 번호

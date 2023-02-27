@@ -40,7 +40,7 @@
    						<tbody>
    							<tr>
    								<td><strong>사용자 아이디 :</strong></td>
-   								<td colspan="3"><sec:authentication property="principal.id"/> </td>
+   								<td colspan="3"><sec:authentication property="principal.id" /></td>
    							</tr>
    						</tbody>
    					</table>
