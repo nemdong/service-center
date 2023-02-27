@@ -5,7 +5,8 @@ server:
 # mybatis의 SQL 실행 로그 출력을 위한 설정
 logging:
   level:
-    '[com.example.mapper]': trace
+    '[com.example.emp.mapper]': trace
+    
     
 spring:
   # 데이터베이스와 연결된 Connection Pool 설정
@@ -26,5 +27,5 @@ mybatis:
   - mybatis/mappers/*.xml
   type-aliases-package: com.example.cus.vo, com.example.cus.dto, com.example.emp.vo, com.example.emp.dto
   configuration:
-    jdbc-type-for-null: null
+    jdbc-type-for-null: 'NULL'
     log-impl: org.apache.ibatis.logging.log4j2.Log4j2Impl
