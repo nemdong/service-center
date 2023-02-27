@@ -45,13 +45,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http
+		http	
 		.csrf().disable()
 		.authorizeRequests()
 		.antMatchers("/").permitAll()
 		.antMatchers("/cus", "/erp/main").permitAll()
 		.antMatchers("/cus/register", "/cus/checkId","/cus/search-id","/cus/search-pw","/cus/registered").permitAll()
-    .antMatchers("/emp/find-password", "/emp/checkSameEmpNo.json", "/emp/authentication-tel", "/emp/reset-login-form").permitAll() 
+		.antMatchers("/emp/find-password", "/emp/checkSameEmpNo.json", "/emp/authentication-tel", "/emp/reset-login-form").permitAll() 
 		.antMatchers("/emp/register", "/emp/registered").permitAll()
 		.antMatchers("/cus/login", "/emp/login", "/admin/login").permitAll()
 		.antMatchers("/logout").authenticated()

@@ -34,7 +34,7 @@
    						<tbody>
    							<tr>
    								<td><strong>사용자 이름 :</strong></td>
-   								<td colspan="3"><sec:authentication property="principal.name" />님</td>
+   								<td colspan="3"><sec:authentication property="principal.name"/> </td>
    							</tr>
    						</tbody>
    						<tbody>

@@ -23,8 +23,8 @@
 				<div class="col-10 border-bottom"></div>
 			</div>
 			
-			<h2><strong>${location.name }</strong></h2> 
-			<p class="mt-2">${location.basicAddress }</p>
+			<h2><strong>${location.locationName }</strong></h2> 
+			<p class="mt-2">${location.locationBasicAddress }</p>
 			<p>회수 시간: <strong class="ms-2">${location.pickupDescription }</strong> 
 				<a class="ms-3" href="device" style="text-decoration:none;"><strong>(기기 변경)</strong></a>
 			</p> 
@@ -159,9 +159,9 @@
 								<td id="check-reserv">
 									<div>
 										<h5 class="mb-3"><strong>접수 정보</strong></h5>
-										<p>이름: ${loginUser.name }</p>
+										<p>이름: <sec:authentication property="principal.name"/> </p>
 										<p>접수: 지정 장소 접수 </p>
-										<p>장소: ${location.name }</p>
+										<p>장소: ${location.locationName }</p>
 										<p id="input-date"></p>
 									</div>
 								</td>
