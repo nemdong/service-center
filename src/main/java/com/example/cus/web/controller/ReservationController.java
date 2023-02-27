@@ -53,6 +53,7 @@ public class ReservationController {
 	@GetMapping("/reason")
 	public String reason(@AuthenticatedUser LoginUser loginUser, Model model,
 			@ModelAttribute("reservationForm") ReservationForm reservationForm,
+			@RequestParam("deviceNo") int deviceNo,
 			@RequestParam("deviceCategoryNo") int deviceCategoryNo) {
 
 		// 제품 정보 출력

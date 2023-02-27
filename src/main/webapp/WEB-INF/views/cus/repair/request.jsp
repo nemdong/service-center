@@ -34,13 +34,13 @@
    						<tbody>
    							<tr>
    								<td><strong>사용자 이름 :</strong></td>
-   								<td colspan="3">${loginCustomer.name }</td>
+   								<td colspan="3"><sec:authentication property="principal.name" />님</td>
    							</tr>
    						</tbody>
    						<tbody>
    							<tr>
    								<td><strong>사용자 아이디 :</strong></td>
-   								<td colspan="3">${loginCustomer.id }</td>
+   								<td colspan="3"><sec:authentication property="principal.id" /></td>
    							</tr>
    						</tbody>
    					</table>
@@ -64,7 +64,7 @@
 	 						</tbody>
 	 					</table>
 	 					<div class="d-grid gap-2 col-6 mx-auto">
-	 						<a href="" class="btn btn-primary btn-lg">수리 요청 및 예약하기</a>
+	 						<a href="../reservation/device" class="btn btn-primary btn-lg">수리 요청 및 예약하기</a>
 	 					</div>
 	 				</div>
    				</div>

@@ -8,9 +8,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import com.example.cus.login.LoginCustomerInfo;
 import com.example.cus.service.CustomerService;
-import com.example.utils.SessionUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -30,23 +28,6 @@ public class CusMainController {
 		return "cus/home";
 	}
 	
-	@GetMapping("/login-form")
-	public String loginForm() {
-		return "cus/repair/login-form";
-	}
-	
-	@PostMapping("/login")
-	public String login(String id, String password) {
-		Customer customer = customerService.login(id, password);
-		
-		LoginCustomerInfo loginCustomerInfo = new LoginCustomerInfo(customer.getId(), customer.getName());
-		SessionUtils.setAttribute("loginCustomer", loginCustomerInfo);
-		
-		return "redirect:cus";
-	}
-	
-
-
 	// 로그인
 	@GetMapping("/cus/login")
 	public String loginform() {

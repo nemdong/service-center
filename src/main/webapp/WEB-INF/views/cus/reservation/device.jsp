@@ -49,7 +49,8 @@
 											<image src="/resources/images/earphone-pro.png" width="110" height="110" class="img-thumnail rounded mx-auto d-block">
 										</c:otherwise>
 									</c:choose>
-									<br><strong>"${loginUser.name }"의</strong>
+									<!-- 어떻게 이렇게 값을 가져올 수 있는지  -->
+									<br><strong><sec:authentication property="principal.name" /></strong>의 
 									<br>${device.deviceName }
 								</a>
 						</c:forEach>

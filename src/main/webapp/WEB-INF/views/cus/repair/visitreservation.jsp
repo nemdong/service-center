@@ -72,6 +72,7 @@ $(function() {
 	let param = {keyword: keywordValue};
 	if (statusValue) { //true일 때, 즉 예약가능 매장보기 버튼을 눌렀을 때만 값이 들어가도록.
 		param['status'] = statusValue;			// let param = {keyword: keywordValue} keyword라는 key에 value를 넣는것. param['status'] = statusValue;	status 키워드에 value를 담는 표현식임. 
+	}
 	$.ajax({
 		url : "locations",
 		type : "get",
