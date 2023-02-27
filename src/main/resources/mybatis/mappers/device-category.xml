@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.cus.mapper.DeviceCategoryMapper">
+	<select id="getDeviceInfoByCategoryNo" parameterType="int" resultType="DeviceCategory">
+		select
+			device_category_no		as deviceCategoryNo,
+			device_category_name	as deviceCategoryName,
+			device_category_product		as deviceCategoryProduct
+		from
+			device_categories
+		where
+			device_category_no = #{value}
+	</select>
+</mapper>

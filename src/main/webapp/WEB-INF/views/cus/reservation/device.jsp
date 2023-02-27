@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" trimDirectiveWhitespaces="true"%>
+<%@ include file="../common/tags.jsp" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -27,7 +28,7 @@
 					<h2><strong>지원 선택</strong></h2>
 				</div>
 				
-				<p>고객님은 현재 <strong>ㅇㅇㅇㅇ</strong> 계정으로 접속 중입니다</p>
+				<p>고객님은 현재 <strong class="text-danger"><sec:authentication property="principal.id"/></strong> 계정으로 접속 중입니다</p>
 			</div>
 			<div class="col-10 mb-5 border-top"></div>
 			
@@ -35,18 +36,24 @@
 				<div class="col-12 mb-3">
 					<p><strong>나의 기기</strong></p>
 					
-					<a href="reason" class="border text-center m-3 p-3" style="color:black; text-decoration:none; display:inline-block; height:200px; width:250px;">
-						<strong>"이름"의 phone</strong>
-						<br>샘플폰1
-					</a>
-					<a href="reason" class="border text-center m-3 p-3" style="color:black; text-decoration:none; display:inline-block; height:200px; width:250px;">
-						<strong>"이름"의 earPhone</strong>
-						<br>공기팟 Pro
-					</a>
-					<a href="reason" class="border text-center m-3 p-3" style="color:black; text-decoration:none; display:inline-block; height:200px; width:250px;">
-						<strong>"이름"의 pad</strong>
-						<br>심플패드 Air
-					</a>
+						<c:forEach var="device" items="${deviceInfos}">
+								<a href="reason?deviceCategoryNo=${device.deviceCategoryNo }&deviceNo=${device.deviceNo}" class="border text-center m-3 p-3" style="color:black; text-decoration:none; display:inline-block; height:210px; width:250px;">
+									<c:choose>
+										<c:when test="${device.deviceCategoryProduct == 'phone' }">
+											<image src="/resources/images/samplePhone-1.png" width="110" height="110" class="img-thumnail rounded mx-auto d-block">
+										</c:when>
+										<c:when test="${device.deviceCategoryProduct == 'pad' }">
+											<image src="/resources/images/simplePad-1.png" width="110" height="110" class="img-thumnail rounded mx-auto d-block">
+										</c:when>
+										<c:otherwise>
+											<image src="/resources/images/earphone-pro.png" width="110" height="110" class="img-thumnail rounded mx-auto d-block">
+										</c:otherwise>
+									</c:choose>
+
+									<br><strong>"<sec:authentication property="principal.name" />"의</strong>
+									<br>${device.deviceName }
+								</a>
+						</c:forEach>
 				</div>
 			</div>
 		</div>

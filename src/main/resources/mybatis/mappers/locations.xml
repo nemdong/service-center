@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.cus.mapper.LocationMapper">
+	<select id="getAppointLocations" parameterType="string" resultType="Location">
+		select
+			location_no		as locationNo,
+			location_name		as locationName,
+			city		as city,
+			location_basic_address		as locationBasicAddress,
+			location_latitude		as locationLatitude,
+			location_longitude		as locationLongitude,
+			location_ways		as ways,
+			pickup_description		as pickupDescription
+		from
+			locations
+		where
+			location_ways = #{value}
+	</select>
+	
+	<select id="getLocationInfoByNo" parameterType="int" resultType="Location">
+		select
+			location_no		as locationNo,
+			location_name		as locationName,
+			city		as city,
+			location_basic_address		as locationBasicAddress,
+			location_latitude		as locationLatitude,
+			location_longitude		as locationLongitude,
+			location_ways		as ways,
+			pickup_description		as pickupDescription
+		from
+			locations
+		where
+			location_no = #{value}
+	</select>
+	
+	<select id="getRegions" resultType="Region">
+		select
+			region_no		as no,
+			region_name		as regionName,
+			region_type		as regionType
+		from
+			regions
+		where
+			region_type = 'SIDO'
+		order by
+			region_name	asc
+	</select>
+</mapper>

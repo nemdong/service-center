@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" trimDirectiveWhitespaces="true"%>
+<%@ include file="../common/tags.jsp" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -24,12 +25,24 @@
 			
 			<div class="row">
 				<div class="col-2 mb-4">
-					<span class="border" style="display:inline-block; height:120px; width:150px;">그림</span>
+					<span class="p-2" style="display:inline-block; height:120px; width:150px;">	
+						<c:choose>
+							<c:when test="${device.deviceCategoryProduct == 'phone' }">
+								<image src="/resources/images/samplePhone-1.png" width="110" height="110" class="img-thumnail rounded mx-auto d-block">
+							</c:when>
+							<c:when test="${device.deviceCategoryProduct == 'pad' }">
+								<image src="/resources/images/simplePad-1.png" width="110" height="110" class="img-thumnail rounded mx-auto d-block">
+							</c:when>
+							<c:otherwise>
+								<image src="/resources/images/earphone-pro.png" width="110" height="110" class="img-thumnail rounded mx-auto d-block">
+							</c:otherwise>
+						</c:choose>
+					</span>
 				</div>
 				<div class="col-10">
-					<h2><strong>"이름"의 phone</strong></h2>
-					<p>샘플폰1</p>
-					<a href="device" style="text-decoration:none;"><strong>기기 변경</strong></a>
+					<h2><strong><sec:authentication property="principal.name" /></strong>의 ${device.deviceCategoryProduct }</h2>
+					<p class="text-danger">${device.deviceCategoryName }</p>
+					<a href="device" style="text-decoration:none;"><strong>(기기 변경)</strong></a>
 				</div>
 				<div class="col-10 border-bottom mb-5"></div>
 			</div>
@@ -38,14 +51,13 @@
 			
 			<div class="row">
 				<div class="col-12">
-					<a href="way" class="border mt-2 mx-4 p-3" style="text-decoration:none; color:black; display:inline-block; height:100px; width:400px;">배터리 교체</a>
-					<a href="way" class="border  p-3" style="text-decoration:none; color:black; display:inline-block; height:100px; width:400px;">액정 수리</a>
-					<a href="way" class="border mt-3 mx-4 p-3" style="text-decoration:none; color:black; display:inline-block; height:100px; width:400px;">후면 수리</a>
-					<a href="way" class="border  p-3" style="text-decoration:none; color:black; display:inline-block; height:100px; width:400px;">충전 단자 수리</a>
-					<a href="way" class="border mt-3 mx-4 p-3" style="text-decoration:none; color:black; display:inline-block; height:100px; width:400px;">침수</a>
-					<a href="way" class="border  p-3" style="text-decoration:none; color:black; display:inline-block; height:100px; width:400px;">카메라 수리</a>
-					<a href="way" class="border mt-3 mx-4 p-3" style="text-decoration:none; color:black; display:inline-block; height:100px; width:400px;">전원 문제</a>
-					<a class="border p-3" style="text-decoration:none; color:black; display:inline-block; height:100px; width:400px;">직접 입력</a>
+				
+					<c:forEach var="serviceCat" items="${serviceCats}">
+						<a href="way?serviceCatNo=${serviceCat.serviceCatNo }" class="border mt-2 mx-4 p-3" style="text-decoration:none; color:black; display:inline-block; height:100px; width:400px;">
+							${serviceCat.serviceCatName }
+						</a>
+					</c:forEach>
+					
 				</div>
 			</div>	
 		

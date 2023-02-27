@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.cus.mapper.ReservationMapper">
+	<insert id="insertReservation" parameterType="Reservation">
+		insert into service_registrations
+			(registration_no, device_no, customer_id, service_cat_no, registration_type,
+				reservation_date, reservation_hour, reservation_status, location_no)
+		values
+			(service_registrations_seq.nextval, #{deviceNo}, #{id}, #{serviceCatNo}, #{registrationType},
+				#{reservationDate}, #{reservationHour}, #{reservationStatus}, #{locationNo})
+	</insert>
+	
+	<insert id="addReservation" parameterType="Reservation">
+		insert into service_registrations
+			(registration_no, device_no, customer_id, service_cat_no, registration_type,
+				reservation_date, reservation_status, location_no, receive_address)
+		values
+			(service_registrations_seq.nextval, #{deviceNo}, #{id}, #{serviceCatNo}, #{registrationType},
+				#{reservationDate}, #{reservationStatus}, #{locationNo}, #{receiveAddress})
+	</insert>
+	
+	<select id="getServiceByNo" parameterType="int" resultType="ServiceCategories">
+		select
+			S.service_cat_no		as serviceCatNo,
+			S.service_cat_name		as serviceCatName,
+			S.service_amount		as serviceAmount,
+			S.device_product		as deviceProduct
+		from
+			service_categories S, device_categories D
+		where
+			D.device_category_no = #{value}
+			and D.device_category_product = S.device_product
+		order by
+			S.service_cat_no asc
+	</select>
+	
+	<select id="getServiceInfo" parameterType="int" resultType="serviceCategories">
+		select
+			service_cat_no		as serviceCatNo,
+			service_cat_name		as serviceCatName,
+			service_amount		as serviceAmount,
+			device_product		as deviceProduct
+		from
+			service_categories
+		where
+			service_cat_no = #{value}
+	</select>
+</mapper>
