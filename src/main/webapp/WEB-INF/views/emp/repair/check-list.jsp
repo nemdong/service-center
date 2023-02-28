@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" trimDirectiveWhitespaces="true"%>
+<%@ include file="../common/tags.jsp" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -8,10 +9,13 @@
 <title>서비스 센터</title>
 </head>
 <body>
+<%@ include file="../common/navbar.jsp" %>
 <div class="container">
 	<div class="row">
 		<div class="col-2">
-			<p>메뉴</p>		
+			<c:set var="menu1" value="A/S관리" />
+			<c:set var="menu2" value="a/s접수확인" />
+			<%@include file="../common/leftbar.jsp" %>				
 		</div>
 		<div class="col-10">
 			<div class="row">
@@ -42,46 +46,51 @@
 							</tr>
 						</thead>
 						<tbody class="text-center">
-							<tr>
-								<td>3</td>
-								<td>2023-02-03</a></td>
-								<td>2023-02-01</td>
-								<td><a href="">이민형</a></td>
-							</tr>	
-							<tr>
-								<td>2</td>
-								<td>2023-02-01</a></td>
-								<td>2023-01-30</td>
-								<td><a href="">한워치</a></td>
-							</tr>	
-							<tr>
-								<td>1</td>
-								<td>2023-01-31</a></td>
-								<td>2023-01-26</td>
-								<td><a href="">김애플</a></td>
-							</tr>	
+							<c:choose>
+								<c:when test="${empty asCheckList }">
+									<tr>
+										<td colspan="4" class="text-center">배정된 고객이 존재하지 않습니다.</td>
+									</tr>
+								</c:when>
+								<c:otherwise>
+									<c:forEach var="asCheck" items="${asCheckList }">
+										<tr>
+											<td>${asCheck.registrationNo }</td>
+											<td><fmt:formatDate value="${asCheck.reservationDate }" pattern="yyyy-MM-dd"/></td>
+											<td><fmt:formatDate value="${asCheck.registrationDate }" pattern="yyyy-MM-dd"/></td>
+											<td><a href="check-detail?registrationNo=${asCheck.registrationNo }">${asCheck.name }</a></td>
+										</tr>										
+									</c:forEach>
+								</c:otherwise>
+							</c:choose>
 						</tbody>
 					</table>
 				</div>
 			</div>
+			
 			<div class="row">
-				<div class="col-12">
-					<nav aria-label="Page navigation example">
-					  <ul class="pagination justify-content-center">
-					    <li class="page-item disabled">
-					      <a class="page-link">Previous</a>
-					    </li>
-					    <li class="page-item"><a class="page-link" href="#">1</a></li>
-					    <li class="page-item active" aria-current="page">
-					    	<a class="page-link" href="#">2</a></li>
-					    <li class="page-item"><a class="page-link" href="#">3</a></li>
-					    <li class="page-item">
-					      <a class="page-link" href="#">Next</a>
-					    </li>
-					  </ul>
-					</nav>
-				</div>
-			</div>
+				<div class="col">
+					<c:if test="${not empty asCheckList }">
+						<nav aria-label="Page navigation example">
+						  <ul class="pagination pagination-sm justify-content-center">
+						    <li class="page-item">
+						      <a class="page-link ${pagination.first ? 'disabled' : '' }" 
+						      		href="assign?page=${pagination.prevPage }">이전</a>
+						    </li>
+						    <c:forEach var="num" begin="${pagination.beginPage }" end="${pagination.endPage }">
+							    <li class="page-item">
+							    	<a class="page-link ${pagination.page eq num ? 'active' : '' }" href="check-list?page=${num }">${num }</a>
+							    </li>								    
+						    </c:forEach>								    
+						    <li class="page-item">
+						      <a class="page-link ${pagination.last ? 'disabled' : '' }" 
+						      		href="assign?page=${pagination.nextPage }">다음</a>
+						    </li>
+						  </ul>
+						</nav>							
+					</c:if>
+				</div>					
+			</div>	
 		</div>
 	</div>
 </div>

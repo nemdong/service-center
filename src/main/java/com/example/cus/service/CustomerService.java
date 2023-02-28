@@ -1,6 +1,8 @@
 package com.example.cus.service;
 
 import java.util.List;
+
+
 import java.util.Random;
 
 import org.springframework.beans.BeanUtils;
@@ -17,21 +19,47 @@ import com.example.cus.vo.Customer;
 import com.example.cus.vo.CustomerRole;
 import com.example.cus.web.request.CustomerRegisterForm;
 
-
+import com.example.cus.dto.CustomerDevicesDto;
+import com.example.cus.dto.DeviceHistoryDto;
+import com.example.cus.mapper.DeviceHistoryMapper;
 
 
 @Service
 @Transactional
 public class CustomerService {
-	
+
 	@Autowired
 	private CustomerMapper customerMapper;
+	
+	@Autowired
+	private DeviceHistoryMapper deviceHistoryMapper;
+	
+	public Customer login(String id, String password) {
+		return customerMapper.getCustomerById(id);
+	}
+	
+	public List<CustomerDevicesDto> getDeviceInfo(String id) {
+		return customerMapper.getCustomerDevices(id);
+	}
+	
+	public CustomerDevicesDto getDeviceDetail(int deviceNo) {
+		return customerMapper.getDeviceByNo(deviceNo);
+	}
+	
+	public List<DeviceHistoryDto> getHistories(String id) {
+		return deviceHistoryMapper.getHistories(id);
+	}
+
+	public List<DeviceHistoryDto> getDeviceCategoryHistories(int deviceNo) {
+		return customerMapper.getDeviceCategoryHistories(deviceNo);
+	}
+	
 	@Autowired
 	private CustomerRoleMapper customerRoleMapper;
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
-     public void registerCustomer(CustomerRegisterForm customerRegisterForm ) {
+    public void registerCustomer(CustomerRegisterForm customerRegisterForm ) {
         Customer savedCustomer = customerMapper.getCustomerById(customerRegisterForm.getId());
         if (savedCustomer != null) {
 			throw new ApplicationException("["+customerRegisterForm.getId()+"] 사용할 수 없는 아이디입니다.");
@@ -68,7 +96,7 @@ public class CustomerService {
     		customerMapper.updateCustomer(customer);
 
     		return pw;
-    	}
+    }
 
  	public CustomerDetailDto getCustomerDetail(String customerId) {
  		Customer customer = customerMapper.getCustomerById(customerId);

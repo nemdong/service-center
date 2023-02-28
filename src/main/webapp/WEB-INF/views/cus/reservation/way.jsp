@@ -9,7 +9,7 @@
 <title></title>
 </head>
 <body>
-<c:set var="menu" value="reservation" />
+<c:set var="menu" value="repair" />
 <%@ include file="../common/navbar.jsp" %>
 <div class="container">
 	<div class="row">
@@ -51,7 +51,7 @@
 			
 			<div class="row">
 				<div class="col-12">
-					<a href="visitingCenter" class="border me-5 text-center p-4 mt-2" style="text-decoration:none; color:black; display:inline-block; height:300px; width:250px;">
+					<a href="../repair/visitreservation?way=center" class="border me-5 text-center p-4 mt-2" style="text-decoration:none; color:black; display:inline-block; height:300px; width:250px;">
 						<image src="/resources/images/건물.png" width="200" height="200" class="img-thumnail rounded mx-auto d-block">
 						<br>
 						<strong>매장에 직접 방문</strong>

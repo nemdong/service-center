@@ -7,10 +7,10 @@ import org.apache.ibatis.type.Alias;
 import lombok.Getter;
 import lombok.Setter;
 
-@Alias("UserDeviceDto")
+@Alias("CustomerDevicesDto")
 @Getter
 @Setter
-public class UserDeviceDto {
+public class CustomerDevicesDto {
 
 	private int deviceNo;
 	private String id;
@@ -18,6 +18,6 @@ public class UserDeviceDto {
 	private Date sellDate;
 	private String deviceName;
 	private String rental;
-	
 	private String deviceCategoryProduct;
+	private String deviceCategoryName;
 }

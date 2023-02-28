@@ -44,6 +44,10 @@ public class Pagination {
       this.pages = pages;
    }
    
+   /**
+    * 현재 페이지번호 반환
+    * @return
+    */
    public int getPage() {
 	   return currentPage;
    }

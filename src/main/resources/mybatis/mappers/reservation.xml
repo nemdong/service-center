@@ -10,6 +10,15 @@
 				#{reservationDate}, #{reservationHour}, #{reservationStatus}, #{locationNo})
 	</insert>
 	
+	<insert id="addReservation" parameterType="Reservation">
+		insert into service_registrations
+			(registration_no, device_no, customer_id, service_cat_no, registration_type,
+				reservation_date, reservation_status, location_no, receive_address)
+		values
+			(service_registrations_seq.nextval, #{deviceNo}, #{id}, #{serviceCatNo}, #{registrationType},
+				#{reservationDate}, #{reservationStatus}, #{locationNo}, #{receiveAddress})
+	</insert>
+	
 	<select id="getServiceByNo" parameterType="int" resultType="ServiceCategories">
 		select
 			S.service_cat_no		as serviceCatNo,

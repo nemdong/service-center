@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.emp.mapper.RepairMapper">
+
+	<!-- 
+		배정 리스트 총 갯수 - int getTotalRows(Map<String, Object> param)
+	 -->
+	<select id="getTotalRows" parameterType="map" resultType="int">
+		select
+			count(*)
+		from
+			service_registrations A, device_as_histories B
+		where
+			A.registration_no = B.registration_no				
+		<!-- <where>
+			<if test="empNo != null">
+				and employee_no = #{empNo}			
+			</if>
+		</where>
+		 -->
+	</select>
+
+	<!-- 
+		배정 리스트 - List<AssignListDto> getAssignList(Map<String, Object> param)
+	 -->
+	<select id="getAssignList" parameterType="map" resultType="AssignListDto">
+		select
+			registration_no				as no,
+			customer_id					as id,
+			customer_name				as name,
+			employee_no					as empNo,
+			employee_name				as empName,
+			registration_date			as registrationDate,
+			service_assignment_status	as assignStatus
+		from (	
+			select
+				row_number() over (order by B.registration_date desc) row_numbers, 
+			    B.registration_no,
+			    C.customer_id,
+			    C.customer_name,
+			    E.employee_no,
+			    E.employee_name,
+			    B.registration_date,
+			    A.service_assignment_status
+			from device_as_histories A, Service_registrations B, Customers C,
+			     service D, employees E
+			where B.registration_date between trunc(sysdate - 30) and trunc(sysdate + 1)
+				and A.registration_no = B.registration_no 
+				and B.customer_id = C.customer_id 
+				and A.service_no = D.service_no (+)
+				and D.employee_no = E.employee_no (+)
+			)
+		where
+			row_numbers between #{begin} and #{end}					
+	</select>
+	
+	<!-- 
+		배정상세 조회 - AssignDetailDto getAssignDetailByNo(String no)
+	 -->
+	<select id="getAssignDetailByNo" parameterType="int" resultType="AssignDetailDto">
+		select   
+			A.service_no as serviceNo,  
+			C.customer_name as name,
+			B.registration_date as registrationDate,
+			(select employee_no from employees where employee_no = D.employee_no) as empNo,
+            (select employee_name from employees where employee_no = D.employee_no) as empName,
+			B.reservation_date as reservationDate,
+			B.reservation_hour as reservationHour,
+			F.service_cat_name as serviceCatName
+		from 
+			device_as_histories A, service_registrations B, Customers C,
+			service D, service_categories F   
+		where 
+			B.registration_no = #{value}
+			and B.registration_no = A.registration_no
+			and B.customer_id = C.customer_id
+			and A.service_no = D.service_no(+)
+			and B.service_cat_no = F.service_cat_no
+	</select> 
+	
+	<!-- 
+		배정직원목록 조회 - List<AllAsEmpDto> getAllAsEmp(int deptNo)
+	 
+	<select id="getAllAsEmp" parameterType="int" resultType="AsEmpDto">
+		select
+			A.employee_no as empNo,
+			A.employee_name as empName,
+			B.dept_no as deptNo 
+		from
+			employees A, departments B
+		where
+			B.dept_no = #{value}
+	</select>
+	-->
+	
+	<!-- 
+		직원 배정 - void insertAssign(AssignService assignService);
+	 -->
+	<insert id="insertAssign" parameterType="AssignService">
+		insert into service
+			(service_no, employee_no)
+		values
+			(#{serviceNo}, #{empNo})	
+	</insert>
+	
+	<!-- 
+		서비스번호로 서비스이력 조회 - DeviceASHistory getHistoryByNo(int serviceNo);
+	 -->
+	<select id="getHistoryByNo" parameterType="int" resultType="DeviceASHistory">
+		select
+			service_no	as serviceNo,
+			process_status as processStatus,
+			service_assignment_status as assignStatus,
+			service_request_content as content,
+			process_expected_date as expectedDate,
+			process_fail_description as failDescription,
+			process_description as description,
+			process_completed_date as completedDate,
+			service_cost as serviceCost,
+			registration_no as registrationNo
+		from
+			device_as_histories
+		where
+			service_no = #{value}		
+	</select>
+
+	<!-- 
+		서비스이력 수정 void updateAsHistory(DeviceASHistory history);
+	 -->
+	<update id="updateAsHistory" parameterType="DeviceASHistory">
+		update
+			device_as_histories
+		set
+			service_assignment_status = #{assignStatus},
+			process_status = #{processStatus},
+			process_description = #{description},
+			service_cost = #{serviceCost}
+		where
+			service_no = #{serviceNo}
+	</update>
+	
+	<!-- 
+		as 접수 확인 리스트 - List<AssignDetailDto> getCheckList(Map<String, Object> param);
+	 -->
+	<select id="getCheckList" parameterType="map" resultType="AsCheckListDto">
+		select
+			registration_no				as registrationNo,
+			reservation_date			as reservationDate,	
+			registration_date			as registrationDate,
+			customer_id					as id,
+			customer_name				as name
+		from (	
+			select
+				row_number() over (order by B.reservation_date desc) row_numbers,
+			    B.registration_no,
+				B.reservation_date, 
+			    B.registration_date,
+			    C.customer_id,
+			    C.customer_name,
+                D.employee_no
+			from device_as_histories A, Service_registrations B, Customers C,
+			     service D
+			where D.employee_no = #{empNo}
+                and B.registration_date between trunc(sysdate - 30) and trunc(sysdate + 1)
+				and A.registration_no = B.registration_no 
+				and B.customer_id = C.customer_id
+                and A.service_no = D.service_no
+			)
+		where
+			row_numbers between #{begin} and #{end} 	
+	</select>
+	
+	<!-- 
+		as 접수확인 상세내역 - AsCheckDetailDto getCheckDetailByNo(int registrationNo)
+	 -->
+	<select id="getCheckDetailByNo" parameterType="int" resultType="AsCheckDetailDto">
+		select
+			A.customer_name 			as name,
+			B.device_category_name 		as deviceName,
+			C.reservation_date			as reservationDate,
+			C.reservation_hour			as reservationHour,
+			D.sell_date					as sellDate,
+			E.service_cat_name			as serviceCatName,
+			F.service_assignment_hour 	as assignmentHour
+		from
+			Customers A, Device_categories B, Service_registrations C, Customer_devices D,
+			Service_categories E, Service F, device_as_histories G
+		where
+			C.registration_no = #{value}
+			and A.customer_id = C.customer_id
+			and C.device_no = D.device_no
+			and D.device_category_no = B.device_category_no
+			and E.service_cat_no = C.service_cat_no
+			and F.service_no = G.service_no
+			and G.registration_no = C.registration_no 		
+	</select>
+	 
+	<!-- 
+		서비스 배정시간 목록 - List<AssignHour> getAssignHour(Map<String, Object> param)
+	 	 
+	<select id="getAssignHour" parameterType="map" resultType="AssignHour">
+		select
+			start_hour as startHour
+		from
+			service_times
+		minus
+		select 
+			A.service_assignment_hour	
+		from
+			service A, employees B, Service_registrations C, device_as_histories D
+		where
+			B.emp_no = #{empNo} and C.reservation_date = #{reservationDate}	
+			and A.service_no = D.service_no
+			and B.employee_no = A.employee_no
+			and C.registration_no = D.registration_no 	
+	</select>
+	-->
+
+</mapper>

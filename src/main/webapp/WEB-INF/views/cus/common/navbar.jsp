@@ -7,10 +7,9 @@
 		</ul>
 		<sec:authorize access="isAuthenticated()">
 			<ul class="navbar-nav me-auto">
-				<li class="nav-item"><a href="/reservation/device" class="nav-link" >접수</a></li>
+				<li class="nav-item"><a href="/repair/request" class="nav-link" >접수</a></li>
 				<li class="nav-item"><a href="" class="nav-link" >문의</a></li>
 			</ul>
-		
 		</sec:authorize>
 
 	<sec:authorize access="isAuthenticated()">
@@ -28,22 +27,10 @@
 				<li class="nav-item"><a class="nav-link ${menu eq 'register' ? 'active' : '' }" href="/cus/register">회원가입</a></li>				
 			</sec:authorize>
 				<li class="nav-item"><a class="nav-link" href="/emp/login">업무 페이지</a></li>
-
 		
 		 <c:if test="${not empty loginUser }">
 			<span class="navbar-text"><strong class="text-white">${loginUser.name }</strong>님 접속중</span>
 		</c:if>
-		
-		<!-- <ul class="navbar-nav">
-			<li class="nav-item"><a href="" class="nav-link">내 정보</a>
-			<li class="nav-item"><a href="/logout" class="nav-link" onclick="logout(event)">로그아웃</a>
-			<li class="nav-item"><a href="/login-form" class="nav-link">로그인</a>
-		</ul>  -->
-	
-	
-	
-	
-	
 	</div>
 </nav>
 
@@ -55,4 +42,4 @@
 		event.preventDefault();
 		document.getElementById("form-logout").submit();
 	}
-</script> 
+</script>
