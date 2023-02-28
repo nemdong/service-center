@@ -57,9 +57,31 @@
 		FROM
 		    ATTENDANCES
 		WHERE
-		    EMPLOYEE_NO = #{value}
+		    EMPLOYEE_NO = #{empNo}
+		AND
+			WORK_DATE between to_date(#{workDate}) and last_day(to_date(#{workDate})) + 1    	    
 		ORDER BY
-			WORK_DATE DESC	    
+			WORK_DATE DESC
+	</select>
+	
+	<select id="getAllAttendanceByWorkDate" parameterType="map" resultType="Attendances">
+		SELECT
+		    WORK_DATE as workDate,
+		    WORK_START_TIME as workStartTime,
+		    WORK_END_TIME as workEndTime,
+		    WEEKDAY_WORK_TIMES as weekDayWorkTimes,
+		    WEEKEND_WORK_TIMES as weekendWorkTimes,
+		    OVERTIME_WORK_TIMES as overTimeWorkTimes,
+		    TARDINESS_TIMES as tardinessTimes,
+		    EARLY_TIMES as earlyTimes
+		FROM
+		    ATTENDANCES
+		WHERE
+		    EMPLOYEE_NO = #{empNo}
+		AND
+			WORK_DATE between to_date(#{workDate}) and last_day(to_date(#{workDate})) + 1	    
+		ORDER BY
+			WORK_DATE DESC
 	</select>
 	
 	<select id="getTodayAttendances" parameterType="int" resultType="Attendances">
@@ -124,11 +146,20 @@
 		    WORK_DATE = TO_CHAR(SYSDATE, 'YYYY-MM-DD')	
 	</update>
 	
+	<update id="updateNoonWorkingHours" parameterType="map">
+		UPDATE
+			ATTENDANCES
+		SET
+			WEEKDAY_WORK_TIMES = #{insertHour}
+		WHERE
+			EMPLOYEE_NO = #{empNo}	
+	</update>
+	
 	<update id="updatePlusZeroWorkingHours" parameterType="map">
 		UPDATE
 			ATTENDANCES
 		SET
-			WEEKDAY_WORK_TIMES = #{inserZerotHour}
+			WEEKDAY_WORK_TIMES = #{insertZerotHour}
 		WHERE
 			EMPLOYEE_NO = #{empNo}
 		AND    
@@ -160,6 +191,17 @@
 	<select id="doubleCheckTime" parameterType="int" resultType="Attendances">
 		SELECT
 		    WORK_START_TIME as workStartTime
+		FROM
+		    ATTENDANCES
+		WHERE
+		    EMPLOYEE_NO = #{value}
+		AND    
+		    WORK_DATE = TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+	</select>
+	
+	<select id="doubleCheckEndTime" parameterType="int" resultType="Attendances">
+		SELECT
+		     WORK_END_TIME as workEndTime
 		FROM
 		    ATTENDANCES
 		WHERE
@@ -218,7 +260,7 @@
 		AND
 			WORK_DATE = TO_DATE(#{deleteDate})
 	</select>
-
+	
 	<select id="monthlyAttendancesByEmpNo" parameterType="int" resultType="MonthlyAttendances">
 		SELECT
 			WORK_YEAR_MONTH as workYearMonth,
@@ -230,8 +272,8 @@
 		FROM
 			MONTHLY_ATTENDANCES
 		WHERE
-			EMPLOYEE_NO = #{value}	
-	</select>
+			EMPLOYEE_NO = #{value}
+	</select>		
 
 	<update id="monthlyAttendances" parameterType="MonthlyAttendances">
 		UPDATE
@@ -253,4 +295,21 @@
 		WHERE
 			EMPLOYEE_NO = #{empNo}	
 	</update>
+	
+	<select id="monthlyAbsentDayByEmpNo" parameterType="int" resultType="int">
+		select count(*)
+		from (
+		    select  to_date('2023-02-01') + level -1
+		    from dual
+		    connect by to_date('2023-02-01') + level &lt;= last_day(to_date('2023-02-01')) + 1
+		minus
+	        select holyday_date
+	        from holydays
+	        where holyday_date between to_date('2023-02-01') and last_day(to_date('2023-02-01')) + 1
+		minus
+	        select work_date 
+	        from attendances
+	        where WORK_DATE between to_date('2023-02-01') and last_day(to_date('2023-02-01')) + 1
+	    	and employee_no = #{value})
+	</select>
 </mapper>

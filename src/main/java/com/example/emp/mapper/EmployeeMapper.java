@@ -30,4 +30,6 @@ public interface EmployeeMapper {
 	
 	void createdMonthAttendances(int empNo);
 	void deleteMonthAttendances(int empNo);
+	// 이어서 하기, 직원용 홈페이지 버튼 생성
+	void createdYearVacation(int empNo);
 }

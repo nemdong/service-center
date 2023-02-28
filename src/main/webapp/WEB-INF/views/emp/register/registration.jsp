@@ -26,7 +26,9 @@
 <div class="container">
 	<div class="row mb-3">
 		<div class="col-2">
-			<h1>leftbar 넣기</h1>
+			<c:set var="menu1" value="인사관리"/>
+			<c:set var="menu2" value="인사조회/등록"/>
+			<%@ include file="../common/leftbar.jsp" %>
 		</div>	
 		<div class="col-10">
 			<div class="row mb-1">
@@ -39,7 +41,7 @@
 							 <div class="input-group">
 								<select class="form-select " style="max-width: 150px !important;" name="opts" id="inputGroupSelect04" aria-label="Example select with button addon">
 									<option value="empNo" ${param.opts eq 'empNo' ? 'selected' : '' }>사원번호</option>
-									<option value="name" ${param.pots eq 'name' ? 'selected' : '' }>성명</option>
+									<option value="name" ${param.opts eq 'name' ? 'selected' : '' }>성명</option>
 									<option value="department" ${param.opts eq 'department' ? 'selected' : '' }>부서</option>
 								</select>
 								<input type="text" class="form-control" name="keyword" value="${param.keyword }"/>
@@ -246,7 +248,6 @@
 					</div>
 				</div>
 					<div class="col-12 text-end mt-1">
-						<a href="" class="btn btn-primary btn-sm">엑셀업로드</label></a>
 						<label form="file">
 							<div class="btn-upload btn btn-warning btn-sm">프로필 등록</div>
 						    <form:input id="file-profile" type="file" path="upfile"/>

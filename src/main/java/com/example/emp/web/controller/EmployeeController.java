@@ -135,7 +135,6 @@ public class EmployeeController {
 		}
 		try {
 			employeeService.insertEmployee(form);
-			employeeService.createdMonthAttendances(form);
 			return "redirect:/emp/register/registeration";
 			
 		} catch(AlreadyEmployeeEmailException ex) {

@@ -80,28 +80,10 @@ public class EmployeeService {
 			
 			employeeMapper.insertAttachedFile(attachedFile);
 		}
-	}
-	
-	// 외부이메일 중복 확인
-//	public String dupExternalEmail(String externalEmail) {
-//		String dupExternalEmail = employeeMapper.dupExternalEmail(externalEmail);
-//	
-//		return dupExternalEmail;
-//	}
-	
-	// 휴대전화 중복 확인
-//	public String dupMobileTel(String mobileTel) {
-//		String dupMobileTel = employeeMapper.dupMobileTel(mobileTel);
-//		
-//		return dupMobileTel;
-//	}
-	
-	// 인사 등록시 월근태 자동 생성
-	public void createdMonthAttendances(EmployeeRegisterForm form) {
+		
 		int empNo = form.getNo();
-		
 		employeeMapper.createdMonthAttendances(empNo);
-		
+		employeeMapper.createdYearVacation(empNo);
 	}
 		
 	// 인사 삭제
