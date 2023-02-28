@@ -22,8 +22,6 @@
 				<h4 class="fw-bold">출장 현황</h4>
 			</div>
  			<div class="text-center mb-2">
-				<a href="/emp/businessTrip/calendar" class="btn border-secondary text-dark ms-1" id="link-my-todos" style="width:20%">내 일정 보기</a>
-				<a href="" class="btn border-secondary text-dark ms-1" id="link-dept-todos" style="width:20%">부서일정 보기</a>
 				<a href="" type="button" class="btn border-secondary text-dark ms-1" id="link-add-todo" style="width:20%">새 일정등록</a>
 				<a href="/emp/businessTrip/myTripSearch" class="btn border-secondary text-dark" id="link-search-todos" style="width:20%">나의 출장 요청 내역</a>
 			</div>
