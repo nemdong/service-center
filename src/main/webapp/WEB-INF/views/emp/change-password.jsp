@@ -45,9 +45,6 @@
 								</div>
 							</div>
 								<div class="row mt-3">
-									<div class="mb-3">
-										가능하면 구현
-									</div>
 								</div>
 							<div>
 								<div class="mb-1">

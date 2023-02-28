@@ -26,6 +26,7 @@
 				<li class="nav-item"><a class="nav-link ${menu eq 'login' ? 'active' : '' }" href="/cus/login">로그인</a></li>
 				<li class="nav-item"><a class="nav-link ${menu eq 'register' ? 'active' : '' }" href="/cus/register">회원가입</a></li>				
 			</sec:authorize>
+				<li class="nav-item"><a class="nav-link" href="/emp/login">업무 페이지</a></li>
 		
 		 <c:if test="${not empty loginUser }">
 			<span class="navbar-text"><strong class="text-white">${loginUser.name }</strong>님 접속중</span>

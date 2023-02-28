@@ -15,16 +15,15 @@
 <div class="container">
    <div class="row mb-3">
    		<div class="col-2">
-   			<div class="col-2">
-				<h1>leftbar 넣기</h1>
-			</div>
+			<c:set var="menu1" value="근태관리"/>
+			<c:set var="menu2" value="근태확인"/>
+			<%@ include file="../common/leftbar.jsp" %>
    		</div>
    		<div class="col-10">
    			<div class="row mb-1">
-				<div class="col-12"><h4 class="fw-bold fs-5">근태 관리</h4></div>
+				<div class="col-12"><h4 class="fw-bold fs-5">근태 확인</h4></div>
 			</div>
 			<form id="form-attendances" method="get" action="current"> <!-- 여기 -->
-				<input type="hidden" name="empNo" value="10011002"/>
 				<div class="row mb-3">
 					<div class="col-12">
 						<div class="bg-light p-2">
@@ -35,7 +34,25 @@
 											<h6 class="mt-2 ms-2 me-2"><span class="text-danger">* </span>근무일자</h6>
 										</th>
 										<td>
-											<input type="date" class="text-left form-control" name="workDate" />
+											<input id="workDate" type="hidden" name="workDate" value=""/>
+											<select class="form-select form-select-xs" name="workDateYear" id="work-date-year">
+											</select>
+										</td>
+										<td>
+											<select class="form-select form-select-xs" name="workDateMonth" id="work-date-month">
+												<option value="01-01" ${param.workDateMonth eq '01-01' ? 'selected' : '' }>1월</option>
+												<option value="02-01" ${param.workDateMonth eq '02-01' ? 'selected' : '' }>2월</option>
+												<option value="03-01">3월</option>
+												<option value="04-01">4월</option>
+												<option value="05-01">5월</option>
+												<option value="06-01">6월</option>
+												<option value="07-01">7월</option>
+												<option value="08-01">8월</option>
+												<option value="09-01">9월</option>
+												<option value="10-01">10월</option>
+												<option value="11-01">11월</option>
+												<option value="12-01">12월</option>
+											</select>
 										</td>
 									</tr>
 								</table>
@@ -49,10 +66,9 @@
 				
 				<div class="row mb-4">
 					<div class="col-12">
-						<h4 class="fw-bold fs-6 mt-2">일일 근태 등록</h4>
 					</div>
 					<div class="col-12 border-bottom mb-2">
-						<button type="button" class="btn btn-white border-top border-end border-start fs-6">사원개인</button>
+						<h4 class="fw-bold fs-6 mt-2">근태 등록</h4>
 					</div>
 					<div class="col-12">
 						<c:if test="${param.error eq 'dup' }">
@@ -101,7 +117,7 @@
 				
 			<div class="row mb-4">
 				<div class="col-6 border-bottom mb-2">
-					<h4 class="fw-bold fs-6 mt-2">근태 확인</h4>
+					<h4 class="fw-bold fs-6 mt-2">월 근태 확인</h4>
 				</div>
 				<div class="col-6 text-end"> <!-- 나중에 지우던가 하기 -->
 					<button id="delete-button" class="mt-1 mb-1 text-end btn btn-outline-secondary btn-sm">행 삭제</button>
@@ -146,7 +162,7 @@
 			<div class="row mb-4">
 				<div class="col-12 border-bottom mb-2">
 				<sec:authorize access="isAuthenticated()">
-					<h4 class="fw-bold fs-6 mt-2"><sec:authentication property="principal.name" />님의 월 근태 일수</h4>
+					<h4 class="fw-bold fs-6 mt-2"><sec:authentication property="principal.name" />님의 총 근태 일수</h4>
 				</sec:authorize>	
 				</div>
 				<div class="col-12 bg-light">
@@ -160,7 +176,7 @@
 								<th class="table-secondary">휴일근무일수</th>
 								<td class="form-control bg-white" style="width: 100px;">${monthlyAtt.weekendWorkedDays }</td>
 								<th class="table-secondary">결근일수</th>
-								<td class="form-control bg-white" style="width: 100px;">${monthlyAtt.absentDays }</td>
+								<td class="form-control bg-white" style="width: 100px;">${absentDay }</td>
 							</tr>
 						</thead>
 					</table>
@@ -171,8 +187,21 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script src="https://momentjs.com/downloads/moment.min.js" type="text/javascript"></script>
 <script type="text/javascript">
 $(function() {
+	
+	// 근무일자년/월/일
+	let currentYear = parseInt(moment().format('YYYY'));
+	let currentMonthFirstDay = moment().format("MM") + "-01";
+	
+	for (let i=0; i<5; i++) {
+		let year = currentYear - i;
+		let option = `<option value="\${year}" \${i==0 ? 'selected' : ''}>\${year}년</option>`;
+		$("#work-date-year").append(option);
+	}
+	
+		$("#work-date-month").val(currentMonthFirstDay);
 	
 	// 출근
 	$("#work-start-time").click(function() {
@@ -186,7 +215,13 @@ $(function() {
 		
 	})
 	
-	
+	// 월 근태 확인
+	$("#search-form").click(function() {
+		
+		let workDate = currentYear + "-" + currentMonthFirstDay;
+
+		$("#form-attendances").attr("action", "att").trigger('submit');
+	})
 	
 	// 체크박스 - 근태 삭제
 	$("#delete-button").on('click', function() {

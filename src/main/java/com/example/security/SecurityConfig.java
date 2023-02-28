@@ -126,9 +126,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				if ("사용자".equals(userType)) {
 					response.sendRedirect("/cus");
 				} else if ("직원".equals(userType)) {
-					response.sendRedirect("/emp/attendance/att");
+					response.sendRedirect("/emp/register/registeration");
 				} else if ("관리자".equals(userType)) {
-					response.sendRedirect("/emp/attendance/att");
+					response.sendRedirect("/emp/register/registeration");
 
 				}
 			}			

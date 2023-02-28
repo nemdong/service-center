@@ -4,11 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,20 +28,42 @@ public class EmpAttendanceController {
 	
 	@Autowired
 	private EmpAttendanceService empAttendanceService;
+	
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
 
 	@GetMapping("/att")
-	public String attendance(@AuthenticatedUser LoginUser loginUser, Model model) {
+	public String attendance(@AuthenticatedUser LoginUser loginUser, Model model,
+			@RequestParam(name = "workDateYear",  required =  false) String workDateYear,
+			@RequestParam(name = "workDateMonth",  required =  false) String workDateMonth) {
 		int empNo = Integer.parseInt(loginUser.getId()); 
 		
-		List<Attendances> attendancesList = empAttendanceService.getAllAttendances(empNo);
-		model.addAttribute("attendancesList", attendancesList);
-		
+		if(workDateYear != null && workDateMonth != null) {
+			String workDate = workDateYear + "-" + workDateMonth;
+			Map<String, Object> param = new HashMap<>();
+			param.put("workDate", workDate);
+			param.put("empNo", empNo);
+			
+			List<Attendances> attendancesList = empAttendanceService.getAllAttendanceByWorkDate(param);
+			model.addAttribute("attendancesList", attendancesList);
+						
+		} else {
+			String workDate = sdf.format(new Date()) + "-" + "01";
+			Map<String, Object> param = new HashMap<>();
+			param.put("workDate", workDate);
+			//param.put("workDate", currentWorkDate);
+			param.put("empNo", empNo);
+			List<Attendances> attendancesList = empAttendanceService.getAllAttendanceByWorkDate(param);
+			model.addAttribute("attendancesList", attendancesList);
+		}
+
 		Attendances todayAtt = empAttendanceService.getTodayAttendances(empNo);
 		MonthlyAttendances monthlyAtt = empAttendanceService.monthlyAttendancesByEmpNo(empNo);
+		int monthlyAbsentDay = empAttendanceService.monthlyAbsentDayByEmpNo(empNo);
 		
 		model.addAttribute("todayAtt", todayAtt);
 		model.addAttribute("empNo", empNo);
 		model.addAttribute("monthlyAtt", monthlyAtt);
+		model.addAttribute("absentDay", monthlyAbsentDay);
 		
 		return "emp/attendance/attendance";	
 	}
@@ -51,6 +76,7 @@ public class EmpAttendanceController {
 		try {
 			empAttendanceService.insertStartTime(empNo);
 			empAttendanceService.updateTardyTime(empNo);
+			empAttendanceService.monthlyAttCondition(empNo);
 			
 			return "redirect:att";
 			
@@ -70,6 +96,7 @@ public class EmpAttendanceController {
 	@GetMapping("/checkEndTime")
 	public String checkEndTime(@AuthenticatedUser LoginUser loginUser) {
 		int empNo = Integer.parseInt(loginUser.getId());
+		
 		empAttendanceService.updateEndTime(empNo);
 		empAttendanceService.updateWorkingHours(empNo);
 	

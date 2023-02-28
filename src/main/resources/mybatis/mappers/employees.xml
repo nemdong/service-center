@@ -231,4 +231,11 @@
 		WHERE
 			EMPLOYEE_NO = #{value}
 	</delete>
+	
+	<insert id="createdYearVacation" parameterType="int">
+		INSERT INTO EMPLOYEE_YEAR_VACATIONS
+			(EMPLOYEE_NO, WORK_YEAR)
+		VALUES
+			(#{value}, TO_CHAR(sysdate, 'YYYY'))
+	</insert>
 </mapper>
