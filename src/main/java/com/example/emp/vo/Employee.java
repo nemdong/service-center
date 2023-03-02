@@ -15,7 +15,7 @@ public class Employee {
 
 	private int no;
 	@JsonIgnore
-	private String password;
+	private String encryptPassword;
 	private String name;
 	private String citizenNo;
 	private String gender;

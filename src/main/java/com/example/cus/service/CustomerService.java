@@ -1,6 +1,8 @@
 package com.example.cus.service;
 
 import java.util.List;
+
+
 import java.util.Random;
 
 import org.springframework.beans.BeanUtils;
@@ -22,23 +24,51 @@ import com.example.cus.web.request.CustomerDeviceRegisterForm;
 import com.example.cus.web.request.CustomerModifyForm;
 import com.example.cus.web.request.CustomerRegisterForm;
 
-
+import com.example.cus.dto.CustomerDevicesDto;
+import com.example.cus.dto.DeviceHistoryDto;
+import com.example.cus.mapper.DeviceHistoryMapper;
 
 
 @Service
 @Transactional
+
 public class CustomerService { 
+
 
 	@Autowired
 	private CustomerMapper customerMapper;
-	@Autowired
+  @Autowired
+	private DeviceHistoryMapper deviceHistoryMapper;
+  @Autowired
 	private CustomerRoleMapper customerRoleMapper;
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	public Customer login(String id, String password) {
+		return customerMapper.getCustomerById(id);
+	}
+	
+	public List<CustomerDevicesDto> getDeviceInfo(String id) {
+		return customerMapper.getCustomerDevices(id);
+	}
+	
+	public CustomerDevicesDto getDeviceDetail(int deviceNo) {
+		return customerMapper.getDeviceByNo(deviceNo);
+	}
+	
+	public List<DeviceHistoryDto> getHistories(String id) {
+		return deviceHistoryMapper.getHistories(id);
+	}
 
-	public void registerCustomer(CustomerRegisterForm customerRegisterForm ) {
+	public List<DeviceHistoryDto> getDeviceCategoryHistories(int deviceNo) {
+		return customerMapper.getDeviceCategoryHistories(deviceNo);
+	}
+	
+
+    public void registerCustomer(CustomerRegisterForm customerRegisterForm ) {
 		Customer savedCustomer = customerMapper.getCustomerById(customerRegisterForm.getId());
 		if (savedCustomer != null) {
+
 			throw new ApplicationException("["+customerRegisterForm.getId()+"] 사용할 수 없는 아이디입니다.");
 		}
 		savedCustomer = customerMapper.getCustomerByEmail("["+customerRegisterForm.getEmail());
@@ -55,6 +85,7 @@ public class CustomerService {
 
 		CustomerRole customerRole = new CustomerRole(customerRegisterForm.getId(), "ROLE_CUSTOMER");
 		customerRoleMapper.insertCustomerRole(customerRole);			
+
 
 	}
 
@@ -187,7 +218,7 @@ public class CustomerService {
 
 		List<CustomerDevicesDto> myDevices = customerMapper.getMyDevices(form.getCustomerId());
 		
-	    customerMapper.insertCustomerDevice(customerDevice);
+	  customerMapper.insertCustomerDevice(customerDevice);
 	}
 	
    }

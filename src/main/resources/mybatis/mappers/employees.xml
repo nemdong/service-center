@@ -5,8 +5,8 @@
 	<select id="getAllEmployees" parameterType="map" resultType="com.example.emp.dto.EmployeeDto">
 		SELECT
 		    E.EMPLOYEE_NO 					as no,
-		    E.EMPLOYEE_PASSWORD 			as password,
 		    E.EMPLOYEE_NAME 				as name,
+		    E.EMPLOYEE_PASSWORD				as password,
 		    E.EMPLOYEE_CITIZEN_NO 			as citizenNo,
 		    E.EMPLOYEE_GENDER 				as gender,
 		    E.COMPANY_TEL 					as companyTel,
@@ -51,8 +51,8 @@
 	<select id="getEmpByNo" resultType="EmployeeDto">
 		SELECT
 		    EMPLOYEE_NO 				as no,
-		    EMPLOYEE_PASSWORD 			as password,
 		    EMPLOYEE_NAME 				as name,
+		    EMPLOYEE_PASSWORD			as password,
 		    EMPLOYEE_CITIZEN_NO 		as citizenNo,
 		    EMPLOYEE_GENDER 			as gender,
 		    COMPANY_TEL 				as companyTel,
@@ -85,7 +85,7 @@
    			 <if test="detailAddress">, HOME_DETAIL_ADDRESS</if>
    			 )
 		VALUES
- 			(#{no}, #{password}, #{name}, #{gender}, #{companyTel}, #{mobileTel}, #{companyEmail}, 
+ 			(#{no}, #{encryptPassword}, #{name}, #{gender}, #{companyTel}, #{mobileTel}, #{companyEmail}, 
  			#{externalEmail}, #{hireDate}, #{deptNo}, #{positionNo}, sysdate
     		<if test="citizenNo != null">, #{citizenNo}</if>
     		<if test="homeTel != null">, #{homeTel}</if>
@@ -170,4 +170,72 @@
 		WHERE
 			EMP_NO = #{value}
 	</delete>
+	
+	<!-- 로그인 -->
+	<select id="getEmployeeByEmpNo" parameterType="int" resultType="EmployeeDto">
+		SELECT
+		    E.EMPLOYEE_NO 					as no,
+		    E.EMPLOYEE_NAME 				as name,
+		    E.EMPLOYEE_PASSWORD				as password,
+		    E.EMPLOYEE_CITIZEN_NO 			as citizenNo,
+		    E.EMPLOYEE_GENDER 				as gender,
+		    E.COMPANY_TEL 					as companyTel,
+		    E.HOME_TEL 						as homeTel,
+		    E.COMPANY_EMAIL 				as companyEmail,
+		    E.EXTERNAL_EMAIL 				as externalEmail,
+		    E.HOME_ZIPCODE 					as zipcode,
+		    E.HOME_BASIC_ADDRESS 			as basicAddress,
+		    E.HOME_DETAIL_ADDRESS 			as detailAddress,
+		    E.EMPLOYEE_HIRE_DATE 			as hireDate,
+		    E.EMPLOYEE_RETIREMENT_DATE		as retirementDate,
+		    P.POSITION_NAME 				as positionName,
+		    D.DEPT_NAME 					as deptName
+		FROM 
+			EMPLOYEES E, DEPARTMENTS D, POSITIONS P
+		WHERE
+		    E.DEPT_NO = D.DEPT_NO
+		AND
+		    E.POSITION_NO = P.POSITION_NO
+		AND
+			E.EMPLOYEE_NO = #{value}
+	</select>
+	
+	<select id="dupExternalEmails" parameterType="String" resultType="String">
+		SELECT 
+			EXTERNAL_EMAIL 	as externalEmail
+		FROM
+			EMPLOYEES
+		WHERE
+			EXTERNAL_EMAIL = #{value}
+	</select>
+
+	<select id="dupMobileTels" parameterType="String" resultType="String">
+		SELECT 
+			MOBILE_TEL	as mobileTel
+		FROM
+			EMPLOYEES
+		WHERE
+			MOBILE_TEL = #{value}
+	</select>
+	
+	<insert id="createdMonthAttendances" parameterType="int">
+		INSERT INTO MONTHLY_ATTENDANCES
+		    (EMPLOYEE_NO, WORK_YEAR_MONTH, TOTAL_WORKED_DAYS, WEEKDAY_WORKED_DAYS,
+		    WEEKEND_WORKED_DAYS, VACATION_USED_DAYS, ABSENT_DAYS)
+		VALUES
+		    (#{value}, SYSDATE, 0, 0, 0, 0, 0) 
+	</insert>
+	
+	<delete id="deleteMonthAttendances" parameterType="int">
+		DELETE FROM MONTHLY_ATTENDANCES
+		WHERE
+			EMPLOYEE_NO = #{value}
+	</delete>
+	
+	<insert id="createdYearVacation" parameterType="int">
+		INSERT INTO EMPLOYEE_YEAR_VACATIONS
+			(EMPLOYEE_NO, WORK_YEAR)
+		VALUES
+			(#{value}, TO_CHAR(sysdate, 'YYYY'))
+	</insert>
 </mapper>

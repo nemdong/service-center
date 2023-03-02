@@ -4,16 +4,45 @@
 	<select id="getAppointLocations" parameterType="string" resultType="Location">
 		select
 			location_no		as locationNo,
-			location_name		as name,
+			location_name		as locationName,
 			city		as city,
-			location_basic_address		as basicAddress,
-			location_latitude		as latitude,
-			location_longitude		as longitude,
-			location_ways		as locationWays,
+			location_basic_address		as locationBasicAddress,
+			location_latitude		as locationLatitude,
+			location_longitude		as locationLongitude,
+			location_ways		as ways,
 			pickup_description		as pickupDescription
 		from
 			locations
 		where
 			location_ways = #{value}
+	</select>
+	
+	<select id="getLocationInfoByNo" parameterType="int" resultType="Location">
+		select
+			location_no		as locationNo,
+			location_name		as locationName,
+			city		as city,
+			location_basic_address		as locationBasicAddress,
+			location_latitude		as locationLatitude,
+			location_longitude		as locationLongitude,
+			location_ways		as ways,
+			pickup_description		as pickupDescription
+		from
+			locations
+		where
+			location_no = #{value}
+	</select>
+	
+	<select id="getRegions" resultType="Region">
+		select
+			region_no		as no,
+			region_name		as regionName,
+			region_type		as regionType
+		from
+			regions
+		where
+			region_type = 'SIDO'
+		order by
+			region_name	asc
 	</select>
 </mapper>

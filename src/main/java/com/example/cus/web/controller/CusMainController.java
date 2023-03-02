@@ -7,19 +7,19 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import com.example.cus.service.CustomerService;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.example.cus.exception.AlreadyRegisteredCustomerIdException;
 import com.example.cus.exception.AlreadyRegisteredEmailException;
-import com.example.cus.service.CustomerService;
 import com.example.cus.vo.Customer;
 import com.example.cus.web.request.CustomerRegisterForm;
 
 @Controller
 public class CusMainController {
-
 
 	@Autowired
 	private CustomerService customerService;
@@ -28,8 +28,7 @@ public class CusMainController {
 	public String home() {
 		return "cus/home";
 	}
-
-
+	
 	// 로그인
 	@GetMapping("/cus/login")
 	public String loginform() {
@@ -38,7 +37,7 @@ public class CusMainController {
 	
 	@GetMapping("/access-denied")
 	public String accessDenied() {
-		return "cus/error/denied";
+		return "cus/error/access-denied";
 	}
 
 	//아이디 중복확인

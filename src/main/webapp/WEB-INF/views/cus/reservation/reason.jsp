@@ -23,8 +23,6 @@
 				<div class="col-10 border-bottom"></div>
 			</div>
 			
-			<p></p>
-			
 			<div class="row">
 				<div class="col-2 mb-4">
 					<span class="p-2" style="display:inline-block; height:120px; width:150px;">	
@@ -42,9 +40,9 @@
 					</span>
 				</div>
 				<div class="col-10">
-					<h2><strong>${loginUser.name }</strong>의 ${device.deviceCategoryProduct }</h2>
+					<h2><strong><sec:authentication property="principal.name" /></strong>의 ${device.deviceCategoryProduct }</h2>
 					<p class="text-danger">${device.deviceCategoryName }</p>
-					<a href="device" style="text-decoration:none;"><strong>기기 변경</strong></a>
+					<a href="device" style="text-decoration:none;"><strong>(기기 변경)</strong></a>
 				</div>
 				<div class="col-10 border-bottom mb-5"></div>
 			</div>

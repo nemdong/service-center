@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.cus.mapper.ReservationMapper">
+	<select id="getReservations" parameterType="string" resultType="ReservationDto">
+		select
+			R.registration_no 		as registrationNo,
+			R.device_no 			as deviceNo,
+			R.customer_id 			as customerId,
+			R.service_cat_no 		as serviceCatNo,
+			R.registration_type 	as registrationType,
+			R.reservation_date 		as reservationDate,
+			R.reservation_hour 		as reservationHour,
+			R.reservation_status	as reservationStatus,
+			L.location_no 			as locationNo,
+			L.location_name 		as locationName,
+			L.location_ways			as ways
+		from
+			service_registrations R, locations L
+		where
+			R.customer_id = #{value}
+			and R.location_no = L.location_no
+	</select>
+	
+	<select id="getDetailReservation" parameterType="int" resultType="ReservationDto">
+		select
+			R.registration_no 		as registrationNo,
+			R.device_no 			as deviceNo,
+			R.customer_id 			as customerId,
+			R.service_cat_no 		as serviceCatNo,
+			S.service_cat_name		as serviceCatName,
+			R.registration_type 	as registrationType,
+			R.reservation_date 		as reservationDate,
+			R.reservation_hour 		as reservationHour,
+			R.reservation_status	as reservationStatus,
+			L.location_no 			as locationNo,
+			L.location_name 		as locationName,
+			C.customer_email		as customerEmail,
+			L.location_basic_address	as locationBasicAddress,
+			L.location_detail_address	as locationDetailAddress,
+			L.zipcode				as zipcode,
+			G.device_category_name	as deviceCategoryName,
+			S.service_amount		as serviceAmount
+		from
+			service_registrations R, locations L, customers C, customer_devices D, device_categories G, service_categories S
+		where
+			R.registration_no = #{value}
+			and R.location_no = L.location_no
+			and R.device_no = D.device_no
+			and C.customer_id = D.customer_id
+			and D.device_category_no = G.device_category_no
+            and R.service_cat_no = S.service_cat_no
+            and G.device_category_product = S.device_product
+	</select>
+	
+	<select id="getLocations" parameterType="map" resultType="Location">
+		 select
+			A.location_no		as locationNo,
+			A.location_name		as locationName,
+			A.city		as city,
+			A.zipcode		as zipcode,
+			A.location_basic_address		as locationBasicAddress,
+			A.location_detail_address		as locationDetailAddress,
+			A.location_latitude		as locationLatitude,
+			A.location_longitude		as locationLongitude,
+			A.location_created_date as locationCreatedDate,
+			A.location_updated_date as locationUpdatedDate,
+			A.location_ways		as ways,
+			B.status as status
+		from
+			locations A, (select B.location_no, decode(sum(nvl2(A.reservation_hour, 0, 1)), 0, '예약불가', '예약가능') status 
+	                    	from (select location_no, reservation_hour
+		                          from service_registrations A
+		                          where  A.reservation_date between trunc(sysdate) and trunc(sysdate + 1)) A, locations B, service_times C
+		                    where A.location_no(+) = B.location_no
+		                    and A.reservation_hour(+) = C.start_hour
+		                    group by B.location_no) B
+		where
+			location_ways = #{way}
+			<if test="status != null and status == '예약가능'">
+				and B.status = '예약가능'
+			</if>
+			<if test="keyword != null">
+				and A.location_name like '%'||#{keyword}||'%'
+			</if>
+			and A.location_no = B.location_no
+	</select>
+	
+	<!-- nvl2(대상, null아닌 값, null인 값) 예약이 하나라도 되어있지 않으면 1, 예약이 되어있으면 null이 아니므로 0 -->
+	
+	<select id="getLocationDetail" parameterType="int" resultType="Location">
+		select
+			A.location_no		as locationNo,
+			A.location_name		as locationName,
+			A.city		as city,
+			A.zipcode		as zipcode,
+			A.location_basic_address		as locationBasicAddress,
+			A.location_detail_address		as locationDetailAddress,
+			A.location_latitude		as locationLatitude,
+			A.location_longitude		as locationLongitude,
+			A.location_created_date as locationCreatedDate,
+			A.location_updated_date as locationUpdatedDate,
+			A.location_ways		as ways
+		from
+			locations A
+		where
+			location_no = #{value}
+	</select>
+	
+	<delete id="deleteReservByNo" parameterType="int"> <!-- 예약취소는 delete하면 무결성 제약조건 때문에 안되는데 그럼 deleted = 'N' 으로 해서 해야할까요 -->
+		delete from
+			service_registrations
+		where
+			registration_no = #{value}
+	</delete>
+	
+	<!-- 예약가능한 시간대를 출력 -->
+	<select id="getReservationTimes" parameterType="map" resultType="string">
+		select 
+			start_hour as startHour
+		from  
+			service_times
+		minus 
+		select 
+			reservation_hour
+		from 
+			service_registrations
+		where 
+			location_no = #{locationNo}
+			and reservation_date = #{date} <!-- contoller의 param에 담은 이름으로 사용해야함. -->
+	</select>
+	<!-- 셀렉트키를 사용하면 no를 바로 이용할 수 있다. -->
+	<insert id="insertRegistration" parameterType="Reservation">
+		<selectKey keyProperty="registrationNo" resultType="int" order="BEFORE"> <!-- order에 BEFORE하면 키를 먼저 조회하고 그 값을 keyProperty에 담고 insert실행  -->
+			select service_registrations_seq.nextval from dual
+		</selectKey>
+		insert into service_registrations
+		(registration_no, device_no, customer_id, service_cat_no, reservation_date, reservation_hour, location_no)
+		values
+		(#{registrationNo}, #{deviceNo}, #{id}, #{serviceCatNo}, #{reservationDate}, #{reservationHour}, #{locationNo})
+	</insert>
+	
+	<update id="updateReservation" parameterType="Reservation">
+		update
+			service_registrations
+		set
+			reservation_date = #{reservationDate},
+			reservation_hour = #{reservationHour},
+			registration_date = sysdate
+		where
+			registration_no = #{registrationNo}
+	</update>
+	
+	<select id="getReservationByNo" parameterType="int" resultType="Reservation">
+		select 
+			registration_no as registrationNo,
+			device_no as deviceNo,
+			customer_id as customerId,
+			service_cat_no as serviceCatNo,
+			registration_type as registrationType,
+			reservation_date as reservationDate,
+			reservation_hour as reservationHour,
+			reservation_status as reservationStatus,
+			location_no as locationNo,
+			registration_date as registrationDate
+		from
+			service_registrations
+		where
+			registration_no = #{value}
+	</select>
+	
+	<delete id="deleteRegistraionByNo" parameterType="int">
+		delete from
+			service_registrations
+		where
+			registration_no = #{value}
+	</delete>
+</mapper>
