@@ -83,7 +83,7 @@
      </div>
      <div class="anw" style="${menu1 eq '고객관리' ?'display: block;' : '' }">
 	     <div class="list-group ">
-			<span><a href="main" class="list-group-item list-group-item-action border-0 ${menu2 eq '고객관리' ? 'active' : '' }">고객관리</a></span>
+			<span><a href="/erp/main" class="list-group-item list-group-item-action border-0 ${menu2 eq '고객관리' ? 'active' : '' }">고객관리</a></span>
 			<span><a href="#" class="list-group-item list-group-item-action border-0 ${menu2 eq '서비스이력조회' ? 'active' : '' }">서비스이력조회</a></span>
 		 </div>
      </div>
@@ -118,9 +118,10 @@
      </div>
      <div class="anw " style="${menu1 eq '휴가관리' ?'display: block;' : '' }">
      	<div class="list-group ">
-			<span><a href="#" class="list-group-item list-group-item-action border-0 ${menu2 eq '연차현황' ? 'active' : '' }">연차현황</a></span>
-			<span><a href="#" class="list-group-item list-group-item-action border-0 ${menu2 eq '휴가신청' ? 'active' : '' }">휴가신청</a></span> 
-			<span><a href="#" class="list-group-item list-group-item-action border-0 ${menu2 eq '요청내역' ? 'active' : '' }">요청내역</a></span> 
+			<span><a href="/vacation/vacStatus" class="list-group-item list-group-item-action border-0 ${menu2 eq '연차현황' ? 'active' : '' }">연차현황</a></span>
+			<span><a href="/vacation/manage" class="list-group-item list-group-item-action border-0 ${menu2 eq '휴가신청' ? 'active' : '' }">휴가신청</a></span> 
+			<span><a href="/vacation/reqHistories" class="list-group-item list-group-item-action border-0 ${menu2 eq '요청내역' ? 'active' : '' }">요청내역</a></span> 
+			<span><a href="/vacation/requestManage" class="list-group-item list-group-item-action border-0 ${menu2 eq '요청관리' ? 'active' : '' }">요청관리</a></span> 
 		</div>
      </div>
      <div class="que ${menu1 eq 'A/S관리' ?'on' : '' }">

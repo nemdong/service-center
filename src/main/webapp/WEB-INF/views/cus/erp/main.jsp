@@ -72,7 +72,7 @@
 										<td>${customer.phone }</td>
 										<td>${customer.email }</td>
 										<td>
-											<a href="#"><button class="btn btn-secondary btn-sm"">서비스내역</button></a>
+											<a href="#"><button class="btn btn-secondary btn-sm">서비스내역</button></a>
 										</td>
 									</tr>
 								</c:forEach>
@@ -311,13 +311,10 @@ $(function() {
 	
 	// 고객 이름 클릭시 상세정보 보기
 	$("#table-customer-list tbody a[data-cust-id]").click(function(event) {
-		//alert("aaa")
 		event.preventDefault();
 		
 		let clickedCustomerId = $(this).attr('data-cust-id');	// 클릭한 고객 아이디값 조회
 		
-		// http://localhost/erp/info?id=id
-		// id라는 이름으로 clickedCustomerId를 보낸다.
 		$.getJSON('/erp/info', {id: clickedCustomerId}, function(customer) {
 			
 			// 상세정보 테이블에 값 표시
@@ -400,16 +397,6 @@ $(function() {
 			detailAddress: detailAddressValue
 		}
 		
-		// 서버로 보내는 데이터
-		/*
-			 POST /erp/modify HTTP/1.1
-			 
-			 id=hong&name=홍길동&phone=010-1111-1111
-		*/
-		
-		// 서버로부터 받은 데이터
-		// customer -> {id:"hong", name:"홍길동", email:"hong@gmail.com"} 
-		
 		$.post("/erp/modify", data, function(customer) {
 			// 목록의 값 변경
 			$("tr.table-primary td:eq(1) a").text(customer.name)
@@ -450,14 +437,13 @@ $(function() {
 			alert("삭제할 고객을 선택해주세요");
 			return false;
 		}
-		$("#form-list-customer").trigger("submit");	// erp/delete?custId=10000&custId=1111
+		$("#form-list-customer").trigger("submit");
 	});
 	
 	// 상세정보 삭제버튼
-	// 버튼 클릭하면 해당 고객 아이디 전달
 	$("#btn-del-detail-customer").click(function() {
 		let id = $("#table-customer-list tbody tr.table-primary").attr("data-customer-id");
-		location.href = "/erp/delete?custId=" + id;	//erp/del	//idustId=10000	//id
+		location.href = "/erp/delete?custId=" + id;
 	});
 	
 	// 고객수정 모달폼 표시
