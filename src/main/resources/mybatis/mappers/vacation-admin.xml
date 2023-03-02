@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.emp.mapper.VacationMapper">
+
+	<select id="getTotalRows" parameterType="map" resultType="int">
+		select
+			count(*)
+		from
+			VACATION_REQUEST_HISTORIES
+		<where>
+			<if test="requestEmpNo != null">
+				VACATION_REQUEST_EMP_NO = #{requestEmpNo}
+			</if>
+		</where>
+	</select>
+	
+	<select id="getVacReqManageList" parameterType="map" resultType="VacReqManageDto">
+		SELECT
+			VACATION_REQUEST_NO 		AS requestNo,
+			VACATION_REQUEST_TYPE 		AS requestType,
+			VACATION_START_DATE 		AS startDate,
+			VACATION_END_DATE 			AS endDate,
+			VACATION_START_HOUR 		AS startHour,
+			VACATION_END_HOUR 			AS endHour,
+			VACATION_NOTE 				AS note,
+			VACATION_APPROVAL_STATUS 	AS approvalStatus,
+			VACATION_REQUEST_EMP_NO 	AS empNo,
+			VACATION_CAT_NO 			AS catNo,
+			VACATION_CAT_NAME 			AS catName,
+			VACATION_MINUS_DAYS 		AS minusDays,
+			VACATION_MINUS_TIMES 		AS minusTimes,
+			EMPLOYEE_NAME 				AS empName
+		FROM (
+			SELECT
+				ROW_NUMBER() OVER (ORDER BY A.VACATION_REQUEST_NO DESC) ROW_NUMBERS,
+				A.VACATION_REQUEST_NO,
+				A.VACATION_REQUEST_TYPE,
+				A.VACATION_START_DATE,
+				A.VACATION_END_DATE,
+				A.VACATION_START_HOUR,
+				A.VACATION_END_HOUR,
+				A.VACATION_NOTE,
+				A.VACATION_APPROVAL_STATUS,
+				A.VACATION_REQUEST_EMP_NO,
+				A.VACATION_CAT_NO,
+				B.VACATION_CAT_NAME,
+				B.VACATION_MINUS_DAYS,
+				B.VACATION_MINUS_TIMES,
+				C.EMPLOYEE_NAME
+			FROM
+				VACATION_REQUEST_HISTORIES A, VACATION_CATEGORIES B, EMPLOYEES C
+			WHERE
+				A.VACATION_CAT_NO = B.VACATION_CAT_NO
+				and A.VACATION_REQUEST_EMP_NO = C.EMPLOYEE_NO
+			)
+		WHERE
+			ROW_NUMBERS BETWEEN #{begin} AND #{end}
+	</select>
+	
+	<!-- 휴가신청 번호로 조회 -->
+	<select id="getVacReqByrequestNo" parameterType="int" resultType="VacationRequestHistories">
+	 	SELECT
+			A.VACATION_REQUEST_NO 				AS requestNo,
+			A.VACATION_REQUEST_TYPE 			AS requestType,
+			A.VACATION_START_DATE 				AS startDate,
+			A.VACATION_END_DATE 				AS endDate,
+			A.VACATION_START_HOUR 				AS startHour,
+			A.VACATION_END_HOUR 				AS endHour,
+			A.VACATION_NOTE 					AS note,
+			A.VACATION_APPROVAL_STATUS 			AS approvalStatus,
+			A.VACATION_REQUEST_EMP_NO 			AS empNo,
+			A.VACATION_CAT_NO 					AS catNo,
+			B.VACATION_CAT_NAME 				AS catName,
+			B.VACATION_MINUS_DAYS 				AS minusDays,
+			B.VACATION_MINUS_TIMES 				AS minusTimes,
+			C.EMPLOYEE_NAME 					AS empName,
+			D.TOTAL_YEAR_VACATION_COUNT			AS totalCount,
+			D.USED_YEAR_VACATION_COUNT			AS usedCount,
+			D.RE_MAINING_YEAR_VACATION_COUNT	AS remainingCount
+		FROM 
+			VACATION_REQUEST_HISTORIES A, VACATION_CATEGORIES B, EMPLOYEES C, EMPLOYEE_YEAR_VACATIONS D
+		WHERE
+			A.VACATION_CAT_NO = B.VACATION_CAT_NO
+			and A.VACATION_REQUEST_EMP_NO = C.EMPLOYEE_NO
+			and A.VACATION_REQUEST_EMP_NO = D.EMPLOYEE_NO
+			and A.VACATION_REQUEST_NO = #{requestNo}
+	 </select>
+	
+	<update id="updateApprovalStatus" parameterType="VacationRequestHistories">
+		update
+			VACATION_REQUEST_HISTORIES
+		set
+			VACATION_APPROVAL_STATUS = #{approvalStatus}
+		where
+			VACATION_REQUEST_NO = #{requestNo}
+	</update>
+	
+	<update id="updateVacationCount" parameterType="EmployeeYearVacations">
+		update
+			EMPLOYEE_YEAR_VACATIONS
+		set
+			USED_YEAR_VACATION_COUNT = #{usedCount},
+			RE_MAINING_YEAR_VACATION_COUNT = #{remainingCount}
+		where
+			EMPLOYEE_NO = #{empNo}
+	</update>
+</mapper>

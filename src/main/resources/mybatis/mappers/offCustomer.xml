@@ -15,8 +15,6 @@
 			count(*)
 		from
 			customers
-		where
-			customer_deleted = 'N'
 		<where>
 			<if test="keyword != null">
 				customer_name = #{keyword}
