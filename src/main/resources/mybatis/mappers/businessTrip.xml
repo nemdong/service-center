@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.emp.mapper.BusinessTripMapper">
+	
+	<insert id="insertBusiness" parameterType="BusinessTrips">
+		<selectKey keyProperty="reqNo" resultType="int" order="BEFORE">
+			SELECT BUSINESS_TRIP_CATEGORIES_SEQ.nextval from dual
+		</selectKey>
+		INSERT INTO business_trips
+		    (BUSINESS_TRIP_REQ_NO, BUSINESS_TRIP_START_DATE, BUSINESS_TRIP_END_DATE, BUSINESS_TRIP_DESCRIPTION,
+		    BUSINESS_TRIP_LOCATION, BUSINESS_TRIP_EXPENSES, BUSINESS_TRIP_APPROVAL_STATUS, BUSINESS_TRIP_CREATED_DATE,
+		    BUSINESS_TRIP_UPDATED_DATE, BUSINESS_TRIP_CAT_NO, EMPLOYEE_NO, BUSINESS_TRIP_TITLE,
+		    BUSINESS_TRIP_START_TIME, BUSINESS_TRIP_END_TIME)
+		VALUES
+		    (#{reqNo}, #{startDate}, #{endDate}, #{description}, 
+		    #{location}, #{expenses}, #{approvalStatus}, sysdate, sysdate, #{catNo}, #{empNo}, #{title},
+		    #{startTime}, #{endTime})
+	</insert>
+
+	<select id="getTodoEvents" parameterType="map" resultType="BusinessTripEvent">
+		SELECT
+			A.BUSINESS_TRIP_REQ_NO as "trips.reqNo",
+			A.BUSINESS_TRIP_START_DATE as "trips.startDate", 
+			A.BUSINESS_TRIP_START_TIME as "trips.startTime", 
+			A.BUSINESS_TRIP_END_DATE as "trips.endDate", 
+			A.BUSINESS_TRIP_END_Time as "trips.endTime", 
+			A.BUSINESS_TRIP_DESCRIPTION as "trips.description",
+		    A.BUSINESS_TRIP_LOCATION as "trips.location", 
+		    A.BUSINESS_TRIP_EXPENSES as "trips.expenses", 
+		    A.BUSINESS_TRIP_APPROVAL_STATUS as "trips.approvalStatus", 
+		    A.BUSINESS_TRIP_CREATED_DATE as "trips.createdDate",
+		    A.BUSINESS_TRIP_UPDATED_DATE as "trips.updatedDate", 
+		    A.BUSINESS_TRIP_CAT_NO as "trips.catNo", 
+		    A.EMPLOYEE_NO as "trips.empNo", 
+		    A.BUSINESS_TRIP_TITLE as "trips.title"
+		FROM
+			business_trips A, BUSINESS_TRIP_CATEGORIES B
+		WHERE
+			A.EMPLOYEE_NO = #{empNo}
+		AND
+			A.BUSINESS_TRIP_START_DATE between #{startDate} and #{endDate}
+		AND
+			A.BUSINESS_TRIP_END_DATE between #{startDate} and #{endDate}
+		AND
+			A.BUSINESS_TRIP_CAT_NO = B.BUSINESS_TRIP_CAT_NO	    
+	</select>
+	
+	<select id="getBusinessTripByEmpNo" parameterType="int" resultType="BusinessTripDto">
+		SELECT
+	        A.BUSINESS_TRIP_REQ_NO as reqNo,
+	        A.BUSINESS_TRIP_START_DATE as startDate,
+	        A.BUSINESS_TRIP_START_TIME as startTime, 
+	        A.BUSINESS_TRIP_END_DATE as endDate,
+	        A.BUSINESS_TRIP_END_TIME as endTime, 
+	        A.BUSINESS_TRIP_DESCRIPTION as description,
+	        A.BUSINESS_TRIP_LOCATION as location, 
+	        A.BUSINESS_TRIP_EXPENSES as expenses, 
+	        A.BUSINESS_TRIP_APPROVAL_STATUS as approvalStatus, 
+	        A.BUSINESS_TRIP_CREATED_DATE as createdDate,
+	        A.BUSINESS_TRIP_UPDATED_DATE as updatedDate, 
+	        A.BUSINESS_TRIP_CAT_NO as catNo, 
+	        A.EMPLOYEE_NO as empNo, 
+	        A.BUSINESS_TRIP_TITLE as title,
+	        c.DEPT_NAME as deptName
+	    FROM
+	        business_trips A, EMPLOYEES B, DEPARTMENTS C
+	    WHERE
+	        A.EMPLOYEE_NO = B.EMPLOYEE_NO
+	    AND
+	        B.EMPLOYEE_NO = C.DEPT_NO
+	    AND
+	        C.DEPT_NO = #{deptNo}
+	</select>
+	
+	<!-- 출장 요청 조회 -->
+	<select id="getAllTrip" parameterType="map" resultType="BusinessTripDto">
+		SELECT
+			B.BUSINESS_TRIP_REQ_NO as reqNo,
+		    E.EMPLOYEE_NO as empNo,
+		    E.EMPLOYEE_NAME as empName,
+		    B.BUSINESS_TRIP_TITLE as title,
+		    B.BUSINESS_TRIP_LOCATION as location,
+		    B.BUSINESS_TRIP_START_DATE as startDate,
+		    B.BUSINESS_TRIP_END_DATE as endDate,
+		    B.BUSINESS_TRIP_EXPENSES as expenses,
+		    B.BUSINESS_TRIP_APPROVAL_STATUS as approvalStatus
+		FROM
+		    EMPLOYEES E, BUSINESS_TRIPS B
+		WHERE
+		    E.EMPLOYEE_NO = B.EMPLOYEE_NO
+		<if test="empNo != null">
+		AND	E.EMPLOYEE_NO = #{empNo}
+		</if>	  
+		<if test="approvalStatus != null">
+		AND	B.BUSINESS_TRIP_APPROVAL_STATUS = #{approvalStatus}
+		</if>	  
+		ORDER BY 
+		    B.BUSINESS_TRIP_UPDATED_DATE DESC
+	</select>
+	<select id="modalDetail" parameterType="int" resultType="BusinessTripDto">
+		SELECT
+			E.EMPLOYEE_NAME as empName,
+			B.EMPLOYEE_NO as empNo,
+			B.BUSINESS_TRIP_REQ_NO as reqNo,
+		    B.BUSINESS_TRIP_CAT_NO as catNo,
+		    B.BUSINESS_TRIP_TITLE as title,
+		    B.BUSINESS_TRIP_START_DATE as startDate,
+		    B.BUSINESS_TRIP_START_TIME as startTime,
+		    B.BUSINESS_TRIP_END_DATE as endDate,
+		    B.BUSINESS_TRIP_END_TIME as endTime,
+		    B.BUSINESS_TRIP_EXPENSES as expenses,
+		    B.BUSINESS_TRIP_LOCATION as location,
+		    B.BUSINESS_TRIP_DESCRIPTION as description
+		FROM
+		    BUSINESS_TRIPS B, EMPLOYEES E
+		WHERE
+			B.EMPLOYEE_NO = E.EMPLOYEE_NO
+		AND
+		    BUSINESS_TRIP_REQ_NO = #{value}
+	</select>
+	<select id="getBusinessTripByReqNo" parameterType="int" resultType="BusinessTrips">
+		SELECT
+			BUSINESS_TRIP_APPROVAL_STATUS as approvalStatus,
+			BUSINESS_TRIP_REQ_NO as reqNo,
+		    BUSINESS_TRIP_CAT_NO as catNo,
+		    BUSINESS_TRIP_TITLE as title,
+		    BUSINESS_TRIP_START_DATE as startDate,
+		    BUSINESS_TRIP_START_TIME as startTime,
+		    BUSINESS_TRIP_END_DATE as endDate,
+		    BUSINESS_TRIP_END_TIME as endTime,
+		    BUSINESS_TRIP_EXPENSES as expenses,
+		    BUSINESS_TRIP_LOCATION as location,
+		    BUSINESS_TRIP_DESCRIPTION as description
+		FROM
+			BUSINESS_TRIPS
+		WHERE
+			BUSINESS_TRIP_REQ_NO = #{value}
+	</select>
+	<update id="changeApprovalStatus" parameterType="BusinessTrips">
+		UPDATE
+			BUSINESS_TRIPS
+		SET
+			BUSINESS_TRIP_APPROVAL_STATUS = #{approvalStatus}
+		WHERE
+			BUSINESS_TRIP_REQ_NO = #{reqNo}	
+	</update>
+	<select id="getAllTripByEmpNo" parameterType="map" resultType="BusinessTripDto">
+		SELECT
+			B.BUSINESS_TRIP_REQ_NO as reqNo,
+		    E.EMPLOYEE_NO as empNo,
+		    E.EMPLOYEE_NAME as empName,
+		    B.BUSINESS_TRIP_TITLE as title,
+		    B.BUSINESS_TRIP_LOCATION as location,
+		    B.BUSINESS_TRIP_START_DATE as startDate,
+		    B.BUSINESS_TRIP_END_DATE as endDate,
+		    B.BUSINESS_TRIP_EXPENSES as expenses,
+		    B.BUSINESS_TRIP_APPROVAL_STATUS as approvalStatus
+		FROM
+		    EMPLOYEES E, BUSINESS_TRIPS B
+		WHERE
+		    E.EMPLOYEE_NO = B.EMPLOYEE_NO
+		AND	
+			E.EMPLOYEE_NO = #{empNo}
+		<if test="approvalStatus != null">
+		AND	B.BUSINESS_TRIP_APPROVAL_STATUS = #{approvalStatus}
+		</if>	  
+		ORDER BY 
+		    B.BUSINESS_TRIP_UPDATED_DATE DESC
+	</select>
+	<update id="updateMyBusinessTrip" parameterType="BusinessTrips">
+		UPDATE
+			BUSINESS_TRIPS
+		SET	
+		    BUSINESS_TRIP_TITLE = #{title},
+		    BUSINESS_TRIP_LOCATION = #{location},
+		    BUSINESS_TRIP_START_DATE = #{startDate},
+		    BUSINESS_TRIP_END_DATE = #{endDate},
+		    BUSINESS_TRIP_EXPENSES = #{expenses},
+		    BUSINESS_TRIP_APPROVAL_STATUS = #{approvalStatus}
+		WHERE
+			BUSINESS_TRIP_REQ_NO = #{reqNo}	    
+	</update>
+	<delete id="deleteMyBusinessTrip" parameterType="int">
+		DELETE FROM BUSINESS_TRIPS
+		WHERE
+			BUSINESS_TRIP_REQ_NO = #{reqNo}
+	</delete>
+</mapper>

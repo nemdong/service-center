@@ -24,11 +24,14 @@
 			<c:if test="${param.error eq 'fail'}">
 			     <p class="text-danger"> 아이디 또는 비밀번호가 일치하지 않습니다.</p>
 			</c:if>
+			<c:if test="${param.error eq 'expired'}">
+			     <p class="text-danger"> 탈퇴한 사용자입니다.</p>
+			</c:if>
 			<form id="form-register" class="border bg-light p-3" method="post" action="/login">
 				<input type="hidden" name="userType" value="사용자" />
 				<div class="mb-3">
 					<label class="form-label">아이디</label>
-					<input type="text" class="form-control form-control-sm" name="id" />
+					<input type="text" class="form-control form-control-sm" name="id"/>
 				</div>
 				<div class="mb-3">
 					<label class="form-label">비밀번호</label>
@@ -68,6 +71,8 @@ $(function() {
 		}
 		return true;
 	});
+	
+	
 });
 
 	</script>

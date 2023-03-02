@@ -29,6 +29,12 @@ public class EmpAttendanceService {
 		
 	}
 	
+	public List<Attendances> getAllAttendanceByWorkDate(Map<String, Object> param) {
+		List<Attendances> attendancesList = empAttendanceMapper.getAllAttendanceByWorkDate(param);
+				
+		return attendancesList;
+	}
+	
 	public Attendances getTodayAttendances(int empNo) {
 		Attendances todayAtt = empAttendanceMapper.getTodayAttendances(empNo);
 		
@@ -121,15 +127,6 @@ public class EmpAttendanceService {
 	
 	// 퇴근
 	public void updateWorkingHours(int empNo) {
-		// 월 근태 형황 - 근무/평일근무 일수
-		MonthlyAttendances monthAtt = empAttendanceMapper.monthlyAttendancesByEmpNo(empNo);
-		monthAtt.setWeekDayWorkedDays(monthAtt.getWeekDayWorkedDays() + 1);
-		monthAtt.setTotalWorkedDays(monthAtt.getTotalWorkedDays() + 1);
-		monthAtt.setEmpNo(empNo);
-		empAttendanceMapper.monthlyAttendances(monthAtt);
-		
-//		Map<String, Object> monthlyParam = new HashMap<String, Object>();
-//		monthlyParam.put("empNo", empNo);
 		
 		// 근무시각
 		String workStartTime = empAttendanceMapper.getWorkStartTime(empNo);
@@ -148,62 +145,11 @@ public class EmpAttendanceService {
 		String stringHour = df.format(Math.floor(workingHours/60));
 		String stringMinute = String.valueOf((workingHours - (Integer.parseInt(stringHour)*60)));
 		
-		String insertHour = stringHour + ":" + stringMinute;
-		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("insertHour", insertHour);
-		param.put("empNo", empNo);
-		
-		empAttendanceMapper.updateWorkingHours(param);
-		
-		// startHour - endHour가 10 이하일 때
-		int plusStringMinute = Integer.parseInt(String.valueOf((workingHours - (Integer.parseInt(stringHour)*60))));
-		int plusStringHour = Integer.parseInt(stringHour);
-		if (plusStringHour < 10) {
-			
-			String inserZerotHour = ("0" + stringHour) + ":" + stringMinute;
-			
-			Map<String, Object> plusZeroParam = new HashMap<String, Object>();
-			plusZeroParam.put("insertZerotHour", inserZerotHour);
-			plusZeroParam.put("empNo", empNo);
-			
-			empAttendanceMapper.updatePlusZeroWorkingHours(plusZeroParam);
-			
-		} else if (plusStringMinute < 10) {
-			
-			String inserZerotHour = stringHour + ":" + ("0" + stringMinute);
-			
-			Map<String, Object> plusZeroParam = new HashMap<String, Object>();
-			plusZeroParam.put("insertZerotHour", inserZerotHour);
-			plusZeroParam.put("empNo", empNo);
-			
-			empAttendanceMapper.updatePlusZeroWorkingHours(plusZeroParam);
-		} else if (plusStringHour < 10 && plusStringMinute < 10) {
-			
-			String inserZerotHour = ("0" + stringHour) + ":" + ("0" + stringMinute);
-			
-			Map<String, Object> plusZeroParam = new HashMap<String, Object>();
-			plusZeroParam.put("insertZerotHour", inserZerotHour);
-			plusZeroParam.put("empNo", empNo);
-			
-			empAttendanceMapper.updatePlusZeroWorkingHours(plusZeroParam);
-		}
-		
 		// 휴일 근로
-		String checkHolydays = empAttendanceMapper.checkHolydays();		
-		if (!checkHolydays.isEmpty()) {
-			
-			if (monthAtt.getWeekDayWorkedDays() == 0) {
-				monthAtt.setWeekDayWorkedDays(monthAtt.getWeekDayWorkedDays());
 
-			} else {
-				monthAtt.setWeekDayWorkedDays(monthAtt.getWeekDayWorkedDays() - 1);
-				
-			}
-			
-			monthAtt.setWeekendWorkedDays(monthAtt.getWeekendWorkedDays() + 1);
-			monthAtt.setEmpNo(empNo);
-			empAttendanceMapper.monthlyAttendances(monthAtt);
-			
+		String checkHolyday = empAttendanceMapper.checkHolydays();
+		if (checkHolyday != null) {
+	
 			String stringHolydayHour = df.format(Math.floor(workingHours/60));
 			String stringHolydayMinute = String.valueOf((workingHours - (Integer.parseInt(stringHour)*60)));
 			
@@ -216,15 +162,14 @@ public class EmpAttendanceService {
 			
 			empAttendanceMapper.updateHolydayWorkingHours(HolydayParam);
 			
-			// 여기
 			Map<String, Object> holydayZeroparam = new HashMap<String, Object>();
 			int plusZeroHolydayMinute = Integer.parseInt(String.valueOf((workingHours - (Integer.parseInt(stringHolydayHour)*60))));
 			int plusZeroHolydayHour = Integer.parseInt(stringHolydayHour);
-			if (plusZeroHolydayHour < 10) {
+			if (plusZeroHolydayHour < 10 && plusZeroHolydayMinute < 10) {
 				
-				String inserZerotHour = ("0" + stringHolydayHour) + ":" + stringMinute;
+				String inserZerotHour = ("0" + stringHolydayHour) + ":" + ("0" + stringHolydayMinute);
 				
-				holydayZeroparam.put("holydayZeroparam", inserZerotHour);
+				holydayZeroparam.put("insertZerotHour", inserZerotHour);
 				holydayZeroparam.put("empNo", empNo);
 				
 				empAttendanceMapper.updateZeroHolydayWorkingHours(holydayZeroparam);
@@ -238,19 +183,70 @@ public class EmpAttendanceService {
 				
 				empAttendanceMapper.updateZeroHolydayWorkingHours(holydayZeroparam);
 				
-			} else if (plusZeroHolydayHour < 10 && plusZeroHolydayMinute < 10) {
+			} else if (plusZeroHolydayHour < 10) {
 				
-				String inserZerotHour = ("0" + stringHolydayHour) + ":" + ("0" + stringHolydayMinute);
+				String inserZerotHour = ("0" + stringHolydayHour) + ":" + stringMinute;
 				
-				holydayZeroparam.put("insertZerotHour", inserZerotHour);
+				holydayZeroparam.put("holydayZeroparam", inserZerotHour);
 				holydayZeroparam.put("empNo", empNo);
 				
 				empAttendanceMapper.updateZeroHolydayWorkingHours(holydayZeroparam);
 			}
+		} else {
+		
+		String insertHour = stringHour + ":" + stringMinute;
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("insertHour", insertHour);
+		param.put("empNo", empNo);
+	
+		empAttendanceMapper.updateWorkingHours(param);
+		
+		if (workingHours >= 540) {
+			Map<String, Object> earlyParam = new HashMap<String, Object>();
+			earlyParam.put("empNo", empNo);
+			earlyParam.put("insertEarlyTime", "00:00");
+			
+			empAttendanceMapper.updateEarlyTimes(earlyParam);
 		}
 		
+		// startHour - endHour가 10 이하일 때
+		int plusStringMinute = Integer.parseInt(String.valueOf((workingHours - (Integer.parseInt(stringHour)*60))));
+		int plusStringHour = Integer.parseInt(stringHour);
+		if (plusStringHour < 10 && plusStringMinute < 10) {
+			
+			String inserZerotHour = ("0" + stringHour) + ":" + ("0" + stringMinute);
+			
+			Map<String, Object> plusZeroParam = new HashMap<String, Object>();
+			plusZeroParam.put("insertZerotHour", inserZerotHour);
+			plusZeroParam.put("empNo", empNo);
+			
+			empAttendanceMapper.updatePlusZeroWorkingHours(plusZeroParam);
+		
+		} else if (plusStringMinute < 10) {
+			
+			String inserZerotHour = stringHour + ":" + ("0" + stringMinute);
+			
+			Map<String, Object> plusZeroParam = new HashMap<String, Object>();
+			plusZeroParam.put("insertZerotHour", inserZerotHour);
+			plusZeroParam.put("empNo", empNo);
+			
+			empAttendanceMapper.updatePlusZeroWorkingHours(plusZeroParam);
+			
+		} else if (plusStringHour < 10) {
+			
+			String inserZerotHour = ("0" + stringHour) + ":" + stringMinute;
+			
+			Map<String, Object> plusZeroParam = new HashMap<String, Object>();
+			plusZeroParam.put("insertZerotHour", inserZerotHour);
+			plusZeroParam.put("empNo", empNo);
+			
+			empAttendanceMapper.updatePlusZeroWorkingHours(plusZeroParam);
+		}
+		}
 		// 연장근로
 		if (workingHours > 540) {
+			
+			String insertHour = stringHour + ":" + stringMinute;
 			
 			int tardiness = workingHours - 540;
 			DecimalFormat decimal = new DecimalFormat("#.##");
@@ -259,12 +255,39 @@ public class EmpAttendanceService {
 			String insertOvertHour = overWorkHour + ":" + overWorkMinute;
 			
 			Map<String, Object> moreWorkParam = new HashMap<String, Object>();
-			moreWorkParam.put("insertHour", insertHour);
+			//moreWorkParam.put("insertHour", insertHour);
 			moreWorkParam.put("insertOvertHour", insertOvertHour);
 			moreWorkParam.put("empNo", empNo);
-					
+			
 			empAttendanceMapper.updateMoreWorkingHours(moreWorkParam);
-			empAttendanceMapper.updateWorkingHours(param);
+			// empAttendanceMapper.updateWorkingHours(param);
+			
+			int overZeroWorkMinute = Integer.parseInt(overWorkMinute);
+			int overZeroWorkHour = Integer.parseInt(overWorkHour);
+			if (overZeroWorkMinute < 10 && overZeroWorkHour < 0) {
+				String insertZeroOverHour = ("0" + overWorkHour) + ":" + ("0" + overWorkMinute);
+				
+				moreWorkParam.put("insertOvertHour", insertZeroOverHour);
+				moreWorkParam.put("empNo", empNo);
+				
+				empAttendanceMapper.updateMoreWorkingHours(moreWorkParam);
+			} else if (overZeroWorkMinute < 10) {
+				String insertZeroOverHour = overWorkHour + ":" + ("0" + overWorkMinute);
+				
+				moreWorkParam.put("insertOvertHour", insertZeroOverHour);
+				moreWorkParam.put("empNo", empNo);
+				
+				empAttendanceMapper.updateMoreWorkingHours(moreWorkParam);
+			
+			} else if (overZeroWorkHour < 10) {
+				String insertZeroOverHour = ("0" + overWorkHour) + ":" + overWorkMinute;
+				
+				moreWorkParam.put("insertOvertHour", insertZeroOverHour);
+				moreWorkParam.put("empNo", empNo);
+				
+				empAttendanceMapper.updateMoreWorkingHours(moreWorkParam);
+			}
+					
 		}
 		
 		// 조퇴시간
@@ -274,11 +297,21 @@ public class EmpAttendanceService {
 			DecimalFormat decimal = new DecimalFormat("#.##");
 			String leaveHour = decimal.format(Math.floor(earlyLeaveTime/60));
 			int intLeaveHour = Integer.parseInt(leaveHour);
-			if (intLeaveHour < 10) {
+			int leaveMinute = Math.abs(((Integer.parseInt(leaveHour)*60) - earlyLeaveTime));
+			
+			if  (intLeaveHour < 10 && leaveMinute < 10){
 				
-				int leaveMinute = Math.abs(((Integer.parseInt(leaveHour)*60) - earlyLeaveTime));
+				String stringLeaveMinute = String.valueOf(leaveMinute);
 				
-				if (leaveMinute < 10) {
+				String insertEarlyTime = ("0" + leaveHour) + ":" + ("0" + stringLeaveMinute);
+				
+				Map<String, Object> earlyParam = new HashMap<String, Object>();
+				earlyParam.put("empNo", empNo);
+				earlyParam.put("insertEarlyTime", insertEarlyTime);
+				
+				empAttendanceMapper.updateEarlyTimes(earlyParam);
+			
+			} else if (leaveMinute < 10) {
 					 String plusZeroLeaveMinute = String.valueOf(leaveMinute);
 					 
 					 String insertEarlyTime = leaveHour + ":" + ("0" + plusZeroLeaveMinute);
@@ -288,7 +321,8 @@ public class EmpAttendanceService {
 					earlyParam.put("insertEarlyTime", insertEarlyTime);
 						
 					empAttendanceMapper.updateEarlyTimes(earlyParam);
-					}
+		
+			} else if (intLeaveHour < 10) {
 				
 				String stringLeaveMinute = String.valueOf(leaveMinute);
 				
@@ -299,19 +333,6 @@ public class EmpAttendanceService {
 				earlyParam.put("insertEarlyTime", insertEarlyTime);
 				
 				empAttendanceMapper.updateEarlyTimes(earlyParam);
-			
-			} else {
-			
-			int leaveMinute = Math.abs(((Integer.parseInt(leaveHour)*60) - earlyLeaveTime));
-			String stringLeaveMinute = String.valueOf(leaveMinute);
-			
-			String insertEarlyTime = leaveHour + ":" + stringLeaveMinute;
-			
-			Map<String, Object> earlyParam = new HashMap<String, Object>();
-			earlyParam.put("empNo", empNo);
-			earlyParam.put("insertEarlyTime", insertEarlyTime);
-			
-			empAttendanceMapper.updateEarlyTimes(earlyParam);
 			
 			}
 			
@@ -331,8 +352,33 @@ public class EmpAttendanceService {
 				
 				empAttendanceMapper.updateNoonWorkingHours(noonParam);
 			}
+		
+		}
 	
+	// 총 근태 현황
+	public void monthlyAttCondition(int empNo) { 
+	// 근무/평일근무 일수
+		Attendances att = empAttendanceMapper.doubleCheckEndTime(empNo);
+		if (att != null) {
+			MonthlyAttendances monthAtt = empAttendanceMapper.monthlyAttendancesByEmpNo(empNo);
+			
+			monthAtt.setTotalWorkedDays(monthAtt.getTotalWorkedDays() + 1);
+			monthAtt.setWeekDayWorkedDays(monthAtt.getWeekDayWorkedDays() + 1);
+			monthAtt.setEmpNo(empNo);
+			empAttendanceMapper.monthlyAttendances(monthAtt);
+			
+			// 휴일 근로
+			String checkHolydays = empAttendanceMapper.checkHolydays();		
+			if (checkHolydays != null) {
+				
+				monthAtt.setWeekendWorkedDays(monthAtt.getWeekendWorkedDays() + 1);
+				monthAtt.setWeekDayWorkedDays(monthAtt.getWeekDayWorkedDays() - 1);
+				monthAtt.setEmpNo(empNo);
+				empAttendanceMapper.monthlyAttendances(monthAtt);
+			}
+		}
 	}
+	
 	
 	// 행 삭제
 	public void deleteAttendances(Map<String, Object> param) {
@@ -346,4 +392,11 @@ public class EmpAttendanceService {
 	
 		return monthlyAtt;
 	}
+	
+	public int monthlyAbsentDayByEmpNo(int empNo) {
+		int monthlyAbsentDay = empAttendanceMapper.monthlyAbsentDayByEmpNo(empNo);
+		
+		return monthlyAbsentDay;
+	}
+
 }

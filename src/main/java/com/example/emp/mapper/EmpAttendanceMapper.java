@@ -11,14 +11,16 @@ import com.example.emp.vo.MonthlyAttendances;
 @Mapper
 public interface EmpAttendanceMapper {
 
-	// 월 근태, 일일 근태 조회
+	// 근태 첫 화면 조회
 	List<Attendances> getAllAttendances(int empNo);
 	Attendances getTodayAttendances(int empNo);
+	List<Attendances> getAllAttendanceByWorkDate(Map<String, Object> param);
 	
 	// 출퇴근
 	void insertStartTime(int empNo);
 	Attendances doubleCheckTime(int empNo);
 	void updateEndTime(int empNo);
+	Attendances doubleCheckEndTime(int empNo);
 	
 	// 근무 시간
 	String getWorkStartTime(int empNo);
@@ -46,4 +48,6 @@ public interface EmpAttendanceMapper {
 	// 월 근태
 	void monthlyAttendances(MonthlyAttendances att);
 	MonthlyAttendances monthlyAttendancesByEmpNo(int empNo);
+	int monthlyAbsentDayByEmpNo(int empNo);
+	
 }

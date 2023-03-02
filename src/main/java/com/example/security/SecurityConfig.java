@@ -53,8 +53,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers("/cus/register", "/cus/checkId","/cus/search-id","/cus/search-pw","/cus/registered").permitAll()
 		.antMatchers("/emp/find-password", "/emp/checkSameEmpNo.json", "/emp/authentication-tel", "/emp/reset-login-form").permitAll() 
 		.antMatchers("/emp/register", "/emp/registered").permitAll()
-		.antMatchers("/cus/login", "/emp/login", "/admin/login").permitAll()
 		.antMatchers("/emp/repair/**").permitAll()
+		.antMatchers("/cus/login", "/emp/login", "/admin/login", "/emp/register/registeration", "/emp/register/empInsert", "/emp/register/getEmpNo.json", "/emp/register/inquiry").permitAll()
 		.antMatchers("/logout").authenticated()
 		.antMatchers("/cus/**").hasAnyRole("CUSTOMER", "ADMIN")
 		.antMatchers("/reservation/**").hasAnyRole("CUSTOMER", "ADMIN")
@@ -127,9 +127,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				if ("사용자".equals(userType)) {
 					response.sendRedirect("/cus");
 				} else if ("직원".equals(userType)) {
-					response.sendRedirect("/emp/attendance/att");
+					response.sendRedirect("/emp/register/registeration");
 				} else if ("관리자".equals(userType)) {
-					response.sendRedirect("/emp/attendance/att");
+					response.sendRedirect("/emp/register/registeration");
 
 				}
 			}			
@@ -146,7 +146,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				
 				String userType = request.getParameter("userType");
 				if ("사용자".equals(userType)) {
-					response.sendRedirect("/cus/login?error=fail");
+					response.sendRedirect("/cus/login?error=" + exception.getMessage());
 				} else if ("직원".equals(userType)) {
 					response.sendRedirect("/emp/login?error=fail");
 				} else if ("관리자".equals(userType)) {

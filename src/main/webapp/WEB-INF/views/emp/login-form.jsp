@@ -28,11 +28,11 @@
 				</h5>
 				<div class="input-group mb-1">
 				     <div class="input-group-text bg-white"><i class="bi bi-person-circle"></i></div>
-				     <input id="empNo" type="text" class="form-control" name="id" value="10011002" placeholder="사원번호">
+				     <input id="empNo" type="text" class="form-control" name="id" value="" placeholder="사원번호">
 			    </div>
 				<div class="input-group mb-2">
 				     <div class="input-group-text bg-white"><i class="bi bi-lock-fill"></i></div>
-				     <input type="password" class="form-control" name="password" value="1234" placeholder="비밀번호">
+				     <input type="password" class="form-control" name="password" value="" placeholder="비밀번호">
 			    </div>
 			    <div>
 			    	<button id="login" type="submit" class="form-control btn btn-primary">로그인</button>
