@@ -3,7 +3,6 @@ package com.example.emp.dto;
 import java.util.Date;
 
 import org.apache.ibatis.type.Alias;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.example.emp.vo.AttachedFile;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -16,7 +15,6 @@ import lombok.Data;
 public class EmployeeDto {
 
 	private int no;
-	@JsonIgnore
 	private String password;
 	private String name;
 	private String citizenNo;

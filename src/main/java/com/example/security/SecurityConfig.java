@@ -1,9 +1,11 @@
 package com.example.security;
 
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,12 +20,17 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.web.filter.GenericFilterBean;
+import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.example.security.service.CustomEmployeeDetailsService;
 import com.example.security.service.CustomUserDetailsService;
 
 @EnableWebSecurity
@@ -32,25 +39,28 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private CustomUserDetailsService userDetailsService;
 	@Autowired
+	private CustomEmployeeDetailsService employeeDetailsService;
+	@Autowired
 	private PasswordEncoder passwordEncoder;
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http
-
-
+		http	
 		.csrf().disable()
 		.authorizeRequests()
 		.antMatchers("/").permitAll()
 		.antMatchers("/cus").permitAll()
 		.antMatchers("/cus/register", "/cus/checkId","/cus/search-id","/cus/search-pw","/cus/registered").permitAll()
+		.antMatchers("/emp/find-password", "/emp/checkSameEmpNo.json", "/emp/authentication-tel", "/emp/reset-login-form").permitAll() 
 		.antMatchers("/emp/register", "/emp/registered").permitAll()
-		.antMatchers("/cus/login", "/emp/login", "/admin/login").permitAll()
+		.antMatchers("/emp/repair/**").permitAll()
+		.antMatchers("/cus/login", "/emp/login", "/admin/login", "/emp/register/registeration", "/emp/register/empInsert", "/emp/register/getEmpNo.json", "/emp/register/inquiry").permitAll()
 		.antMatchers("/logout").authenticated()
 		.antMatchers("/cus/**").hasAnyRole("CUSTOMER", "ADMIN")
 		.antMatchers("/reservation/**").hasAnyRole("CUSTOMER", "ADMIN")
-		.antMatchers("/emp/**").hasAnyRole("EMPLOYEE", "ADMIN")
-		.antMatchers("/admin/**").hasRole("ADMIN")
+		.antMatchers("/repair/**").hasAnyRole("CUSTOMER", "ADMIN")
+		.antMatchers("/emp/**").hasAnyRole("사원", "대리", "관리자")
+		.antMatchers("/admin/**").hasRole("관리자")
 		.anyRequest().authenticated()
 		.and()
 		.formLogin()
@@ -79,6 +89,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			@Override
 			public void handle(HttpServletRequest request, HttpServletResponse response,
 					AccessDeniedException accessDeniedException) throws IOException, ServletException {
+
 				response.sendRedirect("/access-denied");
 			}
 		};
@@ -97,6 +108,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	public AuthenticationProvider authenticationProvider() {
 		Map<String, UserDetailsService> map = new HashMap<>();
 		map.put("사용자", userDetailsService);
+		map.put("직원", employeeDetailsService);
+		map.put("관리자", employeeDetailsService);
 		
 		return new CustomAuthenticationProvider(map, passwordEncoder);
 	}
@@ -114,9 +127,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				if ("사용자".equals(userType)) {
 					response.sendRedirect("/cus");
 				} else if ("직원".equals(userType)) {
-					response.sendRedirect("/emp/home");
+					response.sendRedirect("/emp/register/registeration");
 				} else if ("관리자".equals(userType)) {
-					response.sendRedirect("/admin/home");
+					response.sendRedirect("/emp/register/registeration");
+
 				}
 			}			
 		};
@@ -132,7 +146,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				
 				String userType = request.getParameter("userType");
 				if ("사용자".equals(userType)) {
-					response.sendRedirect("/cus/login?error=fail");
+					response.sendRedirect("/cus/login?error=" + exception.getMessage());
 				} else if ("직원".equals(userType)) {
 					response.sendRedirect("/emp/login?error=fail");
 				} else if ("관리자".equals(userType)) {
@@ -142,4 +156,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		};
 
 	}
+	
 }

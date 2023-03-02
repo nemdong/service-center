@@ -11,4 +11,5 @@ public class EmpApplicationException extends RuntimeException{
 	public EmpApplicationException(String message, Throwable cause) {
 		super(message, cause);
 	}
+	
 }

@@ -74,9 +74,6 @@
 </style>
 <body>
 <div class="container">
-</head>
-<body>
-
 <div id="Accordion_wrap">
      <div class="que ${menu1 eq '고객관리' ?'on' : '' }">
      	 <span>고객관리</span>
@@ -92,7 +89,7 @@
      </div>
      <div class="anw" style="${menu1 eq '인사관리' ?'display: block;' : '' }">
 	     <div class="list-group ">
-			<span><a href="#" class="list-group-item list-group-item-action border-0 ${menu2 eq '인사조회/등록' ? 'active' : '' }">인사조회/등록</a></span>
+			<span><a href="/emp/register/registeration" class="list-group-item list-group-item-action border-0 ${menu2 eq '인사조회/등록' ? 'active' : '' }">인사조회/등록</a></span>
 		 </div>
      </div>
      <div class="que ${menu1 eq '근태관리' ?'on' : '' }">
@@ -100,8 +97,7 @@
      </div>
      <div class="anw" style="${menu1 eq '근태관리' ?'display: block;' : '' }">
      	<div class="list-group ">
-			<span><a href="#" class="list-group-item list-group-item-action border-0 ${menu2 eq '근태확인' ? 'active' : '' }">근태확인</a></span>
-			<span><a href="#" class="list-group-item list-group-item-action border-0 ${menu2 eq '월근태확인' ? 'active' : '' }">월근태확인</a></span> 
+			<span><a href="/emp/attendance/att" class="list-group-item list-group-item-action border-0 ${menu2 eq '근태관리' ? 'active' : '' }">근태관리</a></span>
 		</div>
      </div>
      <div class="que ${menu1 eq '출장관리' ?'on' : '' }">
@@ -109,8 +105,8 @@
      </div>
      <div class="anw" style="${menu1 eq '출장관리' ?'display: block;' : '' }">
      	<div class="list-group ">
-			<span><a href="#" class="list-group-item list-group-item-action border-0 ${menu2 eq '출장현황' ? 'active' : '' }">출장현황</a></span>
-			<span><a href="#" class="list-group-item list-group-item-action border-0 ${menu2 eq '출장요청내역' ? 'active' : '' }">출장요청내역</a></span> 
+			<span><a href="/emp/businessTrip/calendar" class="list-group-item list-group-item-action border-0 ${menu2 eq '출장현황' ? 'active' : '' }">출장현황</a></span>
+			<span><a href="/emp/businessTrip/requestDetail" class="list-group-item list-group-item-action border-0 ${menu2 eq '출장요청내역' ? 'active' : '' }">출장요청내역</a></span> 
 		</div>
      </div>
      <div class="que ${menu1 eq '휴가관리' ?'on' : '' }">

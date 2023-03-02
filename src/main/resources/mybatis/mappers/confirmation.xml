@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.emp.mapper.ConfirmationMapper">
+
+	<!-- 
+		as 접수 확인 총 데이터 갯수 - int getTotalRows(Map<String, Object> param);
+	 -->
+	<select id="getTotalRows" parameterType="map" resultType="int">
+		select
+			count(*)
+		from
+			device_as_histories A, service B	
+		where
+			employee_no = #{empNo}
+			and A.service_no = B.service_no	
+	</select>
+	
+	<!-- 
+		as 접수 확인 리스트 - List<AssignDetailDto> getCheckList(Map<String, Object> param);
+	 -->
+	<select id="getCheckList" parameterType="map" resultType="AsCheckListDto">
+		select
+			registration_no				as registrationNo,
+			reservation_date			as reservationDate,	
+			registration_date			as registrationDate,
+			customer_id					as id,
+			customer_name				as name
+		from (	
+			select
+				row_number() over (order by B.reservation_date desc) row_numbers,
+			    B.registration_no,
+				B.reservation_date, 
+			    B.registration_date,
+			    C.customer_id,
+			    C.customer_name,
+                D.employee_no
+			from device_as_histories A, Service_registrations B, Customers C,
+			     service D
+			where D.employee_no = #{empNo}
+                and B.registration_date between trunc(sysdate - 30) and trunc(sysdate + 1)
+				and A.registration_no = B.registration_no 
+				and B.customer_id = C.customer_id
+                and A.service_no = D.service_no
+			)
+		where
+			row_numbers between #{begin} and #{end} 	
+	</select>
+	
+	<!-- 
+		as 접수확인 상세내역 - AsCheckDetailDto getCheckDetailByNo(int registrationNo)
+	 -->
+	<select id="getCheckDetailByNo" parameterType="int" resultType="AsCheckDetailDto">
+		select
+			A.customer_name 			as name,
+			B.device_category_name 		as deviceName,
+			C.reservation_date			as reservationDate,
+			C.reservation_hour			as reservationHour,
+			D.sell_date					as sellDate,
+			E.service_cat_name			as serviceCatName,
+			F.service_assignment_hour 	as assignmentHour
+		from
+			Customers A, Device_categories B, Service_registrations C, Customer_devices D,
+			Service_categories E, Service F, device_as_histories G
+		where
+			C.registration_no = #{value}
+			and A.customer_id = C.customer_id
+			and C.device_no = D.device_no
+			and D.device_category_no = B.device_category_no
+			and E.service_cat_no = C.service_cat_no
+			and F.service_no = G.service_no
+			and G.registration_no = C.registration_no 		
+	</select>
+
+</mapper>

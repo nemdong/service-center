@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.emp.mapper.EmpHomeMapper">
+
+	<select id="getEmpNo" parameterType="int" resultType="int">
+		SELECT
+		    EMPLOYEE_NO
+		FROM
+		    EMPLOYEES
+		WHERE
+		    EMPLOYEE_NO = #{value};
+	</select>
+	
+	<select id="getEmpByNo" parameterType="int" resultType="Employee">
+		SELECT
+		    EMPLOYEE_NO 				as no,
+		    EMPLOYEE_PASSWORD 			as encryptPassword,
+		    EMPLOYEE_NAME 				as name,
+		    EMPLOYEE_CITIZEN_NO 		as citizenNo,
+		    EMPLOYEE_GENDER 			as gender,
+		    COMPANY_TEL 				as companyTel,
+		    HOME_TEL 					as homeTel,
+		    MOBILE_TEL					as mobileTel,
+		    COMPANY_EMAIL 				as companyEmail,
+		    EXTERNAL_EMAIL 				as externalEmail,
+		    HOME_ZIPCODE 				as zipcode,
+		    HOME_BASIC_ADDRESS 			as basicAddress,
+		    HOME_DETAIL_ADDRESS 		as detailAddress,
+		    EMPLOYEE_HIRE_DATE 			as hireDate,
+		    EMPLOYEE_RETIREMENT_DATE	as retirementDate,
+            DEPT_NO                     as deptNo,
+            POSITION_NO                 as positionNo,
+            UPDATE_DATE					as updateDate
+		FROM 
+			EMPLOYEES
+		WHERE
+			EMPLOYEE_NO = #{value}
+	</select>
+		
+	<update id="updateEmp" parameterType="Employee">
+		UPDATE
+			EMPLOYEES
+		SET
+		   EMPLOYEE_PASSWORD = #{encryptPassword}
+       WHERE
+       		EMPLOYEE_NO = #{no}
+	</update>
+
+</mapper>
