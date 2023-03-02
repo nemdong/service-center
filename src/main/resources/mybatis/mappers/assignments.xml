@@ -3,21 +3,15 @@
 <mapper namespace="com.example.emp.mapper.RepairMapper">
 
 	<!-- 
-		배정 리스트 총 갯수 - int getTotalRows(Map<String, Object> param)
+		배정 리스트 총 갯수 - int getTotalRows()
 	 -->
-	<select id="getTotalRows" parameterType="map" resultType="int">
+	<select id="getTotalRows" resultType="int">
 		select
 			count(*)
 		from
 			service_registrations A, device_as_histories B
 		where
 			A.registration_no = B.registration_no				
-		<!-- <where>
-			<if test="empNo != null">
-				and employee_no = #{empNo}			
-			</if>
-		</where>
-		 -->
 	</select>
 
 	<!-- 
@@ -76,7 +70,26 @@
 			and B.customer_id = C.customer_id
 			and A.service_no = D.service_no(+)
 			and B.service_cat_no = F.service_cat_no
-	</select> 
+	</select>
+	
+	<!-- 
+		예약일자와 예약시간으로 배정직원들 조회 - AsEmpDto getAssignEmployees(Map<String, Object> param)
+	 --> 
+	<select id="getAssignEmployees" parameterType="map" resultType="AsEmpDto">
+		select 
+			employee_no as empNo,
+			employee_name as empName
+		from 
+			employees
+		where 
+			employee_no in (select employee_no
+		                    from employees
+		                    minus
+		                    select employee_no
+		                    from  service 
+		                    where service_assignment_date = #{date}
+		                    and  service_assignment_hour = #{hour})
+	</select>
 	
 	<!-- 
 		배정직원목록 조회 - List<AllAsEmpDto> getAllAsEmp(int deptNo)
@@ -137,63 +150,7 @@
 			service_cost = #{serviceCost}
 		where
 			service_no = #{serviceNo}
-	</update>
-	
-	<!-- 
-		as 접수 확인 리스트 - List<AssignDetailDto> getCheckList(Map<String, Object> param);
-	 -->
-	<select id="getCheckList" parameterType="map" resultType="AsCheckListDto">
-		select
-			registration_no				as registrationNo,
-			reservation_date			as reservationDate,	
-			registration_date			as registrationDate,
-			customer_id					as id,
-			customer_name				as name
-		from (	
-			select
-				row_number() over (order by B.reservation_date desc) row_numbers,
-			    B.registration_no,
-				B.reservation_date, 
-			    B.registration_date,
-			    C.customer_id,
-			    C.customer_name,
-                D.employee_no
-			from device_as_histories A, Service_registrations B, Customers C,
-			     service D
-			where D.employee_no = #{empNo}
-                and B.registration_date between trunc(sysdate - 30) and trunc(sysdate + 1)
-				and A.registration_no = B.registration_no 
-				and B.customer_id = C.customer_id
-                and A.service_no = D.service_no
-			)
-		where
-			row_numbers between #{begin} and #{end} 	
-	</select>
-	
-	<!-- 
-		as 접수확인 상세내역 - AsCheckDetailDto getCheckDetailByNo(int registrationNo)
-	 -->
-	<select id="getCheckDetailByNo" parameterType="int" resultType="AsCheckDetailDto">
-		select
-			A.customer_name 			as name,
-			B.device_category_name 		as deviceName,
-			C.reservation_date			as reservationDate,
-			C.reservation_hour			as reservationHour,
-			D.sell_date					as sellDate,
-			E.service_cat_name			as serviceCatName,
-			F.service_assignment_hour 	as assignmentHour
-		from
-			Customers A, Device_categories B, Service_registrations C, Customer_devices D,
-			Service_categories E, Service F, device_as_histories G
-		where
-			C.registration_no = #{value}
-			and A.customer_id = C.customer_id
-			and C.device_no = D.device_no
-			and D.device_category_no = B.device_category_no
-			and E.service_cat_no = C.service_cat_no
-			and F.service_no = G.service_no
-			and G.registration_no = C.registration_no 		
-	</select>
+	</update>			
 	 
 	<!-- 
 		서비스 배정시간 목록 - List<AssignHour> getAssignHour(Map<String, Object> param)

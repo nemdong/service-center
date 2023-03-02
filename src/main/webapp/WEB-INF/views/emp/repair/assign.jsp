@@ -128,7 +128,7 @@
 									<label class="col-sm-3 col-form-label">배정직원</label>
 									<div class="col-sm-5">
 								        <select class="form-select form-select" name="assignEmp" id="select-emp">
-									        	<option value="" selected disabled> 직원을 선택하세요.</option>
+									        	<option value="" selected disabled>직원을 선택하세요.</option>
 									        <%-- <c:forEach var="asEmp" items="${allAsEmp }">
 											  	<option value="${asEmp.empNo}">${asEmp.empName }</option>							        
 									        </c:forEach> --%>
@@ -233,6 +233,12 @@ $(function() {
 		
 		$.get(`/emp/repair/assign/\${no}`, function(response) {
 			
+			let $select = $("#select-emp").empty();
+			$.each(response.employees, function(index, emp) {
+				let opt = `<option value="\${emp.empNo}"> \${emp.empName}</option>`
+				$select.append(opt);
+			})
+			
 			$("#service-no").val(response.assignDetail.serviceNo);
 			$("#form-cus-name").val(response.assignDetail.name);
 			$("#form-regist-date").val(response.assignDetail.registrationDate);
@@ -245,9 +251,7 @@ $(function() {
 			$("#form-reserv-hour").val(response.assignDetail.reservationHour);			
 			$("#form-content").val(response.assignDetail.serviceCatName);
 			
-			
-			
-			
+			//$("#select-emp").val(response.employees.empName);
 			
 		}, 'json')
 
