@@ -54,6 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers("/emp/find-password", "/emp/checkSameEmpNo.json", "/emp/authentication-tel", "/emp/reset-login-form").permitAll() 
 		.antMatchers("/emp/register", "/emp/registered").permitAll()
 		.antMatchers("/cus/login", "/emp/login", "/admin/login").permitAll()
+		.antMatchers("/emp/repair/**").permitAll()
 		.antMatchers("/logout").authenticated()
 		.antMatchers("/cus/**").hasAnyRole("CUSTOMER", "ADMIN")
 		.antMatchers("/reservation/**").hasAnyRole("CUSTOMER", "ADMIN")

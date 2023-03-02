@@ -15,6 +15,7 @@ import com.example.emp.dto.AsEmpDto;
 import com.example.emp.dto.AssignDetailDto;
 import com.example.emp.dto.AssignHour;
 import com.example.emp.dto.AssignListDto;
+import com.example.emp.mapper.ConfirmationMapper;
 import com.example.emp.mapper.RepairMapper;
 import com.example.emp.vo.AssignService;
 import com.example.emp.vo.DeviceASHistory;
@@ -26,14 +27,16 @@ public class RepairService {
 	
 	@Autowired
 	private RepairMapper repairMapper;
+	@Autowired
+	private ConfirmationMapper confirmationMapper;
 
 	// 배정 리스트, 페이지네이션
 	public Map<String, Object> getAssignList(int page) {
-		Map<String, Object> param = new HashMap<String, Object>();
 		
-		int totalRows = repairMapper.getTotalRows(param);
+		int totalRows = repairMapper.getTotalRows();
 		Pagination pagination = new Pagination(page, totalRows);
 		
+		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("begin", pagination.getBegin());
 		param.put("end", pagination.getEnd());
 		
@@ -51,7 +54,7 @@ public class RepairService {
 		return repairMapper.getAssignDetailByNo(no);
 	}
 	
-	// 부서번호로 배정직원들 조회
+//	
 //	public List<AsEmpDto> getAllAsEmp(int deptNo) {
 //		List<AsEmpDto> allAsEmp = repairMapper.getAllAsEmp(deptNo);
 //		
@@ -79,13 +82,13 @@ public class RepairService {
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("empNo", empNo);
 
-		int totalRows = repairMapper.getTotalRows(param);
+		int totalRows = confirmationMapper.getTotalRows(param);
 		Pagination pagination = new Pagination(page, totalRows);
 		
 		param.put("begin", pagination.getBegin());
 		param.put("end", pagination.getEnd());
 		
-		List<AsCheckListDto> asCheckList = repairMapper.getCheckList(param);
+		List<AsCheckListDto> asCheckList = confirmationMapper.getCheckList(param);
 		
 		Map<String, Object> result1 = new HashMap<>();
 		result1.put("pagination", pagination);
@@ -97,15 +100,24 @@ public class RepairService {
 	// as 접수확인 상세내역
 	public AsCheckDetailDto getCheckDetail(int registrationNo) {
 		
-		AsCheckDetailDto asCheckDetailDto = repairMapper.getCheckDetailByNo(registrationNo);
+		AsCheckDetailDto asCheckDetailDto = confirmationMapper.getCheckDetailByNo(registrationNo);
 		
 		return asCheckDetailDto;
 	}
-
-	public Object getAssignEmployees(int registrationNo) {
+	
+	// 예약일자와 예약시간으로 배정직원들 조회
+	public List<AsEmpDto> getAssignEmployees(Map<String, Object> param) {
 		
-		return null;
+		List<AsEmpDto> asEmpdto = repairMapper.getAssignEmployees(param);
+		
+		return asEmpdto;
 	}
+
+	// 예약일자와 예약시간으로 배정직원들 조회 	
+//	public Object getAssignEmployees(int registrationNo ) {
+//		
+//		return null;
+//	}
 	
 	// 서비스 배정시간 목록
 //	public List<AssignHour> getAssignHour(int empNo, Date reservationDate) {

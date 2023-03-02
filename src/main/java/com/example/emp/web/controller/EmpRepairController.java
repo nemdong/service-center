@@ -2,31 +2,23 @@ package com.example.emp.web.controller;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.emp.dto.AsCheckDetailDto;
-import com.example.emp.dto.AsEmpDto;
 import com.example.emp.dto.AssignDetailDto;
-import com.example.emp.dto.AssignHour;
-import com.example.emp.mapper.RepairMapper;
 import com.example.emp.service.RepairService;
 import com.example.emp.vo.AssignService;
 import com.example.emp.web.request.AssignRegisterForm;
-import com.example.security.AuthenticatedUser;
-import com.example.security.vo.LoginUser;
 
 @Controller
 @RequestMapping("/emp/repair")
@@ -52,11 +44,19 @@ public class EmpRepairController {
 	// 배정상세 조회
 	@GetMapping("/assign/{no}")
 	@ResponseBody
-	public Map<String, Object> getAssignDetail(@PathVariable("no") int no) {		
-		Map<String, Object> result = new HashMap<>();
+	public Map<String, Object> getAssignDetail(@PathVariable("no") int no) {				
 		
-		result.put("assignDetail", repairService.getAssignDetail(no));
-		//result.put("employees", repairService.getAssignEmployees(no));
+		AssignDetailDto detail = repairService.getAssignDetail(no);
+		Date reservDate = detail.getReservationDate();
+		String reservHour = detail.getReservationHour();
+		
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("date", reservDate);
+		param.put("hour", reservHour);
+		
+		Map<String, Object> result = new HashMap<>();
+		result.put("assignDetail", detail);
+		result.put("employees", repairService.getAssignEmployees(param));
 		
 		return result;
 	}
@@ -71,11 +71,11 @@ public class EmpRepairController {
 	
 	// as 접수확인 리스트
 	@GetMapping("/check-list")
-	public String checklist(@AuthenticatedUser LoginUser loginUser, 
+	public String checklist(
 							@RequestParam(name = "page", required = false, defaultValue = "1") int page, 
 							Model model) {
 		
-		int empNo = Integer.parseInt(loginUser.getId());
+		int empNo = 10113001;
 		Map<String, Object> result1 = repairService.getCheckList(empNo, page);
 		model.addAttribute("asCheckList", result1.get("asCheckList"));
 		model.addAttribute("pagination", result1.get("pagination"));		
