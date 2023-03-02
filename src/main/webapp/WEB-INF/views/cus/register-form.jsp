@@ -35,6 +35,7 @@
 				<div class="mb-3">
 					<label class="form-label">비밀번호</label>
 					<form:input class="form-control form-control-sm" style="width:550px;" path="password"/>
+				     <form:errors path="password" cssClass="text-danger small"></form:errors>
 				</div>
 				<div class="mb-3">
 					<label class="form-label">비밀번호 확인</label>

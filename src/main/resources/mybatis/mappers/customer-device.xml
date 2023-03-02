@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.cus.mapper.CustomerMapper">
+
+	<select id="getCustomerDevices" parameterType="string" resultType="CustomerDevicesDto">
+		select
+			D.device_no		            as deviceNo,
+			D.customer_id		        as id,
+			D.device_category_no		as deviceCategoryNo,
+			D.sell_date		            as sellDate,
+			D.device_name		        as deviceName,
+			D.device_rental		        as rental,
+			C.device_category_product	as deviceCategoryProduct,
+			C.device_category_name		as deviceCategoryName
+		from
+			customer_devices D, device_categories C
+		where
+			D.customer_id = #{value}
+			and D.device_category_no = C.device_category_no
+		order by
+			C.device_category_product desc
+	</select>
+	
+	<select id="getAllDeviceCagetories" resultType="DeviceCategory">
+		select
+			device_category_no		as deviceCategoryNo,
+			device_category_name	as deviceCategoryName,
+			device_category_product as deviceCategoryProduct
+		from
+			device_categories
+	</select>
+	
+	<insert id="insertCustomerDevice" parameterType="CustomerDevice">
+		insert into customer_devices
+			(device_no, customer_id, sell_date, device_name, device_rental, device_category_no)
+		values
+			( CUSTOMER_DEVICES_SEQ.nextval, #{id}, #{sellDate}, #{deviceName}, #{rental}, #{deviceCategoryNo})
+	</insert>
+	
+	<select id="getMyDevices" parameterType="string" resultType="CustomerDevicesDto">
+		select
+			D.device_no		            as deviceNo,
+			D.customer_id		        as id,
+			D.device_category_no		as deviceCategoryNo,
+			D.sell_date		            as sellDate,
+			D.device_name		        as deviceName,
+			D.device_rental		        as rental,
+			C.device_category_product	as deviceCategoryProduct,
+			C.device_category_name		as deviceCategoryName
+		from
+			customer_devices D, device_categories C
+		where
+			D.customer_id = #{value}
+			and D.device_category_no = C.device_category_no
+		order by
+			D.device_no desc
+	</select>
+</mapper>
