@@ -18,7 +18,7 @@
 		<ul class="navbar-nav">
 			<sec:authorize access="isAuthenticated()">
 				<sec:authorize access="hasRole('ROLE_CUSTOMER')">
-					<li class="nav-item"><a class="nav-link ${menu eq 'customer' ? 'active' : '' }" href="/customer/info">내정보 보기</a></li>
+					<li class="nav-item"><a class="nav-link ${menu eq 'customer' ? 'active' : '' }" href="/customer/mypage">마이페이지</a></li>
 				</sec:authorize>
 				<li class="nav-item"><a class="nav-link" href="/logout">로그아웃</a></li>
 			</sec:authorize>

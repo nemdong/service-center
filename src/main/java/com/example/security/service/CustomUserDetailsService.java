@@ -3,6 +3,8 @@ package com.example.security.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.security.auth.login.AccountExpiredException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,7 +30,11 @@ public class CustomUserDetailsService implements UserDetailsService {
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		Customer customer = customerMapper.getCustomerById(username);
 		if (customer == null) {
-			throw new UsernameNotFoundException("사용자정보가 존재하지 않습니다.");
+			throw new UsernameNotFoundException("fail");
+		}
+		
+		if (customer.getDeleted().equals("Y")) {
+			throw new UsernameNotFoundException("expired");
 		}
 		
 		List<CustomerRole> roles = customerRoleMapper.getCustomerRolesByCustomerId(customer.getId());

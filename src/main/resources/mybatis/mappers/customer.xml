@@ -13,9 +13,11 @@
 		update 
 			customers
 		set
-		    customer_id= #{id},
 			customer_password = #{encryptPassword},
 			customer_phone = #{phone},
+			customer_name = #{name},
+			customer_birthday =#{birthday},
+			customer_email = #{email},
 			customer_zipcode = #{zipcode},
 			customer_basic_address= #{basicAddress},
 			customer_detail_address= #{detailAddress},
@@ -126,7 +128,22 @@
             customer_email = #{email}
   </select>
 
-
+<select id="getCustomerDetail" parameterType="string" resultType="customerDetailDto">
+		select
+			customer_id as id,
+			customer_password as encryptPassword,
+			customer_name as name,
+			customer_email as email,
+			customer_zipcode as zipcode,
+			customer_birthday as birthday,
+			customer_basic_address as basicAddress,
+			customer_detail_address as detailAddress,
+			customer_created_date as createdDate
+		from
+			customers
+		where
+			customer_id = #{id}
+	</select>
 	
 
 </mapper>

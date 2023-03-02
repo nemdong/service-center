@@ -145,7 +145,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				
 				String userType = request.getParameter("userType");
 				if ("사용자".equals(userType)) {
-					response.sendRedirect("/cus/login?error=fail");
+					response.sendRedirect("/cus/login?error=" + exception.getMessage());
 				} else if ("직원".equals(userType)) {
 					response.sendRedirect("/emp/login?error=fail");
 				} else if ("관리자".equals(userType)) {

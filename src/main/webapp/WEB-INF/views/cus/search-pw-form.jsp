@@ -25,11 +25,11 @@
 			<form id="form-register" class="border bg-light p-3" method="post" action="search-pw">
 				<div class="mb-3">
 					<label class="form-label">아이디</label>
-					<input type="text" class="form-control form-control-sm" name="id" />
+					<input type="text" class="form-control form-control-sm" name="id"/>
 				</div>
 				<div class="mb-3">
 					<label class="form-label">이메일</label>
-					<input type="email" class="form-control form-control-sm" name="email" />
+					<input type="email" class="form-control form-control-sm" name="email"/>
 				</div>
 				<div class="text-end">
 					<a href="/cus" class="btn btn-secondary btn-sm">취소</a>

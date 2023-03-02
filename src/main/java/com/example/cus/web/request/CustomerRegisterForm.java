@@ -27,7 +27,7 @@ public class CustomerRegisterForm {
 	  
 	  @NotBlank(message = "*비밀번호를 입력해주세요.")
 	  @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$", message = "비밀번호는 영문+숫자+특수문자를 포함해 8자 이상으로 설정해야합니다.")
-	  private String Password;
+	  private String password;
 	  
 	  @NotBlank(message = "*이름을 입력해주세요.")
 	  @Pattern (regexp = "^[가-힣]{2,}$", message = "*이름은 두글자 이상 한글로 입력해야합니다.")

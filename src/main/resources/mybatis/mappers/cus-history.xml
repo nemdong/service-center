@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.cus.mapper.ServiceHistoryMapper">
+
+
+<select id="getServiceHistoriesByCustomerId"  parameterType="string" resultType="com.example.cus.dto.ServiceHistoryDto">
+   select
+        a.registration_no            as registrationNo,
+        a.registration_date          as registrationDate,
+        b.process_status             as processStatus,
+        b.process_expected_date      as processExpectedDate,
+        b.process_completed_date     as processCompletedDate,
+        c.service_cat_name           as serviceCatName,
+        d.device_name                as deviceName,
+        e.device_category_name       as deviceCategoryName
+     from
+        service_registrations a, device_as_histories b, service_categories c, customer_devices d, device_categories e 
+     where
+     	a.customer_id = #{value}
+     and
+        a.registration_no = b.registration_no(+)
+     and
+        a.service_cat_no = c.service_cat_no
+     and
+        a.device_no = d.device_no
+     and
+        d.device_category_no = e.device_category_no
+	order by
+		a.registration_no desc
+  </select>
+
+
+
+
+
+
+
+
+
+
+</mapper>

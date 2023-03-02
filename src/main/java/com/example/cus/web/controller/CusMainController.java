@@ -1,6 +1,7 @@
 package com.example.cus.web.controller;
 
 import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,7 +34,7 @@ public class CusMainController {
 	public String loginform() {
 		return "cus/login-form";
 	}
-
+	
 	@GetMapping("/access-denied")
 	public String accessDenied() {
 		return "cus/error/access-denied";
@@ -122,34 +123,7 @@ public class CusMainController {
 		return "cus/success";
 	}
 
-	public CustomerService getCustomerService() {
-		return customerService;
-	}
-
-	public void setCustomerService(CustomerService customerService) {
-		this.customerService = customerService;
-	}
 
 
-	// 고객 로그인	
-
-	
-	/*
-	 * @GetMapping("/cus/login") 
-	 * public String loginForm() {
-	 * 
-	 * return "cus/reservation/login-form"; }
-	 */
-	
-
-	/*
-	 * @PostMapping("/login") public String login(String id, String password) { User
-	 * user = userService.login(id, password);
-	 * 
-	 * LoginUserInfo loginUserInfo = new LoginUserInfo(user.getId(),
-	 * user.getName()); SessionUtils.setAttribute("loginUser", loginUserInfo);
-	 * 
-	 * return "redirect:cus"; }
-	 */
 
 }
