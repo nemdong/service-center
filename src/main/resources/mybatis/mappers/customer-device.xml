@@ -56,7 +56,7 @@
 		order by
 			D.device_no desc
 	</select>
-=======
+
 	<select id="getDeviceByNo" parameterType="int" resultType="CustomerDevicesDto">
 		select
 			D.device_no						    as deviceNo,

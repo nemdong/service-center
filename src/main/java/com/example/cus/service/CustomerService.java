@@ -192,10 +192,6 @@ public class CustomerService {
 		customer.setEncryptPassword(passwordEncoder.encode(password));
 		customerMapper.updateCustomer(customer);		
 	}
-   
-	public List<CustomerDevicesDto> getDeviceInfo(String id) {
-		return customerMapper.getCustomerDevices(id);
-	}
 	
 	public List<CustomerDevicesDto> getMyDevice(String customerId){ 
 		return customerMapper.getMyDevices(customerId); 
