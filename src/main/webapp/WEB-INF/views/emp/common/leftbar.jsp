@@ -117,7 +117,9 @@
 			<span><a href="/vacation/vacStatus" class="list-group-item list-group-item-action border-0 ${menu2 eq '연차현황' ? 'active' : '' }">연차현황</a></span>
 			<span><a href="/vacation/manage" class="list-group-item list-group-item-action border-0 ${menu2 eq '휴가신청' ? 'active' : '' }">휴가신청</a></span> 
 			<span><a href="/vacation/reqHistories" class="list-group-item list-group-item-action border-0 ${menu2 eq '요청내역' ? 'active' : '' }">요청내역</a></span> 
+			<sec:authorize access="hasAnyRole('관리자')">
 			<span><a href="/vacation/requestManage" class="list-group-item list-group-item-action border-0 ${menu2 eq '요청관리' ? 'active' : '' }">요청관리</a></span> 
+			</sec:authorize>
 		</div>
      </div>
      <div class="que ${menu1 eq 'A/S관리' ?'on' : '' }">

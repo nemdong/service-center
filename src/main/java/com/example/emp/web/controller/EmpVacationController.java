@@ -41,8 +41,8 @@ public class EmpVacationController {
 	// 휴가신청
 	@PostMapping("/add")
 	@ResponseBody
-	public VacationEvent addVacation(@AuthenticatedUser LoginUser loginUser, @RequestBody VacationRegisterForm form) {
-		int empNo = 1000;
+	public VacationEvent addVacation(@AuthenticatedUser LoginUser loginuser, @RequestBody VacationRegisterForm form) {
+		int empNo = Integer.parseInt(loginuser.getId());
 		return empVacationService.addVacation(empNo, form);
 	}
 	
@@ -53,7 +53,7 @@ public class EmpVacationController {
 			@RequestParam("startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
 			@RequestParam("endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate) {
 		
-		int empNo = 1000;
+		int empNo = Integer.parseInt(loginuser.getId());
 		
 		Map<String, Object> param = new HashMap<>();
 		param.put("empNo", empNo);
@@ -72,11 +72,13 @@ public class EmpVacationController {
 	
 	// 요청관리 - 관리자
 	@GetMapping("/requestManage")
-	public String requestManage(@RequestParam(name = "page", required = false, defaultValue = "1") int page, Model model) {
+	public String requestManage(@RequestParam(name = "page", required = false, defaultValue = "1") int page, 
+			@RequestParam(name = "type", required = false, defaultValue = "") String type, 
+			@RequestParam(name = "keyword", required = false, defaultValue = "") String keyword, Model model) {
 		
-		Map<String, Object> result =  empVacationService.getRequestManage(page);
+		Map<String, Object> result =  empVacationService.getRequestManage(page, type, keyword);
 		model.addAllAttributes(result);
-		
+	
 		return "emp/vacation/admin-requestManage";
 	}
 	
@@ -85,7 +87,7 @@ public class EmpVacationController {
 	public String requestHistories(@AuthenticatedUser LoginUser loginuser, 
 			@RequestParam(name = "page", required = false, defaultValue = "1") int page, Model model) {
 		
-		int empNo = 1000;
+		int empNo = Integer.parseInt(loginuser.getId());
 		
 		Map<String, Object> result = empVacationService.getVacReqHistories(page, empNo);
 		model.addAttribute("reqHistories", result.get("reqHistories"));
@@ -99,7 +101,7 @@ public class EmpVacationController {
 	public String vacStatus(@AuthenticatedUser LoginUser loginuser, 
 			@RequestParam(name = "page", required = false, defaultValue = "1") int page, Model model) {
 		
-		int empNo = 1000;
+		int empNo = Integer.parseInt(loginuser.getId());
 		
 		Map<String, Object> result = empVacationService.getVacStatus(page, empNo);
 		model.addAttribute("vacStatus", result.get("vacStatus"));
