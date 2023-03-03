@@ -79,6 +79,7 @@
 <div class="modal" tabindex="-1" id="modal-form-cancel">
 	<div class="modal-dialog modal-lg">
 		<form class="p-3" method="get" action="cancel">
+		<input type="hidden" name="registrationNo" value="${reservationDto.registrationNo }">
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
