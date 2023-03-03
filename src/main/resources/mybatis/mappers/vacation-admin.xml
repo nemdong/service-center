@@ -6,12 +6,24 @@
 		select
 			count(*)
 		from
-			VACATION_REQUEST_HISTORIES
-		<where>
+			VACATION_REQUEST_HISTORIES A, employees B
+		where A.VACATION_REQUEST_EMP_NO = B.employee_no
 			<if test="requestEmpNo != null">
-				VACATION_REQUEST_EMP_NO = #{requestEmpNo}
+				and A.VACATION_REQUEST_EMP_NO = #{requestEmpNo}
 			</if>
-		</where>
+			<if test="type != null and keyword != null and keyword != ''">
+			<choose>
+				<when test="type == 'empName'">
+					and B.EMPLOYEE_NAME like '%' || #{keyword} || '%'
+				</when>
+				<when test="type == 'requestType'">
+					and A.VACATION_REQUEST_TYPE like '%' || #{keyword} || '%'
+				</when>
+				<when test="type == 'approvalStatus'">
+					and A.VACATION_APPROVAL_STATUS like '%' || #{keyword} || '%'
+				</when>
+			</choose>
+		</if>
 	</select>
 	
 	<select id="getVacReqManageList" parameterType="map" resultType="VacReqManageDto">
@@ -52,6 +64,19 @@
 			WHERE
 				A.VACATION_CAT_NO = B.VACATION_CAT_NO
 				and A.VACATION_REQUEST_EMP_NO = C.EMPLOYEE_NO
+				<if test="type != null and keyword != null and keyword != ''">
+					<choose>
+						<when test="type == 'empName'">
+							and C.EMPLOYEE_NAME like '%' || #{keyword} || '%'
+						</when>
+						<when test="type == 'requestType'">
+							and A.VACATION_REQUEST_TYPE like '%' || #{keyword} || '%'
+						</when>
+						<when test="type == 'approvalStatus'">
+							and A.VACATION_APPROVAL_STATUS like '%' || #{keyword} || '%'
+						</when>
+					</choose>
+				</if>
 			)
 		WHERE
 			ROW_NUMBERS BETWEEN #{begin} AND #{end}

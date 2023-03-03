@@ -26,6 +26,7 @@ import com.example.utils.Pagination;
 @Transactional
 public class EmpVacationService {
 	
+	// 승인관리자 번호 - yml에서 등록
 	@Value("${service.center.approval.empno}")
 	int approvalEmpNo;
 
@@ -65,8 +66,12 @@ public class EmpVacationService {
 	}
 
 	// 요청관리 - 관리자페이지
-	public Map<String, Object> getRequestManage(int page) {
+	public Map<String, Object> getRequestManage(int page, String type, String keyword) {
 		Map<String, Object> param = new HashMap<String, Object>();
+		if (type != null && keyword != null && !keyword.isBlank()) {
+	        param.put("type", type);
+	        param.put("keyword", keyword);
+	    }
 
 		int totalRows = vacationMapper.getTotalRows(param);
 		Pagination pagination = new Pagination(page, totalRows);

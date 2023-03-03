@@ -18,18 +18,18 @@
    			<%@include file="../common/leftbar.jsp" %>
    		</div>
    		<div class="col-10">
-   			<div class="row mb-5">
+   		   	<div class="row mb-5">
    				<div class="col-12">
    					<div class="row text-end">                                                                                                             
 						<div class="col-lg-12">                                                                                                   
-							<form id="searchForm">                                                   
+							<form method="get" action="requestManage" id="searchForm">                                                   
 								<select name="type">                                                                                              
-					                <option selected="selected" value="">휴가구분</option>                 
-					                <option value="">직원이름</option>                 
+					                <option value="empName" ${param.type eq 'empName' ? 'selected' : '' }>요청자</option>                 
+					                <option value="requestType" ${param.type eq 'requestType' ? 'selected' : '' }>요청종류</option>                 
+					                <option value="approvalStatus" ${param.type eq 'approvalStatus' ? 'selected' : '' }>상태</option>                 
 								</select>                                                                                                         
-								<input type="text" name="keyword"/>                            
-								<input type="hidden" name="pageNum"/>                          
-								<button class="btn btn-default">검색</button>                                                                   
+								<input type="text" name="keyword" value="${param.keyword }"/>                            
+								<button type="submit" class="btn btn-default">검색</button>                                                                   
 							</form>                                                                                                               
 						</div>                                                                                                                    
 					</div> 
