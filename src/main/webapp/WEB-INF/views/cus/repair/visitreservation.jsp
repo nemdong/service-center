@@ -31,6 +31,7 @@
 		<div class="col-4">
 			<p><strong class="fs-4">서비스 받을 센터 검색하기</strong></p>
 			<input type="hidden" name="status" value="예약가능" ${param.status eq '예약가능' ? '' : 'disabled'}> 
+			<input type="hidden" name="way" value="${param.way }"> 
 			<!-- false면 disabled로 값 안넘겨줌, 예약가능 조건과 검색을 두개 다 이용하려면 구분이 되는 조건을 걸어줘야함 여긴 disabled로 표시, 위에 a태그는 btn-success secondary로 표시-->
  			<input type="text" class="form-control form-control-xs w-150" name="keyword" value="${param.keyword }"> <!-- value를 사용함으로써 입력값 유지 -->
 			<button type="btn-search" id="btn-search" class="btn btn-outline-secondary btn-xs">검색</button>
@@ -50,7 +51,7 @@
 						<p>${locations.locationBasicAddress }</p>
 						<p>${locations.locationDetailAddress }</p>
 						<hr />
-						<p>* 예상비용 : ￦79,200</p>
+						<p>예상 비용: ￦<fmt:formatNumber value="${serviceInfo.serviceAmount }" pattern="#,###" /> 원</p>
 					</a>
 				</div>
 			</div>
@@ -69,6 +70,7 @@ $(function() {
 	// 처음 페이지를 들어가면 둘다 값이 비어있는 상태.
 	var statusValue = $(":input[name=status]:not(:disabled)").val(); //버튼이 눌러져있으면 예약가능, 안눌러져있으면 undefined
 	var keywordValue = $(":input[name=keyword]").val();
+	var wayValue = $(":input[name=way]").val();
 	let param = {keyword: keywordValue};
 	if (statusValue) { //true일 때, 즉 예약가능 매장보기 버튼을 눌렀을 때만 값이 들어가도록.
 		param['status'] = statusValue;			// let param = {keyword: keywordValue} keyword라는 key에 value를 넣는것. param['status'] = statusValue;	status 키워드에 value를 담는 표현식임. 
