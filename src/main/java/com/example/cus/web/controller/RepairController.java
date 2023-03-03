@@ -19,11 +19,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import com.example.cus.dto.CustomerDetailDto;
 import com.example.cus.dto.CustomerDevicesDto;
 import com.example.cus.dto.DeviceHistoryDto;
 import com.example.cus.dto.ReservationDto;
-import com.example.cus.login.LoginCustomerInfo;
 import com.example.cus.service.CustomerService;
 import com.example.cus.service.ReservationService;
 import com.example.cus.vo.DeviceCategory;
@@ -116,6 +114,9 @@ public class RepairController {
 		List<Location> locations = reservationService.getLocations(param);
 		model.addAttribute("locations", locations);
 		
+		ServiceCategories serviceInfo = reservationService.serviceInfo(reservationForm.getServiceCatNo());
+		model.addAttribute("serviceInfo", serviceInfo);
+		
 		return "cus/repair/visitreservation";
 	}
 	
@@ -124,10 +125,12 @@ public class RepairController {
 	 @ResponseBody
 	 @GetMapping("/locations") 		//등록이거나 수정일 때 POST방식 사용, 여기서는 그냥 값을 찾는 것이므로 GET 사용.  
 	 // 필수가 아닌 값, null허용 -> required = false, 값이 넘어오지 않을 때 기본 값 설정 -> defaultValue = ""
-	 public List<Location> getLocation(@RequestParam(name = "keyword", required = false, defaultValue = "") String keyword) { //@RequestParam("ways") String way
+	 public List<Location> getLocation(@RequestParam(name = "keyword", required = false, defaultValue = "") String keyword,
+			 @ModelAttribute("reservationForm") ReservationForm reservationForm) { //@RequestParam("ways") String way
 		 // visitreservation에서 ajax통신할때 keyword를 넘겨주니까 keyword를 받고 keyword에 해당하는 {locationNo: "10003", locationName: "Apple 서울역", city: "서울 특별시", zipcode: "04320",…}값이 얻어진다.
 		 Map<String, Object> param = new HashMap<String, Object>();
-		 param.put("way", "center");
+		// param.put("way", "center");
+		 param.put("way", reservationForm.getWay());
 		 if (!keyword.isBlank()) {
 			 param.put("keyword", keyword);
 		 }
